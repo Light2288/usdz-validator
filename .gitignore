@@ -1,0 +1,6 @@
+.build/
+.venv/
+.DS_Store
+# Local verification artifacts and resource measurements.
+.verification/
+verification-output/
