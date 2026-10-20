@@ -7,6 +7,10 @@ public struct ArchiveRecipe: Sendable {
     case regular = 0o100644
     case directory = 0o040755
     case symbolicLink = 0o120777
+    case characterDevice = 0o020600
+    case blockDevice = 0o060600
+    case fifo = 0o010600
+    case socket = 0o140600
   }
 
   /// Offset is relative to the selected fixed header (30 local, 46 central, 22 end bytes)

@@ -71,13 +71,14 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "cb5c31948c83ee430d1f020d3d0b1169a856224001498f5db83368158cba329f",
-      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields, per-member comments and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets. Optional prefix and bytesBeforeDirectory insert verbatim boundary-layout bytes while preserving absolute indexed offsets, for self-extracting, gap and hidden-member recipes. Entry.payloadPatches applies deterministic payload-relative mutations only after CRC and size declarations are recorded, allowing content-corruption fixtures with matching local and central metadata.",
+      "sha256": "5cf2e1434f9bade0ba71af36059c5b6148a9e37317868414256b62c474fc9a0e",
+      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields, per-member comments and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets. Optional prefix and bytesBeforeDirectory insert verbatim boundary-layout bytes while preserving absolute indexed offsets, for self-extracting, gap and hidden-member recipes. Entry.payloadPatches applies deterministic payload-relative mutations only after CRC and size declarations are recorded, allowing content-corruption fixtures with matching local and central metadata. EntryType includes independently declared Unix character-device, block-device, FIFO and socket modes for namespace/type rejection fixtures; raw-name and central-header patches reproduce unsupported encodings and host/type metadata without product code.",
       "history": [
         "2026-10-21: Original project-authored fixture/generator created for v0.1.",
         "2026-10-21: Add independently encoded central comments for bounded-directory adversarial recipes.",
         "2026-10-21: Add deterministic prefix and pre-directory bytes for local ownership boundary fixtures.",
-        "2026-10-21: Add post-declaration payload patches for stored-payload integrity fixtures."
+        "2026-10-21: Add post-declaration payload patches for stored-payload integrity fixtures.",
+        "2026-10-21: Add prohibited Unix member-type modes for safe exact namespace fixtures."
       ]
     },
     {
