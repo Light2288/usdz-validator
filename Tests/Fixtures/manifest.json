@@ -71,10 +71,11 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "cdc899104f14f9ddecee4d0cc48d74eec0edaaa2da5c315482e50f4c6b70364a",
-      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets.",
+      "sha256": "220f2e1a0fb2731266b1b57ab5eac13d4a4d4ee5c0186a7f70fc2b779d348acd",
+      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields, per-member comments and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets.",
       "history": [
-        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+        "2026-10-21: Original project-authored fixture/generator created for v0.1.",
+        "2026-10-21: Add independently encoded central comments for bounded-directory adversarial recipes."
       ]
     },
     {

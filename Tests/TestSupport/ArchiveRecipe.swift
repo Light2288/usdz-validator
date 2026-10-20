@@ -43,6 +43,7 @@ public struct ArchiveRecipe: Sendable {
     public var declaredCRC32: UInt32?
     public var localExtra: Data
     public var centralExtra: Data
+    public var centralComment: Data
     public var localHeaderPatches: [HeaderPatch]
     public var centralHeaderPatches: [HeaderPatch]
 
@@ -51,7 +52,8 @@ public struct ArchiveRecipe: Sendable {
       flags: UInt16 = 0, method: UInt16 = 0,
       declaredCompressedSize: UInt32? = nil, declaredUncompressedSize: UInt32? = nil,
       declaredCRC32: UInt32? = nil, localExtra: Data = Data(), centralExtra: Data = Data(),
-      localHeaderPatches: [HeaderPatch] = [], centralHeaderPatches: [HeaderPatch] = []
+      localHeaderPatches: [HeaderPatch] = [], centralHeaderPatches: [HeaderPatch] = [],
+      centralComment: Data = Data()
     ) {
       self.nameBytes = nameBytes
       self.payload = payload
@@ -63,6 +65,7 @@ public struct ArchiveRecipe: Sendable {
       self.declaredCRC32 = declaredCRC32
       self.localExtra = localExtra
       self.centralExtra = centralExtra
+      self.centralComment = centralComment
       self.localHeaderPatches = localHeaderPatches
       self.centralHeaderPatches = centralHeaderPatches
     }
@@ -151,6 +154,7 @@ public struct ArchiveRecipe: Sendable {
     for (index, entry) in entries.enumerated() {
       let metadata = try metadata(for: entry)
       guard let extraLength = UInt16(exactly: entry.centralExtra.count),
+        let entryCommentLength = UInt16(exactly: entry.centralComment.count),
         let localOffset = UInt32(exactly: locations[index].local)
       else { throw RecipeError.fieldOverflow }
       let centralHeader = bytes.count
@@ -167,7 +171,7 @@ public struct ArchiveRecipe: Sendable {
       header.appendLittleEndian(metadata.uncompressed)
       header.appendLittleEndian(metadata.nameLength)
       header.appendLittleEndian(extraLength)
-      header.appendLittleEndian(UInt16(0))  // Comment length.
+      header.appendLittleEndian(entryCommentLength)
       header.appendLittleEndian(UInt16(0))  // Disk.
       header.appendLittleEndian(UInt16(0))  // Internal attributes.
       header.appendLittleEndian(entry.type.rawValue << 16 | (entry.type == .directory ? 0x10 : 0))
@@ -176,6 +180,7 @@ public struct ArchiveRecipe: Sendable {
       bytes.append(header)
       bytes.append(entry.nameBytes)
       bytes.append(entry.centralExtra)
+      bytes.append(entry.centralComment)
       offsets.append(
         EntryOffsets(
           localHeader: locations[index].local, name: locations[index].name,
