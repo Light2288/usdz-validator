@@ -95,15 +95,20 @@ public struct ArchiveRecipe: Sendable {
   public var alignment: Int
   public var archiveComment: Data
   public var endRecordPatches: [HeaderPatch]
+  public var prefix: Data
+  public var bytesBeforeDirectory: Data
 
   public init(
     entries: [Entry], alignment: Int = 64, archiveComment: Data = Data(),
-    endRecordPatches: [HeaderPatch] = []
+    endRecordPatches: [HeaderPatch] = [], prefix: Data = Data(),
+    bytesBeforeDirectory: Data = Data()
   ) {
     self.entries = entries
     self.alignment = alignment
     self.archiveComment = archiveComment
     self.endRecordPatches = endRecordPatches
+    self.prefix = prefix
+    self.bytesBeforeDirectory = bytesBeforeDirectory
   }
 
   public func encode() throws -> Data { try encodeWithLayout().bytes }
@@ -113,7 +118,7 @@ public struct ArchiveRecipe: Sendable {
     guard let count = UInt16(exactly: entries.count),
       let commentLength = UInt16(exactly: archiveComment.count)
     else { throw RecipeError.fieldOverflow }
-    var bytes = Data()
+    var bytes = prefix
     var locations: [(local: Int, name: Int, payload: Int)] = []
     for entry in entries {
       let metadata = try metadata(for: entry)
@@ -149,6 +154,7 @@ public struct ArchiveRecipe: Sendable {
       locations.append((start, start + 30, bytes.count))
       bytes.append(entry.payload)
     }
+    bytes.append(bytesBeforeDirectory)
     let centralDirectory = bytes.count
     var offsets: [EntryOffsets] = []
     for (index, entry) in entries.enumerated() {

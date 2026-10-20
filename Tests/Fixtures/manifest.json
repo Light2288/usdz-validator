@@ -71,11 +71,12 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "220f2e1a0fb2731266b1b57ab5eac13d4a4d4ee5c0186a7f70fc2b779d348acd",
-      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields, per-member comments and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets.",
+      "sha256": "c739baf3738eb5192a5f829666c1de514c84612a5987d7971866de6518176103",
+      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields, per-member comments and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets. Optional prefix and bytesBeforeDirectory insert verbatim boundary-layout bytes while preserving absolute indexed offsets, for self-extracting, gap and hidden-member recipes.",
       "history": [
         "2026-10-21: Original project-authored fixture/generator created for v0.1.",
-        "2026-10-21: Add independently encoded central comments for bounded-directory adversarial recipes."
+        "2026-10-21: Add independently encoded central comments for bounded-directory adversarial recipes.",
+        "2026-10-21: Add deterministic prefix and pre-directory bytes for local ownership boundary fixtures."
       ]
     },
     {
