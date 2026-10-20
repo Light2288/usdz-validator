@@ -2,7 +2,7 @@ import Foundation
 
 struct BoundedReader {
   let size: UInt64
-  private let ledger: ResourceLedger
+  let ledger: ResourceLedger
   private let readAt: (UInt64, Int) throws -> Data
 
   init(size: UInt64, ledger: ResourceLedger, readAt: @escaping (UInt64, Int) throws -> Data) {

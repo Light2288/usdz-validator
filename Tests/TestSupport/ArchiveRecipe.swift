@@ -222,6 +222,22 @@ public struct ArchiveRecipe: Sendable {
       bytes: bytes, entries: offsets, centralDirectory: centralDirectory, endRecord: endRecord)
   }
 
+  /// Original raw USDA lexical stress recipe; values are authored verbatim, without escaping.
+  /// Deliberately malformed values can exercise lexer boundaries independently of product code.
+  public static func repeatedUSDALiterals(valueBytes: Data, count: Int, paddingBytes: Int = 0)
+    -> Data
+  {
+    precondition(count >= 0 && paddingBytes >= 0)
+    var bytes = Data("#usda 1.0\n".utf8)
+    for _ in 0..<count {
+      bytes.append(0x40)
+      bytes.append(valueBytes)
+      bytes.append(contentsOf: [0x40, 0x20])
+    }
+    bytes.append(Data(repeating: 0x20, count: paddingBytes))
+    return bytes
+  }
+
   /// CRC-32/ISO-HDLC, computed directly from bytes without product code or ZIP libraries.
   public static func crc32(_ data: Data) -> UInt32 {
     var crc: UInt32 = 0xffff_ffff
