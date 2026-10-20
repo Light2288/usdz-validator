@@ -114,6 +114,14 @@ final class USDALexerTests: XCTestCase {
       XCTAssertEqual(result.findings.map(\.ruleID), ["UVK-LIM-004"])
       XCTAssertEqual(result.coverage.areas[.references]?.state, .partial)
     }
+    // An invalid UTF-8 continuation wins over a control-looking C1 scalar or newline.
+    for bytes in [Data([0x40, 0xe2, 0xc2, 0x85, 0x40]), Data([0x40, 0xe2, 0x0a, 0x40])] {
+      let result = try scan(bytes)
+      XCTAssertTrue(result.tokens.isEmpty)
+      XCTAssertEqual(result.findings.map(\.ruleID), ["UVK-LIM-004"])
+      XCTAssertEqual(result.coverage.areas[.references]?.state, .partial)
+      XCTAssertEqual(result.findings.first?.location?.layerByteOffset, 2)
+    }
     var valid = Data(repeating: 0x20, count: 65_535)
     valid.append(Data("é @a@".utf8))
     XCTAssertEqual(try scan(valid).tokens.first?.column, 65_538)

@@ -116,6 +116,9 @@ enum USDALexer {
     try cursor.discard(triple ? 3 : 1)
     var raw = Data()
     while let byte = try cursor.peek() {
+      // A control-looking byte cannot establish malformed supported syntax while
+      // an invalid UTF-8 sequence is still waiting for its continuation.
+      try cursor.validatePendingContinuation(byte)
       // SdfAssetPath rejects C0/C1 controls, including CR/LF, NUL and DEL.
       if byte < 0x20 || byte == 0x7f { throw LexicalFailure.malformedAsset(start) }
       if byte == 0xc2, let next = try cursor.peek(1), (0x80...0x9f).contains(next) {
@@ -258,10 +261,8 @@ enum USDALexer {
         return nil
       }
       let continuation = continuationBytes > 0
+      try validatePendingContinuation(byte)
       if continuation {
-        guard byte >= minimumContinuation && byte <= maximumContinuation else {
-          throw LexicalFailure.encoding
-        }
         continuationBytes -= 1
         minimumContinuation = 0x80
         maximumContinuation = 0xbf
@@ -301,6 +302,12 @@ enum USDALexer {
         previousCR = false
       }
       return byte
+    }
+
+    func validatePendingContinuation(_ byte: UInt8) throws {
+      if continuationBytes > 0, byte < minimumContinuation || byte > maximumContinuation {
+        throw LexicalFailure.encoding
+      }
     }
 
     func validateEnd() throws {
