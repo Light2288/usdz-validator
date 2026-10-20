@@ -20,7 +20,8 @@ let package = Package(
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
-    .testTarget(name: "USDZValidationTests", dependencies: ["USDZValidation"]),
+    .target(name: "TestSupport", path: "Tests/TestSupport"),
+    .testTarget(name: "USDZValidationTests", dependencies: ["USDZValidation", "TestSupport"]),
   ],
   swiftLanguageModes: [.v6]
 )

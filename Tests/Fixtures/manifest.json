@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "uvk-original-usda-package-v1",
+      "path": "Tests/Fixtures/valid-usda.usdz",
+      "kind": "generated-asset",
+      "purpose": "Valid small aligned, stored, CRC-correct USDA package with a safe existing original PNG reference.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "ffbb1f0aabab7dee1b7b85250b7ab53684385bfcf089de1bd2b53189ac500184",
+      "recipe": "Call Fixtures.validUSDA(): root.usda first from Sources/root.usda, Sources/pixel.png second from its committed source. ArchiveRecipe uses 64-byte payload alignment, classic single-disk ZIP, stored method, fixed DOS date 1980-01-01 and independent CRC-32. No downloads or product readers.",
+      "history": [
+        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+      ],
+      "generator": {
+        "name": "TestSupport.Fixtures and ArchiveRecipe",
+        "version": "1",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-original-root-usda-v1",
+      "path": "Tests/Fixtures/Sources/root.usda",
+      "kind": "source",
+      "purpose": "Original USDA scene with one Scope and an asset attribute referencing Sources/pixel.png.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "c331d1a4a83a7b773a30c9f14745c1888006393b6140574a57d41388011ed1bb",
+      "recipe": "Author the committed UTF-8 LF text beginning #usda 1.0 with defaultPrim Fixture and asset preview = @Sources/pixel.png@. This file is the canonical source for Fixtures.validUSDA().",
+      "history": [
+        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+      ]
+    },
+    {
+      "id": "uvk-original-pixel-png-v1",
+      "path": "Tests/Fixtures/Sources/pixel.png",
+      "kind": "generated-asset",
+      "purpose": "Original complete 1x1 RGBA PNG with one blue pixel, not a magic-only header.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "d9451b904b2edb40a72851e0821fe014d011581a727da96d2297cf3402301f3a",
+      "recipe": "Call Fixtures.pixelPNG(): PNG signature; IHDR 1x1 8-bit RGBA; IDAT zlib stored block containing filter byte 0 and RGBA 0x33,0x99,0xcc,0xff with Adler-32; IEND. PNG chunk CRCs use independent ArchiveRecipe.crc32.",
+      "history": [
+        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+      ],
+      "generator": {
+        "name": "TestSupport.Fixtures and ArchiveRecipe",
+        "version": "1",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-archive-recipe-generator-v1",
+      "path": "Tests/TestSupport/ArchiveRecipe.swift",
+      "kind": "generator",
+      "purpose": "Independent deterministic test-only classic ZIP writer and controlled malformed-record mutations.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "cdc899104f14f9ddecee4d0cc48d74eec0edaaa2da5c315482e50f4c6b70364a",
+      "recipe": "Compile the committed Swift 6 source with Foundation only. Construct ordered ArchiveRecipe.Entry values and call encode() or encodeWithLayout(). Inputs select raw names, payload, type, flags, method, declared sizes/CRC, extra fields and fixed-header patches; offsets support deterministic byte mutations. Temporary recipes supply large/adversarial cases; no large committed assets.",
+      "history": [
+        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+      ]
+    },
+    {
+      "id": "uvk-fixtures-generator-v1",
+      "path": "Tests/TestSupport/Fixtures.swift",
+      "kind": "generator",
+      "purpose": "Original PNG generator, reproducible USDA archive composition and temporary fixture write support.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "78a524ee0139066cf39aa39c46a6907a0a6eb4beaa4746e2db22c2851c0e949a",
+      "recipe": "Compile the committed Swift 6 source with Foundation and ArchiveRecipe.swift only. Invoke pixelPNG() and validUSDA() as recorded by the generated assets. Fixtures.root resolves committed canonical sources from this source file; write(_:basename:in:) writes caller-provided data only to the requested basename.",
+      "history": [
+        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+      ]
+    }
+  ]
+}
