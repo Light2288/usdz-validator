@@ -248,6 +248,62 @@ final class ZIPDirectoryTests: XCTestCase {
     XCTAssertTrue(result.findings.isEmpty)
   }
 
+  func testPayloadZIP64SentinelWithoutPlacementDoesNotDisplaceRealEndRecord() throws {
+    var payload = Data(repeating: 0x41, count: 100)
+    let baseline = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: payload)
+    ]).encodeWithLayout()
+    let original = try inspect(baseline.bytes)
+    XCTAssertNotNil(original.directory)
+    XCTAssertTrue(original.findings.isEmpty)
+    XCTAssertEqual(baseline.entries[0].payload, 64)
+    XCTAssertEqual(baseline.endRecord, 219)
+    XCTAssertEqual(baseline.bytes.count, 241)
+    let fakeEnd = try ArchiveRecipe(
+      entries: [],
+      endRecordPatches: [
+        .uint16(at: 8, .max), .uint16(at: 20, 155),
+      ]
+    ).encode()
+    payload.replaceSubrange(0..<22, with: fakeEnd)
+    // The only sentinel is in content; independent re-encoding updates both CRCs.
+    let encoding = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: payload)
+    ]).encodeWithLayout()
+    let result = try inspect(encoding.bytes)
+    XCTAssertNotNil(result.directory)
+    XCTAssertEqual(result.directory?.endRecordOffset, 219)
+    XCTAssertEqual(result.directory?.records.count, 1)
+    XCTAssertTrue(result.findings.isEmpty)
+  }
+
+  func testPayloadMarkersWithoutCentralFramingDoNotEstablishEndRecordIdentity() throws {
+    for patches: [ArchiveRecipe.HeaderPatch] in [
+      [.uint32(at: 16, .max)],
+      [.uint32(at: 12, .max), .uint32(at: 16, 64)],
+      [.uint16(at: 10, .max), .uint32(at: 16, 64)],
+      [.uint16(at: 10, .max), .uint32(at: 12, 46), .uint32(at: 16, 18)],
+      [
+        .uint16(at: 4, 1), .uint16(at: 8, 1), .uint16(at: 10, 1),
+        .uint32(at: 12, 46), .uint32(at: 16, 18),
+      ],
+    ] {
+      let fakeEnd = try ArchiveRecipe(
+        entries: [],
+        endRecordPatches: patches + [.uint16(at: 20, 155)]
+      ).encode()
+      var payload = Data(repeating: 0x41, count: 100)
+      payload.replaceSubrange(0..<22, with: fakeEnd)
+      let encoding = try ArchiveRecipe(entries: [
+        .init(nameBytes: Data("root.usda".utf8), payload: payload)
+      ]).encodeWithLayout()
+      let result = try inspect(encoding.bytes)
+      XCTAssertNotNil(result.directory)
+      XCTAssertEqual(result.directory?.endRecordOffset, 219)
+      XCTAssertTrue(result.findings.isEmpty)
+    }
+  }
+
   func testZIP64LocatorCannotBeHiddenByCopiedDirectoryAndCommentEOCD() throws {
     let original = try recipe().encodeWithLayout()
     let copiedDirectory = original.bytes.subdata(in: original.centralDirectory..<original.endRecord)

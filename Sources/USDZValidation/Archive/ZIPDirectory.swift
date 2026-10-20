@@ -191,7 +191,6 @@ struct ZIPDirectory {
   private static func endRecord(in tail: Data, offset: UInt64, reader: BoundedReader) throws -> Int?
   {
     var fallback: Int?
-    var uncertain: UInt64?
     for index in 0...(tail.count - 22) {
       guard u32(tail, index) == 0x0605_4b50,
         index + 22 + Int(u16(tail, index + 20)) == tail.count
@@ -204,17 +203,22 @@ struct ZIPDirectory {
       let sentinel = u16(tail, index + 8) == .max || count == .max || size == .max || start == .max
       let locator = try zip64Locator(before: position, tail: tail, offset: offset, reader: reader)
       let directoryEnd = locator ?? position
+      let unsupported =
+        sentinel || locator != nil || u16(tail, index + 4) != 0
+        || u16(tail, index + 6) != 0
       // A marker in the search tail may belong to a member's bytes. Prefer it only
       // after directory placement is supported, including the locator's physical gap.
       let classicRange =
         start != .max && size != .max
         && UInt64(start) + UInt64(size) == directoryEnd
       let countFits = count == .max || UInt64(count) * 46 <= UInt64(size)
-      if classicRange && countFits && (count != 0 || (start == 0 && size == 0)) {
-        if let uncertain { throw Failure.unsupported("ambiguousEndRecord", uncertain) }
+      let emptyAtStart = start == 0 && size == 0 && directoryEnd == 0
+      if classicRange && countFits && (count != 0 || emptyAtStart)
+        && (!unsupported || emptyAtStart)
+      {
         return index
       }
-      if sentinel || locator != nil {
+      if unsupported {
         // A missing ZIP64 field is never a real classic offset/size. For candidate
         // identity only, derive the missing boundary from the other bounded field
         // and check central record framing without interpreting ZIP64 contents.
@@ -230,12 +234,9 @@ struct ZIPDirectory {
           try directoryFramingFits(
             reader: reader, start: framingStart, end: directoryEnd, count: count)
         {
-          if let uncertain { throw Failure.unsupported("ambiguousEndRecord", uncertain) }
           return index
         }
-        // Preserve uncertainty rather than reporting a later comment mapping as
-        // supported when an earlier ZIP64 interpretation could not be placed.
-        if uncertain == nil { uncertain = position }
+        // Failed placement leaves no evidence that the marker belongs to archive metadata.
       }
     }
     return fallback
@@ -245,7 +246,8 @@ struct ZIPDirectory {
     reader: BoundedReader, start: UInt64, end: UInt64,
     count: UInt16
   ) throws -> Bool {
-    guard start <= end, end - start <= SafetyResource.centralDirectoryBytes.limit,
+    // Framing establishes identity only by validating at least one actual central header.
+    guard start < end, end - start <= SafetyResource.centralDirectoryBytes.limit,
       count == .max || UInt64(count) <= SafetyResource.entryCount.limit
     else { return false }
     var cursor = start
