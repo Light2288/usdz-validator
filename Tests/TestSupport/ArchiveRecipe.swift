@@ -9,7 +9,8 @@ public struct ArchiveRecipe: Sendable {
     case symbolicLink = 0o120777
   }
 
-  /// Offset is relative to the fixed header (30 local, 46 central, 22 end bytes).
+  /// Offset is relative to the selected fixed header (30 local, 46 central, 22 end bytes)
+  /// or to the payload for a content patch.
   public struct HeaderPatch: Sendable {
     public var offset: Int
     public var bytes: Data
@@ -46,6 +47,7 @@ public struct ArchiveRecipe: Sendable {
     public var centralComment: Data
     public var localHeaderPatches: [HeaderPatch]
     public var centralHeaderPatches: [HeaderPatch]
+    public var payloadPatches: [HeaderPatch]
 
     public init(
       nameBytes: Data, payload: Data, type: EntryType = .regular,
@@ -53,7 +55,7 @@ public struct ArchiveRecipe: Sendable {
       declaredCompressedSize: UInt32? = nil, declaredUncompressedSize: UInt32? = nil,
       declaredCRC32: UInt32? = nil, localExtra: Data = Data(), centralExtra: Data = Data(),
       localHeaderPatches: [HeaderPatch] = [], centralHeaderPatches: [HeaderPatch] = [],
-      centralComment: Data = Data()
+      centralComment: Data = Data(), payloadPatches: [HeaderPatch] = []
     ) {
       self.nameBytes = nameBytes
       self.payload = payload
@@ -68,6 +70,7 @@ public struct ArchiveRecipe: Sendable {
       self.centralComment = centralComment
       self.localHeaderPatches = localHeaderPatches
       self.centralHeaderPatches = centralHeaderPatches
+      self.payloadPatches = payloadPatches
     }
   }
 
@@ -152,7 +155,10 @@ public struct ArchiveRecipe: Sendable {
       bytes.append(entry.nameBytes)
       bytes.append(extra)
       locations.append((start, start + 30, bytes.count))
-      bytes.append(entry.payload)
+      // Corrupt content after computing the independently recorded CRC and sizes.
+      var payload = entry.payload
+      try Self.apply(entry.payloadPatches, to: &payload)
+      bytes.append(payload)
     }
     bytes.append(bytesBeforeDirectory)
     let centralDirectory = bytes.count
