@@ -42,7 +42,7 @@ struct ZIPDirectory {
         tail.append(try reader.read(offset: position, count: count))
         position += UInt64(count)
       }
-      guard let endIndex = endRecord(in: tail, offset: tailOffset) else {
+      guard let endIndex = try endRecord(in: tail, offset: tailOffset, reader: reader) else {
         throw Failure.malformed("endRecord", nil)
       }
       let endOffset = tailOffset + UInt64(endIndex)
@@ -55,18 +55,10 @@ struct ZIPDirectory {
       let commentLength = u16(tail, endIndex + 20)
       // These markers change the meaning of classic counts/offsets. Recognize them
       // before testing classic range/count assumptions or their resource ceilings.
-      if endOffset >= 20 {
-        let locatorOffset = endOffset - 20
-        let locator: Data
-        if locatorOffset >= tailOffset {
-          locator = tail.subdata(
-            in: Int(locatorOffset - tailOffset)..<Int(locatorOffset - tailOffset + 4))
-        } else {
-          locator = try reader.read(offset: locatorOffset, count: 4)
-        }
-        if u32(locator, 0) == 0x0706_4b50 {
-          throw Failure.unsupported("zip64Locator", locatorOffset)
-        }
+      if let locator = try zip64Locator(
+        before: endOffset, tail: tail, offset: tailOffset, reader: reader)
+      {
+        throw Failure.unsupported("zip64Locator", locator)
       }
       if diskCount == .max || count == .max || directorySize == .max || directoryOffset == .max {
         throw Failure.unsupported("zip64EndRecord", endOffset)
@@ -196,34 +188,95 @@ struct ZIPDirectory {
     return sum
   }
 
-  private static func endRecord(in tail: Data, offset: UInt64) -> Int? {
+  private static func endRecord(in tail: Data, offset: UInt64, reader: BoundedReader) throws -> Int?
+  {
     var fallback: Int?
+    var uncertain: UInt64?
     for index in 0...(tail.count - 22) {
       guard u32(tail, index) == 0x0605_4b50,
         index + 22 + Int(u16(tail, index + 20)) == tail.count
       else { continue }
       if fallback == nil { fallback = index }
-      // An unsupported EOCD cannot be replaced by a later classic-looking record
-      // forged inside its comment. Its marker invalidates classic interpretation.
-      if u16(tail, index + 4) != 0 || u16(tail, index + 6) != 0
-        || u16(tail, index + 8) == .max || u16(tail, index + 10) == .max
-        || u32(tail, index + 12) == .max || u32(tail, index + 16) == .max
-      {
+      let position = offset + UInt64(index)
+      let count = u16(tail, index + 10)
+      let size = u32(tail, index + 12)
+      let start = u32(tail, index + 16)
+      let sentinel = u16(tail, index + 8) == .max || count == .max || size == .max || start == .max
+      let locator = try zip64Locator(before: position, tail: tail, offset: offset, reader: reader)
+      let directoryEnd = locator ?? position
+      // A marker in the search tail may belong to a member's bytes. Prefer it only
+      // after directory placement is supported, including the locator's physical gap.
+      let classicRange =
+        start != .max && size != .max
+        && UInt64(start) + UInt64(size) == directoryEnd
+      let countFits = count == .max || UInt64(count) * 46 <= UInt64(size)
+      if classicRange && countFits && (count != 0 || (start == 0 && size == 0)) {
+        if let uncertain { throw Failure.unsupported("ambiguousEndRecord", uncertain) }
         return index
       }
-      let count = u16(tail, index + 10)
-      let size = UInt64(u32(tail, index + 12))
-      let start = UInt64(u32(tail, index + 16))
-      // Validate candidate geometry so a signature embedded in a comment cannot
-      // displace a real bounded record. The fallback retains malformed/unsupported
-      // EOCD evidence when no classic mapping can be established.
-      if start + size == offset + UInt64(index), UInt64(count) * 46 <= size,
-        count != 0 || (start == 0 && size == 0)
-      {
-        return index
+      if sentinel || locator != nil {
+        // A missing ZIP64 field is never a real classic offset/size. For candidate
+        // identity only, derive the missing boundary from the other bounded field
+        // and check central record framing without interpreting ZIP64 contents.
+        let framingStart: UInt64?
+        if start != .max {
+          framingStart = UInt64(start)
+        } else if size != .max && UInt64(size) <= directoryEnd {
+          framingStart = directoryEnd - UInt64(size)
+        } else {
+          framingStart = nil
+        }
+        if let framingStart,
+          try directoryFramingFits(
+            reader: reader, start: framingStart, end: directoryEnd, count: count)
+        {
+          if let uncertain { throw Failure.unsupported("ambiguousEndRecord", uncertain) }
+          return index
+        }
+        // Preserve uncertainty rather than reporting a later comment mapping as
+        // supported when an earlier ZIP64 interpretation could not be placed.
+        if uncertain == nil { uncertain = position }
       }
     }
     return fallback
+  }
+
+  private static func directoryFramingFits(
+    reader: BoundedReader, start: UInt64, end: UInt64,
+    count: UInt16
+  ) throws -> Bool {
+    guard start <= end, end - start <= SafetyResource.centralDirectoryBytes.limit,
+      count == .max || UInt64(count) <= SafetyResource.entryCount.limit
+    else { return false }
+    var cursor = start
+    var records: UInt64 = 0
+    while cursor < end && records < SafetyResource.entryCount.limit {
+      guard end - cursor >= 46 else { return false }
+      let header = try reader.read(offset: cursor, count: 46)
+      guard u32(header, 0) == 0x0201_4b50 else { return false }
+      let length =
+        UInt64(46) + UInt64(u16(header, 28)) + UInt64(u16(header, 30))
+        + UInt64(u16(header, 32))
+      guard length <= end - cursor else { return false }
+      cursor += length
+      records += 1
+    }
+    return cursor == end && (count == .max || records == UInt64(count))
+  }
+
+  private static func zip64Locator(
+    before position: UInt64, tail: Data, offset: UInt64,
+    reader: BoundedReader
+  ) throws -> UInt64? {
+    guard position >= 20 else { return nil }
+    let locator = position - 20
+    let signature: UInt32
+    if locator >= offset {
+      signature = u32(tail, Int(locator - offset))
+    } else {
+      signature = u32(try reader.read(offset: locator, count: 4), 0)
+    }
+    return signature == 0x0706_4b50 ? locator : nil
   }
 
   private static func inspectExtras(reader: BoundedReader, start: UInt64, end: UInt64) throws

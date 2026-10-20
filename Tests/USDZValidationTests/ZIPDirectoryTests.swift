@@ -222,6 +222,53 @@ final class ZIPDirectoryTests: XCTestCase {
       rules: ["UVK-LIM-001"])
   }
 
+  func testPayloadUnsupportedEOCDCandidateDoesNotDisplaceRealEndRecord() throws {
+    var payload = Data(repeating: 0x41, count: 100)
+    let baseline = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: payload)
+    ]).encodeWithLayout()
+    XCTAssertEqual(baseline.entries[0].payload, 64)
+    XCTAssertEqual(baseline.endRecord, 219)
+    XCTAssertEqual(baseline.bytes.count, 241)
+    let fakeEnd = try ArchiveRecipe(
+      entries: [],
+      endRecordPatches: [
+        .uint16(at: 4, 1), .uint16(at: 20, 155),
+      ]
+    ).encode()
+    payload.replaceSubrange(0..<22, with: fakeEnd)
+    // Re-encoding independently updates both CRC declarations for the valid payload.
+    let encoding = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: payload)
+    ]).encodeWithLayout()
+    let result = try inspect(encoding.bytes)
+    XCTAssertNotNil(result.directory)
+    XCTAssertEqual(result.directory?.endRecordOffset, 219)
+    XCTAssertEqual(result.directory?.records.count, 1)
+    XCTAssertTrue(result.findings.isEmpty)
+  }
+
+  func testZIP64LocatorCannotBeHiddenByCopiedDirectoryAndCommentEOCD() throws {
+    let original = try recipe().encodeWithLayout()
+    let copiedDirectory = original.bytes.subdata(in: original.centralDirectory..<original.endRecord)
+    XCTAssertEqual(copiedDirectory.count, 55)
+    let fakeEnd = try ArchiveRecipe(
+      entries: [],
+      endRecordPatches: [
+        .uint16(at: 8, 1), .uint16(at: 10, 1),
+        .uint32(at: 12, 55), .uint32(at: 16, 166),
+      ]
+    ).encode()
+    var encoding = try recipe(comment: copiedDirectory + fakeEnd).encodeWithLayout()
+    encoding.bytes.insert(
+      contentsOf: Data([0x50, 0x4b, 0x06, 0x07]) + Data(repeating: 0, count: 16),
+      at: encoding.endRecord)
+    // Actual end record 144; copied comment directory 166..<221; forged end 221.
+    try assertRejected(encoding.bytes, rules: ["UVK-LIM-001"])
+    let result = try inspect(encoding.bytes)
+    XCTAssertEqual(result.findings.first?.evidence["reason"], .string("zip64Locator"))
+  }
+
   func testOperationalErrorsEscapeAndSharedReadBudgetIsEnforced() throws {
     let bytes = try recipe().encode()
     let failed = BoundedReader(size: UInt64(bytes.count), ledger: ResourceLedger()) { _, _ in
