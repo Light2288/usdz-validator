@@ -4,7 +4,7 @@ A local Swift library and CLI for repeatable USDZ packaging, package-local refer
 
 ## Build and run
 
-Supported runtime: macOS 15 or later on Apple Silicon (`arm64`). Minimum build baseline: Xcode 16.0, Swift tools 6.0, Swift 6 language mode. Intel and non-macOS execution are outside v0.1 support.
+Verified/supported v0.1 combination: macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64. Intended compatibility is macOS 15+ / Xcode 16.0 / Swift 6.0 on arm64, currently unverified; the package keeps its macOS 15 deployment and Swift 6 tools/language declarations. No automatic minimum or future support is promised. Intel and non-macOS execution are outside v0.1 support.
 
 ```sh
 swift build -c release --product usdz-validator
@@ -41,7 +41,7 @@ sh Scripts/test-cli.sh
 python3 Scripts/verify-examples.py --executable .build/release/usdz-validator
 ```
 
-The current observed environment is macOS 27.0.1 / Xcode 27.1 / Swift 6.4 on arm64. The macOS 15 / Xcode 16.0 / Swift 6.0 baseline and byte equivalence across those two hosts remain unobserved. A newer toolchain satisfying the minimum is not automatically a verified combination. [Recorded release resource measurements](docs/verification/resource-results.md) meet the 256 MiB RSS / 60-second targets for that corpus and host; they establish no universal memory guarantee. The opt-in installed-checker smoke test remains unobserved. Offline schema tooling has a separate CPython 3.12 development baseline, also unobserved; CPython 3.14.7 was observed. Setup and exact checks are in [Tools/README.md](Tools/README.md).
+Under the user-approved 2026-10-21 verification-policy amendment, current-host required gates must pass; unavailable minimum-target, cross-host and CPython 3.12 checks remain UNVERIFIED and are deferred follow-up, not v0.1 acceptance blockers. CPython 3.14.7 is the verified schema-tool environment; CPython 3.12 is intended and unverified. Repeated-run, relocation and fixed-adapter golden checks establish current-host determinism; no cross-host equality is claimed. The runner reports `currentHostStatus: PASS` for required current-environment verification and retains `releaseStatus: UNVERIFIED` for its broader optional matrix; failed current-host gates still block acceptance. See [the release matrix](docs/verification/release-matrix.md). [Recorded release resource measurements](docs/verification/resource-results.md) meet the 256 MiB RSS / 60-second targets for that corpus and host; they establish no universal memory guarantee. The opt-in installed-checker smoke test remains unobserved. Setup and exact schema checks are in [Tools/README.md](Tools/README.md).
 
 v0.1 excludes complete USD parsing, composition/conformance and binary-USDC dependency parsing; editing, repair, conversion, normalization, rendering and preview; GUI/web/backend services; exhaustive Quick Look, RealityKit, visionOS, geometry, material, shader, animation or visual-quality validation; general decompression, image pixel decoding and recursive nested inspection; untrusted tools, `usdcat` conversion, custom rule/resolver plugins; Intel/non-macOS and batch operation; hosted SARIF upload, an external hard sandbox, product fixture generation, and extra executable products.
 

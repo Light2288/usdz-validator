@@ -6,7 +6,7 @@
 **Date:** 2026-10-19
 **Provenance:** Original user request to start USDZ Validation Kit in this repository; repository and environment inspection on 2026-10-19; native interactive clarification and section-by-section design selections in this conversation. No legacy specification or implementation is a source.
 
-This document is proposed for explicit written-specification approval. Interactive design selections authorize this DRAFT; they do not constitute approval of this written artifact or of an implementation plan.
+**User-approved verification-policy amendment — 2026-10-21:** The user approved limiting v0.1 verified support and acceptance to the actually tested environment, deferring minimum-target, second-host byte comparison and Python 3.12 checks. AC-02, AC-22 and verification requirements below incorporate that amendment; all other criteria and non-goals remain binding. This is a documentation-only policy change, with no product or verification-runner behavior change. Historical discovery observations below remain facts from their original dates, not new test results.
 
 ## Problem
 
@@ -40,12 +40,12 @@ The following were checked directly, rather than inferred from the earlier envir
 | Tool versions | Both report `Apple USD Tools (0.25.11)` |
 | Checker interface | Installed help documents `--version`, `--strict`, `--rootPackageOnly`, `--out`, and `--arkit`; its ARKit help describes a RealityKit compatibility target as of 2023 |
 
-No remote fetch, dependency installation, build, or product test was performed during specification discovery. The supported baseline below is a requirement to verify during implementation, not a claim that this machine verified older systems.
+No remote fetch, dependency installation, build, or product test was performed during specification discovery. At discovery, the older baseline was a requirement to verify during implementation; the 2026-10-21 user-approved amendment below defers that requirement. These discovery observations do not verify older systems.
 
 ### User-selected design requirements
 
 - Native bounded Swift core; no linked OpenUSD dependency.
-- macOS 15+ with Swift 6.0+; Apple Silicon (`arm64`) only for v0.1.
+- Intended compatibility: macOS 15+ / Xcode 16.0 / Swift 6.0 on Apple Silicon (`arm64`), unverified until tested; verified v0.1 support is limited to the exact tested environment below.
 - Encoded texture sizes plus bounded PNG/JPEG dimension inspection.
 - Incomplete native coverage blocks the gate unless explicitly accepted.
 - The bounded CI-asset safety envelope and balanced warning budgets defined below.
@@ -77,9 +77,9 @@ The selected approach is the smallest design that preserves a useful reusable co
 
 ## Supported Platform and Package Boundary
 
-- Supported runtime: macOS 15 or later on Apple Silicon.
-- Minimum build baseline: Swift tools version 6.0, Swift 6 language mode, and Xcode 16.0. The observed Xcode 27.1 / Swift 6.4 combination is an additional required verification environment.
-- A future macOS or Swift release is not automatically a verified combination merely because it satisfies the minimum version.
+- Verified runtime/build combination: macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64. Only this actually tested combination is verified/supported for v0.1; no minimum or future combination is automatically supported.
+- Intended compatibility target: macOS 15 or later on Apple Silicon, Xcode 16.0, Swift tools version 6.0 and Swift 6 language mode. Preserve the package's macOS 15 deployment declaration and Swift 6 tools/language settings; they do not establish tested support. Older-target verification is UNVERIFIED and deferred follow-up, not a v0.1 acceptance blocker.
+- Development-only schema tooling is verified with CPython 3.14.7. CPython 3.12 remains an intended, unverified developer-tool target with verification deferred; no product Python runtime dependency is introduced.
 - Intel, Linux, Windows, iOS, and visionOS execution are outside v0.1 support. The package is a validator for assets used on spatial platforms, not an app running on those platforms.
 - Library product/module: `USDZValidation`.
 - Executable product: `usdz-validator`.
@@ -443,7 +443,7 @@ These are intended implementation/release checks, not commands already run in th
 1. **Unit tests:** checked binary reads, overflow/range handling, ZIP metadata consistency, exact path normalization, lexer states/escapes, budget boundaries/defaulting, stable identity/order, privacy escaping, and gate precedence.
 2. **Fixture integration tests:** valid aligned stored containers; malformed/truncated/overlapping records; CRC, compression/encryption, ZIP64/descriptors and unsupported encodings; unsafe paths, duplicate/type conflicts; text/binary layers; missing references; PNG/JPEG headers and unsupported dimensions. Assert both findings and check coverage.
 3. **CLI contract tests:** all formats, help/version/rules, every exit class, config rejection, stdout/stderr purity, report-file replacement safety, incomplete acceptance, and sensitive-detail opt-in. Run the built executable so build chatter cannot enter report snapshots.
-4. **Schema/golden tests:** versioned JSON and SARIF schema validation, native/external separation, catalogue snapshots, same default report bytes across repeated runs and directory relocation with basename preserved, stable native occurrence IDs across renaming, and stable output across supported baseline/current CI combinations. Schema validators are development-only; any such dependency is pinned and licensed and is not linked into the product library.
+4. **Schema/golden tests:** versioned JSON and SARIF schema validation, native/external separation, catalogue snapshots, same default report bytes across repeated runs and directory relocation with basename preserved, stable native occurrence IDs across renaming, and fixed-adapter-result golden comparisons on the verified current host. Cross-host comparison is deferred until a second qualifying environment exists; self-comparison proves only local integrity. Schema validators are development-only; any such dependency is pinned and licensed and is not linked into the product library.
 5. **Adversarial/resource tests:** deterministic bounded mutations and truncation of each parser surface; malformed ZIP/image/USDA data never crashes. Test every safety ceiling at/beyond the boundary. Instrument input reads and allocation-driving counts; measure release-mode native peak RSS on arm64. For the documented local-SSD resource host, the maximum-envelope native corpus must finish within 60 seconds per invocation and at or below 256 MiB peak RSS. Record hardware/OS/toolchain and measurements; do not turn variable timings into report fields.
 6. **Adapter tests:** use a test-only controlled process seam for missing/version/exit/timeout/output/deadlock cases; no arbitrary executable option in the public CLI. Run an explicitly enabled smoke test against the installed supported checker. A skipped real-tool smoke test must say skipped, never passed. All native tests must run with no USD tools installed or invoked.
 
@@ -470,12 +470,12 @@ CLI smoke examples using a future manifest-defined original valid USDA fixture:
 /usr/bin/time -l .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz
 ```
 
-The same test suites must cover Swift 6.0 / Xcode 16.0 / macOS 15 on arm64 and the observed Swift 6.4 / Xcode 27.1 / macOS 27.0.1 arm64 environment. Pin the selected CI toolchains explicitly. If the baseline cannot be exercised, report that gap and do not claim the support requirement verified. The implementation plan must place the schema, resource, and opt-in adapter checks into runnable test targets/commands; passing only the smoke examples is insufficient.
+Required v0.1 verification covers macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64, with CPython 3.14.7 for schema tooling. Record exact installed versions; passing smoke examples alone is insufficient. The implementation plan must place schema, resource and opt-in adapter checks into runnable targets/commands. Current-environment required gates must pass (`currentHostStatus: PASS`); failures still block acceptance. The runner's `releaseStatus: UNVERIFIED` remains an honest aggregate of the broader optional matrix, without changing its machine logic. Minimum-target, cross-host and CPython 3.12 rows stay UNVERIFIED and are deferred follow-up, not v0.1 acceptance blockers or support claims. When a second qualifying environment exists, use the same corpus, configuration, validator version and fixed external results for genuine cross-host comparison.
 
 ## Acceptance Criteria
 
 - **AC-01:** The Swift Package exposes `USDZValidation` and `usdz-validator`; a separate Swift test consumer can validate an asset without importing CLI code or invoking a process. Only the CLI has the Argument Parser dependency.
-- **AC-02:** Build and native tests pass on the specified arm64 baseline and observed current toolchain. Unsupported architectures/platforms are documented without a support claim.
+- **AC-02:** Build and native tests pass on the verified current host: macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64. Document macOS 15+ / Xcode 16.0 / Swift 6.0 arm64 as intended compatibility only, with baseline checks UNVERIFIED and deferred rather than required for v0.1 acceptance. Support claims cover only the actually tested combination; unsupported architectures/platforms and the absence of automatic minimum/future support are documented.
 - **AC-03:** A manifest-defined aligned, stored, CRC-correct USDA package with safe existing references and within budgets yields complete selected native coverage, no blocking findings, and exit `0` without any USD tool execution.
 - **AC-04:** Malformed signatures/lengths, truncation, overflow, inconsistent headers/directory metadata, overlap, and unindexed members produce the applicable stable error or established unsupported-boundary limitation without crashing or unsafe reads.
 - **AC-05:** Compressed/encrypted entries, unequal stored sizes, misalignment, and CRC mismatch produce their separate documented IDs. No decompression occurs, including for extreme declared ratios or zero-byte compressed-size claims.
@@ -495,7 +495,7 @@ The same test suites must cover Swift 6.0 / Xcode 16.0 / macOS 15 on arm64 and t
 - **AC-19:** Default error threshold, warning threshold, and incomplete acceptance behave exactly as specified. Safety failures and an unsuccessful requested checker never become exit `0` through `--allow-incomplete`.
 - **AC-20:** Text/JSON/SARIF contain equivalent result meaning. JSON/SARIF stdout parses as exactly one complete document with no logging; `--output` leaves stdout empty and does not truncate an existing destination on failure or overwrite the input/hard link/symlink.
 - **AC-21:** Versioned JSON reports/catalogues/configuration have checked-in schemas/examples and pass schema tests. SARIF validates as 2.1.0 and preserves categories, fingerprints, real byte locations, coverage, and distinct native/external runs.
-- **AC-22:** Same input/configuration/validator version and fixed external results produce identical report bytes. Default reports contain no timestamps, random IDs, host/user identifiers, absolute local paths, or raw external output.
+- **AC-22:** Same input/configuration/validator version and fixed external results produce identical report bytes. Default reports contain no timestamps, random IDs, host/user identifiers, absolute local paths, or raw external output. Prove repeated-run, relocation with basename preserved, fixed-adapter-result and independent golden equality on the verified current host. Two-host comparison remains UNVERIFIED and is deferred until a second qualifying environment exists; self-comparison must never be claimed as cross-host equality.
 - **AC-23:** With external checks disabled, no tool is probed or executed and all native tests remain usable without USD tools. Enabling the adapter leaves native findings/coverage unchanged.
 - **AC-24:** The adapter records availability, supported/unknown version, selected invocation policy, status, exit outcome, and separate finding provenance. Missing, unsupported, unsafe-skipped, failed-launch, timeout, and output-limit cases are explicit and never successful requested checks.
 - **AC-25:** The supported checker uses only the fixed trusted executable and argument-array invocation, with the specified version/validation/output limits. Tests demonstrate concurrent stream draining and bounded termination rather than a hung child/pipe.
@@ -547,4 +547,4 @@ Technical source boundaries used during design:
 
 The local repository had no prior specification candidates; this is the canonical new artifact at `docs/superpowers/specs/2026-10-19-usdz-validation-kit-design.md`.
 
-Only this DRAFT specification is authorized in this phase. Leave it uncommitted. Do not scaffold Swift, install dependencies, create product files, update `main`, create a branch/worktree, write the implementation plan, commit, push, or merge. Stop after self-review and request explicit approval of this written specification. An approved specification would be followed by a separately approved implementation plan in a later phase.
+Historical specification-phase boundary (2026-10-19, superseded by the recorded approvals and 2026-10-21 amendment): Only this DRAFT specification is authorized in this phase. Leave it uncommitted. Do not scaffold Swift, install dependencies, create product files, update `main`, create a branch/worktree, write the implementation plan, commit, push, or merge. Stop after self-review and request explicit approval of this written specification. An approved specification would be followed by a separately approved implementation plan in a later phase.

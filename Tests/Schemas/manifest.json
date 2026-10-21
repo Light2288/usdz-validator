@@ -350,7 +350,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "ae0404ca778198763c47f949658cdf98391b0ca17f2f287cd605f5d7db30f6e0",
+      "sha256": "f59e929d1ee553ce61ec7c8aa72673ce4e20b275c4e2b9cb35a9cf76ebbd0fe8",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",

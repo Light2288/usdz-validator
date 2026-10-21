@@ -4,7 +4,7 @@ The Swift products have no Python runtime dependency. These tools validate the c
 
 ## Setup and verification
 
-The chosen development baseline is **CPython 3.12 on macOS arm64**. A separately installed Python 3.12 is required to exercise it; it was **not available or tested** during this task. Current verification uses **CPython 3.14.7 on macOS arm64**. This is a development-tool choice, independent of the Swift 6.0 / Xcode 16.0 / macOS 15 product baseline. No Xcode-bundled Python version is assumed.
+**CPython 3.14.7 on macOS arm64** is the verified development-tool environment. **CPython 3.12 on macOS arm64** remains an intended, unverified target; it was **not available or tested**. Under the user-approved 2026-10-21 policy amendment, its absent matrix row stays UNVERIFIED and verification is deferred follow-up, not a v0.1 acceptance blocker. The Swift 6.0 / Xcode 16.0 / macOS 15 arm64 product target is likewise intended and unverified; only the exact tested combination in [the release matrix](../docs/verification/release-matrix.md) is verified/supported. No Xcode-bundled Python version or automatic minimum/future support is assumed.
 
 From the repository root:
 
@@ -16,7 +16,7 @@ swift test --filter GoldenCompatibilityTests
 .venv/bin/python -m unittest discover -s Tests -p 'test_schema_contracts.py'
 ```
 
-Installation may download only hash-locked artifacts; test execution downloads nothing. To test the development baseline, create the venv with an explicitly installed `python3.12 -m venv .venv` instead. Do not infer baseline success from wheel resolution. The lock covers universal Python wheels and the two macOS arm64 CPython 3.12 / 3.14 `rpds-py` wheels. Other interpreters/platforms require a reviewed lock extension.
+Installation may download only hash-locked artifacts; test execution downloads nothing. For deferred testing of the intended Python 3.12 target, create the venv with an explicitly installed `python3.12 -m venv .venv` instead. Do not infer baseline success from wheel resolution. The lock covers universal Python wheels and the two macOS arm64 CPython 3.12 / 3.14 `rpds-py` wheels. Other interpreters/platforms require a reviewed lock extension.
 
 To validate actual fixed Swift exports without changing golden files:
 
@@ -43,7 +43,7 @@ Its exact SHA-256 is `ad6db49878699b091f3eeb765b6e29e92a34bad4da88664d000c923b54
 
 ## Dependency lock reproduction
 
-Exact graph: `jsonschema==4.25.1` (MIT, Python >=3.9), `attrs==26.1.0` (MIT, >=3.9), `jsonschema-specifications==2025.9.1` (MIT, >=3.9), `referencing==0.37.0` (MIT, >=3.10), `rpds-py==2026.9.1` (MIT, >=3.11), and `typing_extensions==4.15.0` (PSF-2.0, >=3.9) only when Python <3.13, as required by referencing. The full PSF distribution license is retained verbatim, including its historical notices. These satisfy the selected development baseline and current interpreter. Distribution license texts were read from each wheel and retained in `NOTICE`. Exact artifact URLs and hashes appear in the schema manifest's `dependencyArtifacts`; each locally computed SHA-256 was also matched against the published PyPI version JSON metadata.
+Exact graph: `jsonschema==4.25.1` (MIT, Python >=3.9), `attrs==26.1.0` (MIT, >=3.9), `jsonschema-specifications==2025.9.1` (MIT, >=3.9), `referencing==0.37.0` (MIT, >=3.10), `rpds-py==2026.9.1` (MIT, >=3.11), and `typing_extensions==4.15.0` (PSF-2.0, >=3.9) only when Python <3.13, as required by referencing. The full PSF distribution license is retained verbatim, including its historical notices. Their declared Python floors permit the intended Python 3.12 target and verified CPython 3.14.7; metadata and wheel selection do not establish execution on Python 3.12. Distribution license texts were read from each wheel and retained in `NOTICE`. Exact artifact URLs and hashes appear in the schema manifest's `dependencyArtifacts`; each locally computed SHA-256 was also matched against the published PyPI version JSON metadata.
 
 To reproduce the reviewed lock without silently upgrading its graph:
 
