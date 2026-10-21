@@ -1,6 +1,6 @@
 # USDZ Validation Kit 0.1.0 release summary
 
-**Unreleased; documentation reviewed and approved by the maintainer on 2026-10-22 under the approved current-host verification policy.** The final release-candidate command exited 0 with **20/20 gates PASS**: 19 required current-host gates and the requested installed-checker smoke. No product behavior changed in this follow-up.
+**Release documentation prepared on 2026-10-22; the v0.1.0 tag and GitHub release publication are pending.** The maintainer reviewed and approved the documentation on 2026-10-22 under the approved current-host verification policy. The final release-candidate command exited 0 with **20/20 gates PASS**: 19 required current-host gates and the requested installed-checker smoke. No product behavior changed in this follow-up.
 
 ## What v0.1 provides
 
@@ -43,6 +43,6 @@ Exit 0 means the configured gate accepted the observed result; `--allow-incomple
 
 ## Review state
 
-Branch: `feat/usdz-validation-kit-v0-1`. Product HEAD: `5729bad6b6832934751c179696248bea969c4ba9`, with 38 conventional commits. The original `main` was unborn and the remote empty; implementation was bootstrapped with `git switch --orphan feat/usdz-validation-kit-v0-1` before the approved documents and implementation were committed. No base/main history was invented, and no worktree was created.
+Implementation branch: `feat/usdz-validation-kit-v0-1`. Reviewed product commit: `5729bad6b6832934751c179696248bea969c4ba9`, with 38 conventional commits. The original `main` was unborn and the remote empty; implementation was bootstrapped with `git switch --orphan feat/usdz-validation-kit-v0-1` before the approved documents and implementation were committed. No base/main history was invented, and no worktree was created.
 
-All AC-01 through AC-30 and final product specification/quality reviews were previously recorded as PASS on that exact product commit. This follow-up changes Markdown documentation and generated resource observations only; source, tests, scripts, schemas, dependency lock, specification and plan are unchanged. The maintainer reviewed and approved the documentation on 2026-10-22 and authorized its commit on the existing branch. No tag, push, merge or publication was performed. Publication remains a separate maintainer action.
+All AC-01 through AC-30 and final product specification/quality reviews were previously recorded as PASS on that exact product commit. The verification follow-up changed Markdown documentation and generated resource observations only; source, tests, scripts, schemas, dependency lock, specification and plan are unchanged. The maintainer approved the documentation on 2026-10-22; implementation and verification documentation were subsequently merged into `main` in [PR #1](https://github.com/Light2288/usdz-validator/pull/1), merge commit `c6e98baaaa8524f669a6807eb5bb3340bb92ed33`. This release-preparation change dates the changelog and updates status wording only. Creating the v0.1.0 tag and publishing the GitHub release remain separate maintainer actions.

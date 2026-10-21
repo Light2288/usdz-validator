@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-10-22
 
 - Local macOS arm64 Swift library `USDZValidation` and one-file `usdz-validator` CLI.
 - Bounded stored-ZIP, lexical USDA package-reference and encoded-byte/texture-header checks, with explicit coverage gaps and fixed safety ceilings.
