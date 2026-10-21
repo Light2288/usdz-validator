@@ -122,7 +122,11 @@ enum CommandDriver {
     do {
       let data = try ReportEncoder.encode(report, format: ReportFormat(rawValue: options.format)!)
       try streams.stdout(data)
-    } catch { return diagnostic("report output failed", code: 3, streams: streams) }
+    } catch {
+      return diagnostic(
+        "report output failed", code: deliveryFailureCode(preserving: report.exitCode),
+        streams: streams)
+    }
     if let failure {
       switch failure {
       case .operational(let reason):
@@ -141,7 +145,15 @@ enum CommandDriver {
     do {
       try streams.stderr(Data("error: \(message).\n".utf8))
       return code
-    } catch { return 3 }
+    } catch { return deliveryFailureCode(preserving: code) }
+  }
+
+  private static func deliveryFailureCode(preserving code: Int32) -> Int32 {
+    // Invocation/configuration and internal failures outrank secondary delivery failures.
+    switch code {
+    case 64, 70: return code
+    default: return 3
+    }
   }
 
   private static func readConfiguration(_ url: URL) throws -> Data {

@@ -139,6 +139,124 @@ final class CLIArgumentTests: XCTestCase {
           stdout: { _ in throw WriteFailure() }, stderr: { _ in throw WriteFailure() }),
         validate: { _, _ in throw WriteFailure() }), 3)
   }
+  func testFailedDiagnosticPreservesInvocationAndConfigurationPrecedence() throws {
+    struct WriteFailure: Error {}
+    for arguments in [
+      ["validate"], ["validate", "/missing/input", "--config", "/explicit/config"],
+    ] {
+      let code = CommandDriver.run(
+        arguments: arguments,
+        streams: CLIStreams(
+          stdout: { _ in XCTFail("No report for invalid invocation/config") },
+          stderr: { _ in throw WriteFailure() }), loadConfiguration: { _ in Data("{}".utf8) },
+        validate: { _, _ in
+          XCTFail("No validation")
+          throw WriteFailure()
+        })
+      XCTAssertEqual(code, 64, "\(arguments)")
+    }
+    XCTAssertEqual(
+      CommandDriver.run(
+        arguments: ["validate", "/missing/input"],
+        streams: CLIStreams(
+          stdout: { _ in XCTFail("No configuration report") }, stderr: { _ in throw WriteFailure() }
+        ), validate: { _, _ in throw USDZValidation.ValidationError.configuration(.invalidBudget) }),
+      64)
+  }
+
+  func testInternalFailurePrecedesFailedReportOrDiagnosticDelivery() throws {
+    struct WriteFailure: Error {}
+    struct UnexpectedFailure: Error {}
+    let configuration = try ValidationConfiguration()
+    let url = URL(fileURLWithPath: "/missing/input")
+    let validators: [(URL, ValidationConfiguration) throws -> ValidationReport] = [
+      { _, _ in throw USDZValidation.ValidationError.internalFailure(.invariantViolation) },
+      { _, _ in throw UnexpectedFailure() },
+      { _, _ in
+        ValidationReport(
+          failure: .internalFailure(.invariantViolation), fileAt: url, configuration: configuration)
+      },
+      { _, _ in
+        ValidationReport(
+          input: ReportInput(displayName: "input", byteSize: nil), configuration: configuration,
+          coverage: Coverage(areas: [:]), nativeFindings: [], internalFailure: true)
+      },
+    ]
+    for (index, validator) in validators.enumerated() {
+      for failsStdout in [false, true] {
+        for failsStderr in [false, true] {
+          let streams = CLIStreams(
+            stdout: { _ in if failsStdout { throw WriteFailure() } },
+            stderr: { _ in if failsStderr { throw WriteFailure() } })
+          XCTAssertEqual(
+            CommandDriver.run(
+              arguments: ["validate", url.path, "--format", "json"], streams: streams,
+              validate: validator), 70,
+            "validator \(index), failed stdout \(failsStdout), failed stderr \(failsStderr)")
+        }
+      }
+    }
+  }
+
+  func testReportEncodingFailurePreservesInternalPrecedence() throws {
+    struct WriteFailure: Error {}
+    let finding = Finding(
+      ruleID: "UVK-PATH-004", occurrenceID: "id", category: .policy, severity: .error,
+      message: "Unsafe paths.", evidence: ["/private/a": .integer(1), "/private/b": .integer(2)],
+      location: nil, provenance: .native(validatorVersion: ValidatorVersion.current))
+    for internalFailure in [false, true] {
+      let report = ValidationReport(
+        input: ReportInput(displayName: "input", byteSize: nil),
+        configuration: try ValidationConfiguration(), coverage: Coverage(areas: [:]),
+        nativeFindings: [finding], internalFailure: internalFailure)
+      XCTAssertEqual(report.exitCode, internalFailure ? 70 : 1)
+      for format in ["json", "sarif"] {
+        XCTAssertThrowsError(
+          try ReportEncoder.encode(report, format: ReportFormat(rawValue: format)!)
+        ) { error in
+          XCTAssertEqual(
+            error as? USDZValidation.ValidationError, .operational(.reportEncodingFailed))
+        }
+        for failsStderr in [false, true] {
+          let code = CommandDriver.run(
+            arguments: ["validate", "/missing/input", "--format", format],
+            streams: CLIStreams(
+              stdout: { _ in XCTFail("Encoding must finish before output") },
+              stderr: { _ in if failsStderr { throw WriteFailure() } }),
+            validate: { _, _ in report })
+          XCTAssertEqual(
+            code, internalFailure ? 70 : 3,
+            "\(format), internal \(internalFailure), failed stderr \(failsStderr)")
+        }
+      }
+    }
+  }
+
+  func testOutputFailureOverridesAssetFindingAndCoverageGap() throws {
+    struct WriteFailure: Error {}
+    let finding = Finding(
+      ruleID: "UVK-ARC-001", occurrenceID: "id", category: .archiveSpecification, severity: .error,
+      message: "Malformed archive.", evidence: [:], location: nil,
+      provenance: .native(validatorVersion: ValidatorVersion.current))
+    for findings in [[finding], []] {
+      let report = ValidationReport(
+        input: ReportInput(displayName: "input", byteSize: nil),
+        configuration: try ValidationConfiguration(),
+        coverage: Coverage(areas: [
+          .references: CoverageAreaResult(requested: true, state: .partial, reasons: [])
+        ]), nativeFindings: findings)
+      XCTAssertEqual(report.exitCode, findings.isEmpty ? 2 : 1)
+      for failsStderr in [false, true] {
+        XCTAssertEqual(
+          CommandDriver.run(
+            arguments: ["validate", "/missing/input", "--format", "json"],
+            streams: CLIStreams(
+              stdout: { _ in throw WriteFailure() },
+              stderr: { _ in if failsStderr { throw WriteFailure() } }),
+            validate: { _, _ in report }), 3)
+      }
+    }
+  }
   func testBoundedConfigurationRejectsSpecialFilesWithoutBlocking() throws {
     let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
