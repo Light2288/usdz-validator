@@ -146,6 +146,42 @@
       "history": [
         "2026-10-21: Original MIT helper added for Task 20 process-level stream and exit contracts."
       ]
+    },
+    {
+      "id": "uvk-mutation-recipes-v1",
+      "path": "Tests/TestSupport/MutationRecipes.swift",
+      "kind": "generator",
+      "purpose": "Bounded deterministic adversarial ZIP/USDA/PNG/JPEG integration corpus; malformed/unsupported labels apply only to explicit supported oracles, while arbitrary bit flips and truncations assert safety and determinism.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "8279f9327afe31a41c136411d4739ec900f38624c3324da9c101fc07702f5880",
+      "recipe": "Compile committed Swift 6 MutationRecipes.swift with Foundation, ArchiveRecipe.swift, Fixtures.swift and ImageRecipes.swift. Call MutationRecipes.cases(seed: 0x55564B01). Exactly 251 stable IDs with per-case bytes, recipe and oracle: ZIP 121, USDA 50, PNG 37, JPEG 43. Structural cuts are at each listed field boundary and immediately before it, de-duplicated and sorted. Local-record cuts retain CD/EOCD and rebase the directory offset; directory cuts retain EOCD with adjusted size, ensuring the intended reader is reached. Local name/extra 65535 declarations cross the validated directory boundary. USDA token boundaries include comments/strings and single/triple asset delimiters; content mutations rebuild ZIP sizes/CRC so payload scanners remain eligible. PNG IHDR and JPEG SOF header-only vectors come from ImageRecipes and never certify image or scene validity. Fixed signature/length/range/metadata/namespace/token mutations are explicit in source. LCG64 wraps state = state * 6364136223846793005 + 1442695040888963407, in ZIP/USDA/PNG/JPEG order; each surface receives exactly 16 single-bit flips, byte offset = (state >> 16) % source.count and bit = (state >> 48) & 7. The fixed seed controls only these 64 flips. Reproduction writes only input.usdz inside a temporary test directory; no extraction, external tool or network access. Run sh Scripts/test-adversarial.sh.",
+      "history": [
+        "2026-10-21: Original MIT bounded 251-case corpus added for Task 23. Existing readers pass the corrected oracle corpus; no demonstrated production defect."
+      ],
+      "corpus": {
+        "seed": "0x55564B01",
+        "caseCount": 251,
+        "classificationCounts": {
+          "malformed": 24,
+          "unsupported": 7,
+          "invariants": 220
+        },
+        "classification": "MutationCase.oracle records each case label. Malformed labels require the named error rule. Unsupported labels require the named validatorLimitation warning, incomplete coverage and no error. Unlabeled cuts and seeded bit flips have no invented semantic expectation.",
+        "unsupportedOracles": {
+          "zip.target.zip64": "Central compressed-size ZIP64 sentinel: UVK-LIM-001.",
+          "zip.target.descriptor": "Descriptor flag in both headers: UVK-LIM-001.",
+          "usda.target.template": "UDIM template token: UVK-LIM-003.",
+          "usda.target.bom": "Recognized UTF-8 BOM USDA header: UVK-LIM-004.",
+          "jpeg.target.unsupported-sof": "SOF3 outside supported frame subset: UVK-LIM-005.",
+          "jpeg.target.unknown-marker": "Unsupported TEM marker syntax: UVK-LIM-005.",
+          "jpeg.target.deferred-height": "Supported SOF0 Y=0 with valid width/components needs later DNL: UVK-LIM-005."
+        },
+        "counterScope": "Existing BoundedReader/ResourceLedger instrument a supplemental real-parser composition pass for each case. The separate public Validator/NativeEngine run is repeated and compared but its private ledger is not exposed. Source reads stay in archive/member ranges, at most 65536 bytes per read and min(1207959552, 8 * case archive bytes) cumulatively. Entry/finding/message/evidence limits are asserted; no new product seam."
+      }
     }
   ]
 }
