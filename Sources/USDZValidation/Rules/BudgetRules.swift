@@ -5,7 +5,8 @@ import Foundation
 enum BudgetRules {
   static func evaluate(
     archiveBytes: UInt64, entries: [ZIPEntry], dimensions: [UInt64: TextureDimensions],
-    configuration: ValidationConfiguration, diagnostics: NativeDiagnostics
+    configuration: ValidationConfiguration, diagnostics: NativeDiagnostics,
+    knownRegularFileCount: UInt64? = nil
   ) {
     let budgets = configuration.budgets
     compare(
@@ -49,7 +50,7 @@ enum BudgetRules {
       }
     }
     var aggregateChecks: [Comparison] = [
-      ("fileCount", "UVK-BUD-003", fileCount, budgets.fileCount)
+      ("fileCount", "UVK-BUD-003", knownRegularFileCount ?? fileCount, budgets.fileCount)
     ]
     if let totalTextureBytes {
       aggregateChecks.append(

@@ -45,9 +45,16 @@ enum NativeEngine {
         namespaceReasons[offset] = reason
       }
     }
+    let knownRegularFileCount = UInt64(index.entries.lazy.filter { knownRegular($0) }.count)
     let budgetEntries = index.entries.filter { knownRegular($0) && stored($0) }
     for entry in index.entries
     where !knownDirectory(entry) && (!knownRegular(entry) || !stored(entry)) {
+      guard
+        budgets.fileBytes != nil
+          || (!knownRegular(entry) && budgets.fileCount != nil)
+          || (isTexture(MemberClassifier.kind(nameBytes: entry.nameBytes))
+            && (budgets.textureBytes != nil || budgets.totalTextureBytes != nil))
+      else { continue }
       let reason: CoverageReason?
       if !knownRegular(entry) {
         reason =
@@ -73,7 +80,8 @@ enum NativeEngine {
       }
       BudgetRules.evaluate(
         archiveBytes: snapshot.size, entries: budgetEntries, dimensions: [:],
-        configuration: configuration, diagnostics: diagnostics)
+        configuration: configuration, diagnostics: diagnostics,
+        knownRegularFileCount: knownRegularFileCount)
       ProfileRules.evaluate(
         entries: index.entries, layerKinds: [:], profile: configuration.profile,
         diagnostics: diagnostics)
@@ -218,7 +226,8 @@ enum NativeEngine {
     }
     BudgetRules.evaluate(
       archiveBytes: snapshot.size, entries: budgetEntries, dimensions: dimensions,
-      configuration: configuration, diagnostics: diagnostics)
+      configuration: configuration, diagnostics: diagnostics,
+      knownRegularFileCount: knownRegularFileCount)
     diagnostics.complete(area: .byteBudgets)
     ProfileRules.evaluate(
       entries: index.entries, layerKinds: layerKinds, profile: configuration.profile,

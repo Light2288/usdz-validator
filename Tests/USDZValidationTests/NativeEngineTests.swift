@@ -5,6 +5,99 @@ import XCTest
 @testable import USDZValidation
 
 final class NativeEngineTests: XCTestCase {
+  func testRegularFileCountSurvivesUnavailableStorageAndUnsafeNamespace() throws {
+    let configuration = try ValidationConfiguration(
+      budgets: WarningBudgets(
+        archiveBytes: nil, fileBytes: nil, fileCount: 1, textureBytes: nil,
+        totalTextureBytes: nil, textureMaxDimension: nil))
+    for (flags, method): (UInt16, UInt16) in [(0, 8), (1, 0)] {
+      for unsafeNamespace in [false, true] {
+        let result = try inspect(
+          ArchiveRecipe(entries: [
+            layer("root.usda", "#usda 1.0\n"),
+            .init(
+              nameBytes: Data((unsafeNamespace ? "../sound.wav" : "sound.wav").utf8),
+              payload: Data("bytes".utf8), flags: flags, method: method),
+          ]).encode(), configuration: configuration)
+        let count = result.findings.first { $0.ruleID == "UVK-BUD-003" }
+        XCTAssertNotNil(count)
+        XCTAssertEqual(count?.evidence["observed"], .integer(2))
+        XCTAssertEqual(count?.evidence["threshold"], .integer(1))
+        XCTAssertEqual(result.coverage.areas[.byteBudgets]?.state, .complete)
+        XCTAssertTrue(
+          result.findings.contains { $0.ruleID == (method == 8 ? "UVK-ARC-004" : "UVK-ARC-005") })
+        XCTAssertEqual(result.coverage.areas[.containerStructure]?.state, .partial)
+        XCTAssertFalse(result.containerSafeForExternal)
+      }
+    }
+    let unknown = try inspect(
+      ArchiveRecipe(entries: [
+        layer("root.usda", "#usda 1.0\n"),
+        .init(
+          nameBytes: Data("sound.wav".utf8), payload: Data("bytes".utf8),
+          centralHeaderPatches: [.uint16(at: 4, 0x0b14)]),
+      ]).encode(), configuration: configuration)
+    XCTAssertFalse(unknown.findings.contains { $0.ruleID == "UVK-BUD-003" })
+    XCTAssertEqual(unknown.coverage.areas[.byteBudgets]?.state, .partial)
+  }
+
+  func testByteCoverageDependsOnEnabledApplicableInputs() throws {
+    let archiveOnly = try ValidationConfiguration(
+      budgets: WarningBudgets(
+        archiveBytes: 1, fileBytes: nil, fileCount: nil, textureBytes: nil,
+        totalTextureBytes: nil, textureMaxDimension: nil))
+    let textureOnly = try ValidationConfiguration(
+      budgets: WarningBudgets(
+        archiveBytes: nil, fileBytes: nil, fileCount: nil, textureBytes: 1,
+        totalTextureBytes: 1, textureMaxDimension: nil))
+    let fileOnly = try ValidationConfiguration(
+      budgets: WarningBudgets(
+        archiveBytes: nil, fileBytes: 1, fileCount: nil, textureBytes: nil,
+        totalTextureBytes: nil, textureMaxDimension: nil))
+    for (flags, method, unknown): (UInt16, UInt16, Bool) in [
+      (0, 8, false), (1, 0, false), (0, 0, true),
+    ] {
+      let unavailable = ArchiveRecipe.Entry(
+        nameBytes: Data("sound.wav".utf8), payload: Data("bytes".utf8),
+        flags: flags, method: method, centralHeaderPatches: unknown ? [.uint16(at: 4, 0x0b14)] : [])
+      let bytes = try ArchiveRecipe(entries: [
+        layer("root.usda", "#usda 1.0\n"), unavailable,
+        .init(nameBytes: Data("good.png".utf8), payload: Fixtures.pixelPNG()),
+      ]).encode()
+      let archive = try inspect(bytes, configuration: archiveOnly)
+      XCTAssertEqual(archive.coverage.areas[.byteBudgets]?.state, .complete)
+      XCTAssertTrue(archive.findings.contains { $0.ruleID == "UVK-BUD-001" })
+      let texture = try inspect(bytes, configuration: textureOnly)
+      XCTAssertEqual(texture.coverage.areas[.byteBudgets]?.state, .complete)
+      XCTAssertEqual(texture.findings.filter { $0.ruleID == "UVK-BUD-004" }.count, 1)
+      XCTAssertEqual(texture.findings.filter { $0.ruleID == "UVK-BUD-005" }.count, 1)
+      let file = try inspect(bytes, configuration: fileOnly)
+      XCTAssertEqual(file.coverage.areas[.byteBudgets]?.state, .partial)
+      XCTAssertEqual(file.findings.filter { $0.ruleID == "UVK-BUD-002" }.count, 2)
+      XCTAssertFalse(archive.containerSafeForExternal)
+      XCTAssertFalse(texture.containerSafeForExternal)
+      XCTAssertFalse(file.containerSafeForExternal)
+
+      var unavailableTexture = unavailable
+      unavailableTexture.nameBytes = Data("bad.png".utf8)
+      let applicable = try inspect(
+        ArchiveRecipe(entries: [
+          layer("root.usda", "#usda 1.0\n"),
+          unavailableTexture,
+        ]).encode(), configuration: textureOnly)
+      XCTAssertEqual(applicable.coverage.areas[.byteBudgets]?.state, .partial)
+      XCTAssertFalse(
+        applicable.findings.contains { $0.ruleID == "UVK-BUD-004" || $0.ruleID == "UVK-BUD-005" })
+    }
+    let directory = try inspect(
+      ArchiveRecipe(entries: [
+        layer("root.usda", "#usda 1.0\n"),
+        .init(nameBytes: Data("directory.png".utf8), payload: Data(), type: .directory),
+      ]).encode(), configuration: textureOnly)
+    XCTAssertEqual(directory.coverage.areas[.byteBudgets]?.state, .complete)
+    XCTAssertTrue(directory.findings.isEmpty)
+  }
+
   func testCompleteOriginalPackage() throws {
     let bytes = try Data(contentsOf: Fixtures.root.appendingPathComponent("valid-usda.usdz"))
     let result = try inspect(bytes)
