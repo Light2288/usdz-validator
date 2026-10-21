@@ -39,15 +39,15 @@ Fixture generation, CRC construction, corpus hashing, and report parsing are out
 
 | Case | Archive bytes | Elapsed s | Peak RSS bytes | Exit | Findings | Output bytes | Result |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| near-512-mib | 536870259 | 1.323 | 8519680 | 0 | 3 | 2992 | PASS |
-| 10000-entries | 1200021 | 0.298 | 17547264 | 0 | 1 | 2034 | PASS |
-| 16-mib-100000-tokens | 16777357 | 0.298 | 8372224 | 0 | 0 | 1666 | PASS |
-| header-1-mib | 1048836 | 0.074 | 8323072 | 0 | 0 | 1665 | PASS |
-| near-report-json | 102230 | 1.387 | 102219776 | 1 | 9990 | 27598046 | PASS |
-| near-report-sarif | 102230 | 1.441 | 105644032 | 1 | 9990 | 29251561 | PASS |
-| findings-truncation | 100161 | 0.458 | 37781504 | 1 | 10000 | 5804498 | PASS |
-| report-cap-json | 108234 | 1.719 | 207060992 | 3 | None | 5 | PASS |
-| report-cap-sarif | 108234 | 1.762 | 208715776 | 3 | None | 5 | PASS |
+| near-512-mib | 536870259 | 1.456 | 8716288 | 0 | 3 | 2992 | PASS |
+| 10000-entries | 1200021 | 0.309 | 17547264 | 0 | 1 | 2034 | PASS |
+| 16-mib-100000-tokens | 16777357 | 0.264 | 8372224 | 0 | 0 | 1666 | PASS |
+| header-1-mib | 1048836 | 0.085 | 8273920 | 0 | 0 | 1665 | PASS |
+| near-report-json | 102230 | 1.373 | 102318080 | 1 | 9990 | 27598046 | PASS |
+| near-report-sarif | 102230 | 1.413 | 105611264 | 1 | 9990 | 29251561 | PASS |
+| findings-truncation | 100161 | 0.488 | 37748736 | 1 | 10000 | 5804498 | PASS |
+| report-cap-json | 108234 | 1.726 | 207060992 | 3 | None | 5 | PASS |
+| report-cap-sarif | 108234 | 1.777 | 208683008 | 3 | None | 5 | PASS |
 
 ## Exact commands and corpus hashes
 
@@ -61,118 +61,118 @@ Reproduce: `swift build -c release` then `python3 Scripts/verify-resources.py --
     "case": "near-512-mib",
     "archive_bytes": 536870259,
     "corpus_sha256": "5391ada98fd8ea1bb3c1e06572940d8739709a82b47c2fbef096df8e50202a90",
-    "elapsed_seconds": 1.323,
-    "peak_rss_bytes": 8519680,
+    "elapsed_seconds": 1.456,
+    "peak_rss_bytes": 8716288,
     "exit": 0,
     "report_bytes": 2992,
     "findings": 3,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "10000-entries",
     "archive_bytes": 1200021,
     "corpus_sha256": "0da9b5eddeb0f1472a1d1a49e50940bb0996206e91908867a5dba417f23f15da",
-    "elapsed_seconds": 0.298,
+    "elapsed_seconds": 0.309,
     "peak_rss_bytes": 17547264,
     "exit": 0,
     "report_bytes": 2034,
     "findings": 1,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "16-mib-100000-tokens",
     "archive_bytes": 16777357,
     "corpus_sha256": "e69ae8a6582687100ab7e7d05ac86b59070572ba508578763a5ac0e5b89fa45f",
-    "elapsed_seconds": 0.298,
+    "elapsed_seconds": 0.264,
     "peak_rss_bytes": 8372224,
     "exit": 0,
     "report_bytes": 1666,
     "findings": 0,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "header-1-mib",
     "archive_bytes": 1048836,
     "corpus_sha256": "a5fc35449b2d7208e7d8008086ead89f49b5ad8054ba773014fd4eb36ab14e28",
-    "elapsed_seconds": 0.074,
-    "peak_rss_bytes": 8323072,
+    "elapsed_seconds": 0.085,
+    "peak_rss_bytes": 8273920,
     "exit": 0,
     "report_bytes": 1665,
     "findings": 0,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "near-report-json",
     "archive_bytes": 102230,
     "corpus_sha256": "cde6d03bb40f300f7374fc8382be6574951ba2d5ae97af4350c57ba571fe5bc4",
-    "elapsed_seconds": 1.387,
-    "peak_rss_bytes": 102219776,
+    "elapsed_seconds": 1.373,
+    "peak_rss_bytes": 102318080,
     "exit": 1,
     "report_bytes": 27598046,
     "findings": 9990,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "near-report-sarif",
     "archive_bytes": 102230,
     "corpus_sha256": "cde6d03bb40f300f7374fc8382be6574951ba2d5ae97af4350c57ba571fe5bc4",
-    "elapsed_seconds": 1.441,
-    "peak_rss_bytes": 105644032,
+    "elapsed_seconds": 1.413,
+    "peak_rss_bytes": 105611264,
     "exit": 1,
     "report_bytes": 29251561,
     "findings": 9990,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format sarif --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format sarif --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "findings-truncation",
     "archive_bytes": 100161,
     "corpus_sha256": "c77c5366d856aaa83c595ac76aa4becca403aabbedee8f5be3ae4689e48affe7",
-    "elapsed_seconds": 0.458,
-    "peak_rss_bytes": 37781504,
+    "elapsed_seconds": 0.488,
+    "peak_rss_bytes": 37748736,
     "exit": 1,
     "report_bytes": 5804498,
     "findings": 10000,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "report-cap-json",
     "archive_bytes": 108234,
     "corpus_sha256": "856c095bf0f2afcae13bde5d20173c5d7230759c691f244c36054699d78c2e94",
-    "elapsed_seconds": 1.719,
+    "elapsed_seconds": 1.726,
     "peak_rss_bytes": 207060992,
     "exit": 3,
     "report_bytes": 5,
     "findings": null,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format json --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   },
   {
     "case": "report-cap-sarif",
     "archive_bytes": 108234,
     "corpus_sha256": "856c095bf0f2afcae13bde5d20173c5d7230759c691f244c36054699d78c2e94",
-    "elapsed_seconds": 1.762,
-    "peak_rss_bytes": 208715776,
+    "elapsed_seconds": 1.777,
+    "peak_rss_bytes": 208683008,
     "exit": 3,
     "report_bytes": 5,
     "findings": null,
     "status": "PASS",
     "failures": [],
-    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/input.usdz --format sarif --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-64np07z7/report.out"
+    "command": "/usr/bin/time -l /Users/davide/Personal/Projects/usdz-validator/.build/out/Products/Release/usdz-validator validate /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/input.usdz --format sarif --output /var/folders/8q/t_gg45z912xghvjmct5p7kkr0000gn/T/uvk-resource-f65ulhdk/report.out"
   }
 ]
 ```

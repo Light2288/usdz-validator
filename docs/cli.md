@@ -88,6 +88,8 @@ Evaluate this table from top to bottom; the first applicable condition wins.
 
 `--fail-on warning` blocks warnings and errors; notes never block by severity. Coverage gaps affect completeness independently. `--allow-incomplete` accepts native gaps only: it does not change coverage or suppress findings, override selected warnings/hard safety errors, or accept an unsuccessful requested checker. A USDC reference gap can therefore have `validationStatus: incomplete`, `gateDecision: pass`, and `acceptedIncomplete: true`. Higher-priority failures retain all known coverage gaps.
 
+An otherwise correct binary-USDC package can return `2` under the default policy. In [five local Apple sample tests](verification/apple-assets.md), all originals had that native reference gap; the optional checker reported no failure on four and a material-subset failure on one. Explicitly accepting native incompleteness allowed the four to return `0`, while the external failure retained exit `1`.
+
 ## Optional installed checker
 
 Use `--usdchecker` only for trusted input. The installed tool's parsers/resolvers can access filesystem/network resources beyond the native package boundary; there is no external filesystem/network/RSS sandbox. Only `/usr/bin/usdchecker`, reporting exactly `Apple USD Tools (0.25.11)`, is supported. No PATH discovery, downloads, shell, arbitrary executable/arguments, or `usdcat` conversion is available.

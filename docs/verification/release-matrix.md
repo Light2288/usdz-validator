@@ -1,16 +1,16 @@
 # Manual release verification matrix
 
-**User-approved verification-policy amendment — 2026-10-21:** Required current-environment v0.1 verification is **PASS** from the observed 19/19 gates below. Verified/supported scope is only macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64, with CPython 3.14.7 schema tooling. This policy does not assert final Task 27 acceptance. macOS 15+ / Xcode 16.0 / Swift 6.0 arm64 and CPython 3.12 remain intended, unverified targets, without automatic minimum/future support. Their absent rows and genuine cross-host comparison are deferred follow-up, not v0.1 acceptance blockers. A successful current-host run does not verify the minimum baseline. No tag, publication, push or merge is authorized.
+**User-approved verification-policy amendment — 2026-10-21:** Required current-environment v0.1 verification is **PASS**. The latest release-candidate run passed all 19 required gates plus the requested installed-checker smoke, **20/20 gates** in total; see the fresh evidence below and the [release summary](release-summary.md). Verified/supported scope is only macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64, with CPython 3.14.7 schema tooling. macOS 15+ / Xcode 16.0 / Swift 6.0 arm64 and CPython 3.12 remain intended, unverified targets, without automatic minimum/future support. Their absent rows and genuine cross-host comparison are deferred follow-up, not v0.1 acceptance blockers. A successful current-host run does not verify the minimum baseline. Publication remains for the maintainer after documentation review; no tag, publication, push or merge was performed by this verification.
 
 | Evidence scope | Designated combination | Status | Observed evidence |
 | --- | --- | --- | --- |
-| Required current host (AC-02) | macOS 27.0.1 build 26A434, Xcode 27.1 build 27A9275, Swift 6.4 swiftlang-6.4.0.34.1, arm64 | PASS | 2026-10-21: exact `make release-verify` exit 0; all 19 local required gates passed. |
+| Required current host (AC-02) | macOS 27.0.1 build 26A434, Xcode 27.1 build 27A9275, Swift 6.4 swiftlang-6.4.0.34.1, arm64 | PASS | 2026-10-21: release-candidate command below exited 0; all 19 required gates and requested smoke passed. |
 | Deferred intended minimum host | macOS 15, Xcode 16.0, Swift 6.0, arm64 | UNVERIFIED | Host unavailable; no build or test result observed. |
 | Deferred cross-host canonical bytes/native IDs (AC-22) | Same fixture/configuration/validator manifests and fixed external results | UNVERIFIED | No baseline exports; comparison has not run on two hosts. |
 | Deferred intended schema-tool target | CPython 3.12, macOS arm64, committed hash lock | UNVERIFIED | Interpreter unavailable; CPython 3.14.7 cannot establish this row. |
 | Required schema tooling | CPython 3.14.7, macOS arm64, committed hash lock | PASS | Original current-host schema self-test and contract tests passed with this interpreter; no CPython 3.12 execution is claimed. |
-| Native resources (AC-15) | Documented current arm64 internal-SSD host, release binary | PASS | Eight resource tests with real-size opt-in and no skips; nine independent release measurements, maximum RSS 208,732,160 bytes and maximum elapsed 1.815 seconds. |
-| Installed checker smoke | Explicit opt-in; Apple USD Tools (0.25.11) | SKIPPED | Not requested. Fixed fake checker tests remain required. |
+| Native resources (AC-15) | Documented current arm64 internal-SSD host, release binary | PASS | Eight resource tests with real-size opt-in and no skips; nine fresh independent release measurements, maximum RSS 208,683,008 bytes and maximum elapsed 1.777 seconds. |
+| Installed checker smoke | Explicit opt-in; Apple USD Tools (0.25.11) | PASS | Release-candidate run: one test, zero failures/skips; adapter completed. The tiny fixture's checker outcome was `failureReported`; the test asserts completion, not fixture conformance. [Five separate local asset tests](apple-assets.md) cover both outcomes. |
 
 Follow [the exact procedure](../releasing.md) on the verified host, and on a second qualifying host when available for deferred follow-up. Preserve `summary.json`, environment capture, stdout/stderr logs, original dependency lock, compatibility manifest, all 73 exports and 13 reviewed documents, and resource results. Record the actual `DEVELOPER_DIR`, OS/build, Xcode/build, Swift target, formatter, Python, hardware and storage; an unpinned “latest” row is not evidence. Current-host formatter lint remains authoritative; the baseline builds/tests without rewriting formatting. Resource acceptance is tied to [the measured internal-SSD host](resource-results.md).
 
@@ -85,3 +85,41 @@ Evidence SHA-256:
 The runner captures release executable SHA-256 `30c1b8d069495c3940cffdaefaaf1cd4792d156fc7d88f20d6ed70d1c7faaea4` before the later `swift test -c release` build. That build relinks the same executable path (see `logs/release-test.stderr`); the final measured executable SHA-256 is `f54fc70f44c3f9d5cfef7c3a8cddca34123e439c43799965ed82cae9698f7ffe`, also independently confirmed against the current file and the supported 412-byte reproduction. Both observed hashes remain preserved without rewriting the runner summary.
 
 Final machine statuses: `currentHostStatus: PASS`, `releaseStatus: UNVERIFIED`, `matrix.current: PASS`; baseline, crossHost and python312 stay `UNVERIFIED`; installed checker smoke stays `SKIPPED` because it was not requested. These observations apply the existing amended policy and do not establish deferred environments or final Task 27 acceptance.
+
+
+## Release-candidate verification with installed checker — 2026-10-21
+
+Command (exit **0**):
+
+```sh
+sh Scripts/verify-release.sh --installed-checker-smoke --evidence-dir .build/verification/release-candidate
+```
+
+All **20/20 gates PASS**: the 19 required current-host gates plus the explicitly requested installed-checker smoke. The runner's genuine `summary.json` records `currentHostStatus: PASS`, `matrix.current: PASS`, and `installedCheckerSmoke.status: PASS`. `releaseStatus: UNVERIFIED` and the baseline, crossHost and python312 rows remain unchanged and honest; no deferred environment was tested.
+
+The environment was captured again: macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`, target `arm64-apple-macosx27.0.0`) / arm64; CPython 3.14.7 for runner and hash-locked schema venv; formatter `main`; `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`, no inherited override; Mac17,6 Apple M5 Max, 38,654,705,664 bytes memory, internal APFS/Apple Fabric SSD.
+
+| Fresh observed check | Result |
+| --- | --- |
+| Format, dependency resolution and immutable lock, debug/release builds | PASS; lock unchanged. |
+| Debug, release and Address Sanitizer full suites | Each: 237 cases, zero failures, seven explicit optional skips. Dedicated CLI/resource/smoke gates exercise those opt-in paths. |
+| Isolated CLI process contracts | 20 tests, zero failures/skips. |
+| Schema self-test, schema contracts, verifier-tool tests | Nine tests each, zero failures/skips. |
+| Examples and golden exports | Five commands; one compatibility test; 73 exports plus 13 reviewed documents, 86 documents bound to 75 inputs and four configurations. PASS. |
+| Real-size resources | Eight tests, zero failures/skips. Nine independent measured native cases PASS; maximum RSS **208,683,008 bytes**, maximum elapsed **1.777 seconds**, within 268,435,456 bytes / 60 seconds. |
+| Installed checker smoke | One test, zero failures/skips; Apple USD Tools (0.25.11), `status=completed`, `outcome=failureReported` for the tiny fixture. This verifies adapter completion, not asset acceptance. |
+| Supplemental manual assets | [Five Apple originals and three damaged copies](apple-assets.md); separate checker successes and a material-subset failure confirmed from authored data. These private samples are not ordinary-suite prerequisites or redistributed fixtures. |
+
+Evidence remains in `.build/verification/release-candidate/`: environment, full command/status records, separate stdout/stderr logs, immutable lock snapshot, exports, reviewed documents, compatibility manifest, copied resource measurements and an index of private local-asset evidence. Old `current`, `amended` and `final-fix` runs remain intact. No summary was copied, fabricated or relabeled from an earlier run.
+
+| Evidence file | SHA-256 |
+| --- | --- |
+| `summary.json` | `58fa427340c1da4fa0d7b9aaf463c68277a3b5e295801a9d62531f53dc116e59` |
+| `compatibility-manifest.json` | `cbc9e674636356d0461234e97a558717e9901eb482cd3bea2a7c1dd85345f217` |
+| `resource-results.md` | `eb00c18cf71b1450f25f305ab6feb7d9bb4ee12b17f4f6a81a37d0f31707c58a` |
+| Unchanged `Package.resolved` | `eaf09ea422bb561945aac9d7e4192f0d051d7c647e3cb1eb7ffa8d4f57b9b937` |
+| Final measured release executable | `f54fc70f44c3f9d5cfef7c3a8cddca34123e439c43799965ed82cae9698f7ffe` |
+
+The runner's pre-release-test executable snapshot is `30c1b8d069495c3940cffdaefaaf1cd4792d156fc7d88f20d6ed70d1c7faaea4`. As in the earlier run, `swift test -c release` subsequently relinks the executable; the resource report binds the final measured hash above. The original runner summary is preserved unchanged. Source, tests, schemas and dependency lock are unchanged from product commit `5729bad6b6832934751c179696248bea969c4ba9`; this follow-up updates documentation and measured resource observations only. The earlier final product specification/quality reviews remain historical evidence for that commit. At the end of this verification run, documentation awaited maintainer review and no commit, tag, push, merge or publication had been performed. The maintainer subsequently approved the documentation and authorized its commit on 2026-10-22; publication remains separate.
+
+Focused checks after the documentation update: the five executable examples pass again, all nine changed/new Markdown files have valid local links and heading fragments, and `git diff --check` passes. `python3 Scripts/compare-compatibility.py .build/verification/final-fix .build/verification/release-candidate` exited 0 with 86 exact matching documents. This compares two preserved runs on the same host; it does not establish the deferred cross-host row. The extra check logs and final documentation hashes are retained beside the genuine release-run evidence, separately from its unchanged 20-step summary.

@@ -49,7 +49,9 @@ Installed checker smoke is optional and never runs by default. To request it exp
 sh Scripts/verify-release.sh --evidence-dir .build/verification/with-smoke --installed-checker-smoke
 ```
 
-This additionally runs `UVK_RUN_INSTALLED_CHECKER=1 swift test --filter InstalledCheckerSmokeTests`. Its logs record the exact observed version, status and outcome; unavailable or unsupported tools are `SKIPPED`, never passed. A failed requested test fails the run. Real external results depend on the installed version and remain separate from compatibility exports, which use fixed fake checker results.
+This additionally runs `UVK_RUN_INSTALLED_CHECKER=1 swift test --filter InstalledCheckerSmokeTests`. Its logs record the exact observed version, status and outcome; unavailable or unsupported tools are `SKIPPED`, never passed. A failed requested test fails the run. The smoke test asserts adapter completion, not acceptance of its tiny fixture: `outcome=failureReported` can coexist with a passing smoke test. [Local Apple asset verification](verification/apple-assets.md) records separate successful and failing asset results. Real external results depend on the installed version and remain separate from compatibility exports, which use fixed fake checker results.
+
+The latest [release summary](verification/release-summary.md) separates current-host acceptance, external asset results and deferred environments. Keep the version unreleased until the maintainer reviews the documentation and explicitly publishes it; verification does not commit, tag, push, merge or upload a release.
 
 For deferred cross-host follow-up, once a second qualifying environment exists, copy only the complete evidence directories from the two hosts to a comparison machine. They contain 73 actual fixed Swift exports, exact copies of the 13 reviewed documents, and a compatibility manifest binding fixture/source/configuration/validator versions, file hashes and native occurrence IDs. The manifest checks the reviewed input hashes and never changes expectations. Do not edit the copied exports or manifests. Compare them with:
 
