@@ -17,6 +17,8 @@ final class NativeDiagnostics {
   private var findingsTruncated = false
   private var reasonsTruncated = false
 
+  var processingTruncated: Bool { findingsTruncated || reasonsTruncated }
+
   // String's equality normalizes Unicode. Identity must compare the original bytes instead.
   private struct Identity: Hashable {
     let ruleID: Data
@@ -152,6 +154,12 @@ final class NativeDiagnostics {
     }
     reasons.append((area, boundedReason))
     reasonIdentities.insert(identity)
+  }
+
+  /// Successful orchestration completes only areas with no established stop or gap.
+  func complete(area: CoverageArea) {
+    guard requestedAreas.contains(area), !markedAreas.contains(area) else { return }
+    states[area] = .complete
   }
 
   func finish() -> ([Finding], Coverage) {

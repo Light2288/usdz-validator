@@ -97,14 +97,14 @@ enum USDLayer {
     }
   }
 
-  private static func hasTextHeader(_ bytes: Data) -> Bool {
+  static func hasTextHeader(_ bytes: Data) -> Bool {
     let magic = Data("#usda 1.0".utf8)
     guard bytes.starts(with: magic) else { return false }
     guard bytes.count > magic.count else { return true }
     return [0x0a, 0x0d, 0x20, 0x09].contains(bytes[bytes.startIndex + magic.count])
   }
 
-  private static func hasUnsupportedTextHeader(_ bytes: Data) -> Bool {
+  static func hasUnsupportedTextHeader(_ bytes: Data) -> Bool {
     let bom = Data([0xef, 0xbb, 0xbf])
     if bytes.starts(with: bom), hasTextHeader(Data(bytes.dropFirst(3))) { return true }
     // Recognition of the same header in UTF-16/32 is deliberately not transcoding a layer.

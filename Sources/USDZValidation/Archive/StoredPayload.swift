@@ -7,6 +7,60 @@ enum StoredPayload {
     -> Bool
   {
     let location = FindingLocation(archiveByteOffset: entry.payloadRange.lowerBound)
+    let contentEligible = checkMetadata(entry: entry, diagnostics: diagnostics)
+    do {
+      // Repeat per-entry eligibility at this boundary, even for direct internal callers.
+      // Aggregate declarations belong to ZIPDirectory, which sees the whole archive.
+      guard reader.size <= SafetyResource.archiveBytes.limit else {
+        throw InspectionFailure.resourceLimit(.archiveBytes)
+      }
+      guard entry.compressedSize <= SafetyResource.entryBytes.limit,
+        entry.uncompressedSize <= SafetyResource.entryBytes.limit
+      else { throw InspectionFailure.resourceLimit(.entryBytes) }
+      guard contentEligible else { return false }
+      let payload = entry.payloadRange
+      guard payload.upperBound <= reader.size,
+        payload.upperBound - payload.lowerBound == entry.compressedSize,
+        entry.recordRange.lowerBound == entry.localHeaderOffset,
+        entry.headerRange.lowerBound == entry.recordRange.lowerBound,
+        entry.headerRange.upperBound == payload.lowerBound,
+        entry.recordRange.upperBound == payload.upperBound
+      else { throw InspectionFailure.malformedRange }
+      var crc = StreamingCRC32()
+      var offset = payload.lowerBound
+      while offset < payload.upperBound {
+        let count = Int(min(SafetyResource.readChunkBytes.limit, payload.upperBound - offset))
+        crc.update(try reader.read(offset: offset, count: count))
+        // Subtraction above proves this addition cannot wrap or leave the payload range.
+        offset += UInt64(count)
+      }
+      guard crc.value == entry.crc32 else {
+        emit(
+          "UVK-ARC-003", entry: entry, diagnostics: diagnostics,
+          message: "The stored payload CRC does not match its recorded value.", reason: "crc32",
+          evidence: [
+            "recordedCRC32": .integer(Int64(entry.crc32)),
+            "observedCRC32": .integer(Int64(crc.value)),
+          ])
+        return false
+      }
+      return entry.payloadRange.lowerBound % 64 == 0
+    } catch let failure as InspectionFailure {
+      switch failure {
+      case .resourceLimit(let resource): diagnostics.limit(resource, location: location)
+      case .malformedRange, .shortRead:
+        emit(
+          "UVK-ARC-001", entry: entry, diagnostics: diagnostics,
+          message: "The stored payload range is malformed or truncated.", reason: "payloadRead")
+      }
+      return false
+    }
+  }
+
+  /// Metadata-only prerequisite checks for text-size preflight. Alignment remains
+  /// a known finding even when a processing ceiling forbids the later CRC read.
+  /// A true result permits CRC work; it does not establish alignment or integrity.
+  static func checkMetadata(entry: ZIPEntry, diagnostics: NativeDiagnostics) -> Bool {
     var stored = true
     if entry.method != 0 || entry.compressedSize != entry.uncompressedSize {
       emit(
@@ -36,53 +90,7 @@ enum StoredPayload {
         "UVK-ARC-006", entry: entry, diagnostics: diagnostics,
         message: "The regular-file payload is not 64-byte aligned.", reason: "alignment")
     }
-    do {
-      // Repeat per-entry eligibility at this boundary, even for direct internal callers.
-      // Aggregate declarations belong to ZIPDirectory, which sees the whole archive.
-      guard reader.size <= SafetyResource.archiveBytes.limit else {
-        throw InspectionFailure.resourceLimit(.archiveBytes)
-      }
-      guard entry.compressedSize <= SafetyResource.entryBytes.limit,
-        entry.uncompressedSize <= SafetyResource.entryBytes.limit
-      else { throw InspectionFailure.resourceLimit(.entryBytes) }
-      guard stored, regular else { return false }
-      let payload = entry.payloadRange
-      guard payload.upperBound <= reader.size,
-        payload.upperBound - payload.lowerBound == entry.compressedSize,
-        entry.recordRange.lowerBound == entry.localHeaderOffset,
-        entry.headerRange.lowerBound == entry.recordRange.lowerBound,
-        entry.headerRange.upperBound == payload.lowerBound,
-        entry.recordRange.upperBound == payload.upperBound
-      else { throw InspectionFailure.malformedRange }
-      var crc = StreamingCRC32()
-      var offset = payload.lowerBound
-      while offset < payload.upperBound {
-        let count = Int(min(SafetyResource.readChunkBytes.limit, payload.upperBound - offset))
-        crc.update(try reader.read(offset: offset, count: count))
-        // Subtraction above proves this addition cannot wrap or leave the payload range.
-        offset += UInt64(count)
-      }
-      guard crc.value == entry.crc32 else {
-        emit(
-          "UVK-ARC-003", entry: entry, diagnostics: diagnostics,
-          message: "The stored payload CRC does not match its recorded value.", reason: "crc32",
-          evidence: [
-            "recordedCRC32": .integer(Int64(entry.crc32)),
-            "observedCRC32": .integer(Int64(crc.value)),
-          ])
-        return false
-      }
-      return aligned
-    } catch let failure as InspectionFailure {
-      switch failure {
-      case .resourceLimit(let resource): diagnostics.limit(resource, location: location)
-      case .malformedRange, .shortRead:
-        emit(
-          "UVK-ARC-001", entry: entry, diagnostics: diagnostics,
-          message: "The stored payload range is malformed or truncated.", reason: "payloadRead")
-      }
-      return false
-    }
+    return stored && regular
   }
 
   /// Applicability only: Task 8 owns authoritative namespace/type diagnostics.
