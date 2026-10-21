@@ -11,7 +11,10 @@ public enum ReportEncoder {
       var buffer = CappedBuffer()
       try CanonicalJSON.encode(JSONReport.value(report), into: &buffer)
       return buffer.finish()
-    case .sarif: throw ValidationError.operational(.reportEncodingFailed)
+    case .sarif:
+      var buffer = CappedBuffer()
+      try CanonicalJSON.encode(SARIFReport.value(report), into: &buffer)
+      return buffer.finish()
     }
   }
 
