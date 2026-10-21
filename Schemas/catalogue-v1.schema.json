@@ -1,0 +1,83 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "tool": {
+      "$ref": "urn:usdz-validation-kit:report:1#/$defs/tool"
+    },
+    "profile": {
+      "$ref": "urn:usdz-validation-kit:report:1#/$defs/profile"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleID": {
+            "type": "string",
+            "minLength": 1
+          },
+          "family": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "container",
+                  "references",
+                  "budgets"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
+            "$ref": "urn:usdz-validation-kit:report:1#/$defs/category"
+          },
+          "defaultSeverity": {
+            "$ref": "urn:usdz-validation-kit:report:1#/$defs/severity"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "applicability": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "ruleID",
+          "family",
+          "category",
+          "defaultSeverity",
+          "title",
+          "description",
+          "applicability",
+          "rationale"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "tool",
+    "profile",
+    "rules"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:usdz-validation-kit:catalogue:1",
+  "title": "USDZ Validation Kit rule catalogue v1"
+}

@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "description": "Offline schema, independent expectations and reproducible provenance inventory. Hashes are reviewed bytes, never product-captured snapshots.",
+  "developmentPython": {
+    "baseline": {
+      "version": "3.12",
+      "platform": "macOS arm64",
+      "tested": false,
+      "note": "Separately installed interpreter required; unavailable during Task 22."
+    },
+    "current": {
+      "version": "3.14.7",
+      "platform": "macOS arm64"
+    }
+  },
+  "dependencyArtifacts": [
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "filename": "attrs-26.1.0-py3-none-any.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl",
+      "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+      "license": "MIT",
+      "requiresPython": ">=3.9"
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.25.1",
+      "filename": "jsonschema-4.25.1-py3-none-any.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/bf/9c/8c95d856233c1f82500c2450b8c68576b4cf1c871db3afac5c34ff84e6fd/jsonschema-4.25.1-py3-none-any.whl",
+      "sha256": "3fba0169e345c7175110351d456342c364814cfcf3b964ba4587f22915230a63",
+      "license": "MIT",
+      "requiresPython": ">=3.9"
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1",
+      "filename": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+      "license": "MIT",
+      "requiresPython": ">=3.9"
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0",
+      "filename": "referencing-0.37.0-py3-none-any.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl",
+      "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+      "license": "MIT",
+      "requiresPython": ">=3.10"
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.9.1",
+      "filename": "rpds_py-2026.9.1-cp312-cp312-macosx_11_0_arm64.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/90/81/ac6a0d064982251856ce009c9e1dd51a34110b3c055aa7d1aad18b4899a3/rpds_py-2026.9.1-cp312-cp312-macosx_11_0_arm64.whl",
+      "sha256": "e21c1429e205828ea886a2293a4a2c8e01f4c25d9893ca330e97a6cf73f52e7b",
+      "license": "MIT",
+      "requiresPython": ">=3.11"
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.9.1",
+      "filename": "rpds_py-2026.9.1-cp314-cp314-macosx_11_0_arm64.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/04/37/b751de2b59b0197a1d92a5dd491de88e8a5e928c2e6562581974f1e85263/rpds_py-2026.9.1-cp314-cp314-macosx_11_0_arm64.whl",
+      "sha256": "3f0e9ac28fc067d4d34b88ae43c48e9489455c97fee9633d851f7eeed5a05d35",
+      "license": "MIT",
+      "requiresPython": ">=3.11"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "filename": "typing_extensions-4.15.0-py3-none-any.whl",
+      "sourceURL": "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl",
+      "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548",
+      "license": "PSF-2.0",
+      "requiresPython": ">=3.9",
+      "marker": "python_version < '3.13'"
+    }
+  ],
+  "literalRecipes": {
+    "json": {
+      "source": "Tools/README.md",
+      "marker": "uvk-json-recipe",
+      "license": "MIT",
+      "sha256": "37b829f581c42cb42d3e9c08c5e6c2db3ae2d0278e7d130d5338af8a5939802b"
+    },
+    "sarif": {
+      "source": "Tools/README.md",
+      "marker": "uvk-sarif-recipe",
+      "license": "MIT",
+      "sha256": "67c7e3307e2b8ac83bdaa89e6d554051bae8d3bd251979d75c61e3952c3edc30"
+    }
+  },
+  "entries": [
+    {
+      "path": "Examples/budgets.json",
+      "sha256": "9066e77f308ab776c57cadf451ea5ad2749e4b28ca85431ee9a75e86111cddd7",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "example",
+      "recipe": "Independently author schemaVersion 1 with six documented default warning budget values; indent 2, UTF-8 plus LF.",
+      "format": "budget-config"
+    },
+    {
+      "path": "Examples/catalogue-v1.json",
+      "sha256": "8ec4d6adf8e01222bb7a54043526440b94c8d3614b697d03e3268031232b6f41",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "example",
+      "recipe": "Exact copy of Tests/Goldens/rule-catalogue-v1.json.",
+      "format": "catalogue"
+    },
+    {
+      "path": "Examples/report-v1.json",
+      "sha256": "14aabbe083be68def1a0b590cc62b06513b54e1a8ef501cfc9160a20e0057407",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "example",
+      "recipe": "Independently project Tests/Goldens/report-complete-v1.json onto the committed complete USDA fixture: input.displayName valid-usda.usdz and input.byteSize 469; retain all other literal complete fields. Serialize sorted compact UTF-8 JSON plus LF. Verify, without regeneration, using .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz --format json. Fixture SHA-256: ffbb1f0aabab7dee1b7b85250b7ab53684385bfcf089de1bd2b53189ac500184.",
+      "format": "report"
+    },
+    {
+      "path": "Examples/report.sarif",
+      "sha256": "03c7d17a28e608b6583200e7677d4892408a992fb24ff528b217996d78c2ece2",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "example",
+      "recipe": "Independently project Tests/Goldens/native-v1.sarif onto the committed complete USDA fixture: artifact URI valid-usda.usdz and length 469; empty results; properties input/coverage/counts/status/gate/exit/acceptedIncomplete equal the complete JSON example; preserve all native descriptors, provenance, configuration and invocation. Serialize sorted compact UTF-8 JSON plus LF. Verify, without regeneration, using .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz --format sarif. Fixture SHA-256: ffbb1f0aabab7dee1b7b85250b7ab53684385bfcf089de1bd2b53189ac500184.",
+      "format": "sarif"
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "732f86f07f9bf8de6fa7482233e0bbb70598c72dbb3eadfd2c9f8ac351bb71f9",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT AND Apache-2.0 WITH Swift-exception AND LicenseRef-OASIS-SARIF-Document AND PSF-2.0",
+      "licenseText": "NOTICE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain complete OASIS published Notices and verbatim license texts extracted from all six pinned Python distributions; source URLs/artifact hashes are in this manifest. Also retain verbatim LICENSE.txt from apple/swift-argument-parser 1.5.0 resolved revision 41982a3656a71c768319979febd796c6fd111d5c (https://github.com/apple/swift-argument-parser/blob/41982a3656a71c768319979febd796c6fd111d5c/LICENSE.txt), Apache License 2.0 with Swift Runtime Library Exception; source copyright from its ArgumentParser sources. Preserve original project-contributor MIT attribution."
+    },
+    {
+      "path": "Schemas/budget-config-v1.schema.json",
+      "sha256": "dc59a5939f969cc55370635431f6880c821c56a50c0aba30bf4dd3a73c523d65",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "schema",
+      "recipe": "Project-authored Draft 2020-12 schema from the approved v1 contract and frozen model representation; retain declared required fields and enums, allow additive optional report/catalogue fields and future rule IDs, reject unknown budget configuration keys."
+    },
+    {
+      "path": "Schemas/catalogue-v1.schema.json",
+      "sha256": "82c47cc1ef1492006acb100a531d42ad76dd71e19aa1ffed754061c8b0049fd1",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "schema",
+      "recipe": "Project-authored Draft 2020-12 schema from the approved v1 contract and frozen model representation; retain declared required fields and enums, allow additive optional report/catalogue fields and future rule IDs, reject unknown budget configuration keys."
+    },
+    {
+      "path": "Schemas/report-v1.schema.json",
+      "sha256": "c43fa27fea0870c2d3b988da73545704370461cf1c943d60af02e857e189d1bd",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "schema",
+      "recipe": "Project-authored Draft 2020-12 schema from the approved v1 contract and frozen model representation; retain declared required fields and enums, allow additive optional report/catalogue fields and future rule IDs, reject unknown budget configuration keys."
+    },
+    {
+      "path": "Scripts/verify-schemas.py",
+      "sha256": "d6dbe2ae096e0b10940366f9f402c7dad727c249e4c35edf591dd65d4eb28c4f",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    },
+    {
+      "path": "Tests/Goldens/external-failure-v1.json",
+      "sha256": "7006665d66e862cd6002597947ceb0299b15d44bb3dd959bbfff9bf0dfef0ec0",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/external-failure-v1.sarif",
+      "sha256": "e2f4d107d18fb52f236b2ca55097d7463398f96d94adf89e0f0b60f211bcd5cd",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/external-success-v1.json",
+      "sha256": "8204edcbc5da01e89d908a49d6defcebc6fbdd2a400530e07c766015172a4e0d",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/external-unavailable-v1.sarif",
+      "sha256": "a4c274252d89c6606c0102660cbc5d35db5c8333878d8f934108d2c5eb25fb31",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/native-v1.sarif",
+      "sha256": "c9946e94246dfc32b5ffeaa57812c07c8513b081db22402c161d47663def52cb",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/report-complete-v1.json",
+      "sha256": "bf5871ec579d025a00db0e63b15b4b3c304406c2397f72fe6d44efa6e1e3e9e0",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-incomplete-v1.json",
+      "sha256": "afdfc9ee2539d69d57d8a76c749f0cd2938faf25d2c8aaa85f16af21df8f9bdf",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-operational-v1.json",
+      "sha256": "10d0ca37f516545250b6d32990228cb5032819121bf6f07cac2effe23bba1833",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/rule-catalogue-v1.json",
+      "sha256": "8ec4d6adf8e01222bb7a54043526440b94c8d3614b697d03e3268031232b6f41",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expected-document",
+      "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "format": "catalogue"
+    },
+    {
+      "path": "Tests/Schemas/sarif-2.1.0.schema.json",
+      "sha256": "ad6db49878699b091f3eeb765b6e29e92a34bad4da88664d000c923b549c3a25",
+      "source": "OASIS published SARIF 2.1.0 schema, verbatim bytes",
+      "author": "OASIS Open",
+      "license": "LicenseRef-OASIS-SARIF-Document",
+      "licenseText": "NOTICE",
+      "obligations": "Keep schema unmodified; retain complete copyright and Notices section.",
+      "sourceURL": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/schemas/sarif-schema-2.1.0.json",
+      "licenseSourceURL": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html",
+      "recipe": "Fetch sourceURL, verify exact SHA-256 and redistribution notice before copying; do not fetch during tests."
+    },
+    {
+      "path": "Tests/USDZValidationTests/GoldenCompatibilityTests.swift",
+      "sha256": "5ca5a6d844abdec556a9df5b27b99b9950f51aad051e3434baf142e8ba6aa844",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    },
+    {
+      "path": "Tests/test_schema_contracts.py",
+      "sha256": "152a067f2ebbce07bdad03feab34b75f21a8aa08ac92043acd56357d1da69660",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    },
+    {
+      "path": "Tools/README.md",
+      "sha256": "f59e929d1ee553ce61ec7c8aa72673ce4e20b275c4e2b9cb35a9cf76ebbd0fe8",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    },
+    {
+      "path": "Tools/requirements-schema.in",
+      "sha256": "44a9ec8489390a5467aad49fc15216a0ad37fbb827c3cc2e880d0c8183644274",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    },
+    {
+      "path": "Tools/requirements-schema.lock",
+      "sha256": "ab9fa0d9b5ed15f346803613c2d35a84f126885f8faddc94b6b5864d37840164",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "development-tool-or-notice",
+      "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "budgets": {
+    "archiveBytes": 104857600,
+    "fileBytes": 26214400,
+    "fileCount": 1000,
+    "textureBytes": 20971520,
+    "totalTextureBytes": 83886080,
+    "textureMaxDimension": 4096
+  }
+}

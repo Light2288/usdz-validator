@@ -1,0 +1,9 @@
+#usda 1.0
+(
+    defaultPrim = "Fixture"
+)
+
+def Scope "Fixture"
+{
+    asset preview = @Sources/pixel.png@
+}

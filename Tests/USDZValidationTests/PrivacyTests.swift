@@ -1,0 +1,121 @@
+import Foundation
+import XCTest
+
+@testable import USDZValidation
+
+final class PrivacyTests: XCTestCase {
+  func testAlphabeticCombiningMarksCannotConcealAbsoluteProsePaths() {
+    for value in [
+      "detail=\u{0345}/Users/fixture-owner/input",
+      "detail`\u{0345}/Users/fixture-owner/input",
+      "detail \"\u{0345}/Users/fixture-owner/input",
+    ] {
+      for kind: DisclosureKind in [.message, .evidence] {
+        XCTAssertEqual(
+          Privacy.render(value, kind: kind, sensitive: false), "[redacted path]", value)
+        XCTAssertEqual(Privacy.render(value, kind: kind, sensitive: true), value)
+      }
+    }
+    for relative in ["Textures/a\u{0345}/b.png", "Sources/\u{0345}texture.png"] {
+      for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+        XCTAssertEqual(Privacy.render(relative, kind: kind, sensitive: false), relative)
+      }
+    }
+  }
+
+  func testCombiningMarksCannotHideASCIIPathSyntax() {
+    XCTAssertEqual(
+      Privacy.render("/private/\u{0301}input.usdz", kind: .basename, sensitive: false),
+      "\u{0301}input.usdz")
+    XCTAssertEqual(
+      Privacy.render("C:\\private\\\u{0301}input.usdz", kind: .basename, sensitive: false),
+      "C:\\\\private\\\\\u{0301}input.usdz")
+    for path in [
+      "/\u{0301}Users/fixture-owner/input", "folder\\\u{0301}private/input",
+      "../\u{0301}fixture-owner/input", "folder/../\u{0301}fixture-owner/input",
+      "https:\u{0301}//fixture-owner/input", "C:\u{0301}private/input", "~\u{0301}private/input",
+    ] {
+      for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+        XCTAssertEqual(Privacy.render(path, kind: kind, sensitive: false), "[redacted path]", path)
+      }
+      for prefix in ["detail=\u{0301}", "detail`\u{0301}", "detail \"\u{0301}"] {
+        for kind: DisclosureKind in [.message, .evidence] {
+          XCTAssertEqual(
+            Privacy.render(prefix + path, kind: kind, sensitive: false), "[redacted path]",
+            prefix + path)
+        }
+      }
+    }
+    for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+      XCTAssertEqual(
+        Privacy.render("Sources/\u{0301}texture.png", kind: kind, sensitive: false),
+        "Sources/\u{0301}texture.png")
+      XCTAssertEqual(
+        Privacy.render("/\u{0301}Users/fixture-owner/input", kind: kind, sensitive: true),
+        "/\u{0301}Users/fixture-owner/input")
+    }
+  }
+
+  func testMacOSBasenamePreservesLiteralBackslash() {
+    for sensitive in [false, true] {
+      XCTAssertEqual(
+        Privacy.render("/Users/fixture-owner/a\\b.usdz", kind: .basename, sensitive: sensitive),
+        "a\\\\b.usdz")
+      XCTAssertEqual(
+        Privacy.render(
+          "/Users/fixture-owner/a\\\u{0301}b.usdz", kind: .basename, sensitive: sensitive),
+        "a\\\\\u{0301}b.usdz")
+      XCTAssertEqual(
+        Privacy.render(
+          "/Users/fixture-owner\\private/input.usdz", kind: .basename, sensitive: sensitive),
+        "input.usdz")
+    }
+    for kind: DisclosureKind in [.member, .reference] {
+      XCTAssertEqual(Privacy.render("a\\b.usda", kind: kind, sensitive: false), "[redacted path]")
+    }
+  }
+
+  func testMaliciousNamesAndDisclosure() throws {
+    let owner = "/Users/fixture-owner/"
+    XCTAssertEqual(
+      Privacy.render(owner + "a\u{001b}\n\u{202e}\u{0000}.usdz", kind: .basename, sensitive: false),
+      "a\\u{001B}\\n\\u{202E}\\u{0000}.usdz")
+    for value in [
+      owner + "secret.usda", "C:\\private\\secret.usda", "../secret.usda", "https://host/a",
+      "//host/a",
+    ] {
+      for kind: DisclosureKind in [.member, .reference, .path, .evidence, .message] {
+        XCTAssertFalse(Privacy.render(value, kind: kind, sensitive: false).contains(value))
+      }
+    }
+    for wrapped in [
+      "failed at `/Users/fixture-owner/input`", "failed: \u{001b}/Users/fixture-owner/input",
+      "failed at “/Users/fixture-owner/input”",
+    ] {
+      for kind: DisclosureKind in [.message, .evidence] {
+        XCTAssertFalse(
+          Privacy.render(wrapped, kind: kind, sensitive: false).contains("/Users/fixture-owner/"))
+      }
+    }
+    XCTAssertEqual(
+      Privacy.render("Sources/a.usda", kind: .member, sensitive: false), "Sources/a.usda")
+    XCTAssertEqual(
+      Privacy.render("read failed at " + owner + "input", kind: .error, sensitive: false),
+      "[redacted error]")
+    XCTAssertEqual(
+      Privacy.render("diagnostic " + owner, kind: .toolDetail, sensitive: false),
+      "[redacted tool detail]")
+    let detail = Privacy.render(
+      owner + "\u{001b}\n" + String(repeating: "😀", count: 2_000), kind: .toolDetail,
+      sensitive: true)
+    XCTAssertTrue(detail.hasPrefix(owner + "\\u{001B}\\n"))
+    XCTAssertFalse(detail.contains("\u{001b}"))
+    XCTAssertLessThanOrEqual(detail.utf8.count, 4_096)
+    XCTAssertTrue(detail.hasSuffix("[truncated]"))
+    let basename = Privacy.render(
+      owner + String(repeating: "x", count: 5_000), kind: .basename, sensitive: false)
+    XCTAssertFalse(basename.contains(owner))
+    XCTAssertEqual(basename.utf8.count, 4_096)
+    XCTAssertTrue(basename.hasSuffix("[truncated]"))
+  }
+}
