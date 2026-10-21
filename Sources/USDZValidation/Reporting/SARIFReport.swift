@@ -162,7 +162,7 @@ enum SARIFReport {
   private static func packageURI(_ displayName: String) -> String {
     // Encode original basename bytes: display escapes would identify a different artifact.
     let scalars = displayName.unicodeScalars
-    let separator = scalars.lastIndex { $0.value == 0x2f || $0.value == 0x5c }
+    let separator = scalars.lastIndex { $0.value == 0x2f }
     let start = separator.map { scalars.index(after: $0) } ?? scalars.startIndex
     let basename = Privacy.bounded(displayName[start...], bytes: 4_096)
     let hex = Array("0123456789ABCDEF".utf8)

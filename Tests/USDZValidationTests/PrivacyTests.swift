@@ -29,7 +29,7 @@ final class PrivacyTests: XCTestCase {
       "\u{0301}input.usdz")
     XCTAssertEqual(
       Privacy.render("C:\\private\\\u{0301}input.usdz", kind: .basename, sensitive: false),
-      "\u{0301}input.usdz")
+      "C:\\\\private\\\\\u{0301}input.usdz")
     for path in [
       "/\u{0301}Users/fixture-owner/input", "folder\\\u{0301}private/input",
       "../\u{0301}fixture-owner/input", "folder/../\u{0301}fixture-owner/input",
@@ -53,6 +53,25 @@ final class PrivacyTests: XCTestCase {
       XCTAssertEqual(
         Privacy.render("/\u{0301}Users/fixture-owner/input", kind: kind, sensitive: true),
         "/\u{0301}Users/fixture-owner/input")
+    }
+  }
+
+  func testMacOSBasenamePreservesLiteralBackslash() {
+    for sensitive in [false, true] {
+      XCTAssertEqual(
+        Privacy.render("/Users/fixture-owner/a\\b.usdz", kind: .basename, sensitive: sensitive),
+        "a\\\\b.usdz")
+      XCTAssertEqual(
+        Privacy.render(
+          "/Users/fixture-owner/a\\\u{0301}b.usdz", kind: .basename, sensitive: sensitive),
+        "a\\\\\u{0301}b.usdz")
+      XCTAssertEqual(
+        Privacy.render(
+          "/Users/fixture-owner\\private/input.usdz", kind: .basename, sensitive: sensitive),
+        "input.usdz")
+    }
+    for kind: DisclosureKind in [.member, .reference] {
+      XCTAssertEqual(Privacy.render("a\\b.usda", kind: kind, sensitive: false), "[redacted path]")
     }
   }
 

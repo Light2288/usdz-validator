@@ -14,8 +14,9 @@ enum Privacy {
     let limit = kind == .message ? 1_024 : 4_096
     let retained: String
     if kind == .basename {
+      // macOS host paths use slash; a literal backslash belongs to the filename.
       let scalars = value.unicodeScalars
-      let separator = scalars.lastIndex { $0.value == 0x2f || $0.value == 0x5c }
+      let separator = scalars.lastIndex { $0.value == 0x2f }
       let start = separator.map { scalars.index(after: $0) } ?? scalars.startIndex
       retained = bounded(value[start...], bytes: limit)
     } else {

@@ -356,11 +356,63 @@ final class SARIFReportTests: XCTestCase {
       ("/private/line\nname.usdz", "line%0Aname.usdz"),
       ("/private/tab\tname.usdz", "tab%09name.usdz"),
       ("C:input.usdz", "C%3Ainput.usdz"),
+      ("a\\b.usdz", "a%5Cb.usdz"),
+      ("/private/a\\b.usdz", "a%5Cb.usdz"),
     ] {
       let native = try runs(customReport(displayName: name))[0]
       let artifact = try XCTUnwrap((native["artifacts"] as? [[String: Any]])?.first)
       XCTAssertEqual((artifact["location"] as? [String: String])?["uri"], expected)
     }
+  }
+
+  func testRealMacOSBackslashBasenameIdentifiesPackageAcrossReports() throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let bytes = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: Data("#usda 1.0\n@missing.png@".utf8))
+    ]).encode()
+    let url = directory.appendingPathComponent("a\\b.usdz", isDirectory: false)
+    try bytes.write(to: url)
+    XCTAssertEqual(url.lastPathComponent, "a\\b.usdz")
+    XCTAssertEqual(try Data(contentsOf: url), bytes)
+    let snapshot = try FileSnapshot.open(url)
+    defer { try? snapshot.close() }
+    let configuration = try ValidationConfiguration()
+    let inspected = try NativeEngine.inspect(snapshot: snapshot, configuration: configuration)
+    let report = ValidationReport(
+      input: ReportInput(displayName: url.path, byteSize: Int64(bytes.count)),
+      configuration: configuration, coverage: inspected.coverage, nativeFindings: inspected.findings
+    )
+    let native = try runs(report)[0]
+    let artifact = try XCTUnwrap((native["artifacts"] as? [[String: Any]])?.first)
+    XCTAssertEqual((artifact["location"] as? [String: String])?["uri"], "a%5Cb.usdz")
+    let results = try XCTUnwrap(native["results"] as? [[String: Any]])
+    let result = try XCTUnwrap(results.first { $0["ruleId"] as? String == "UVK-PATH-006" })
+    let finding = try XCTUnwrap(inspected.findings.first { $0.ruleID == "UVK-PATH-006" })
+    let offset = try XCTUnwrap(finding.location?.archiveByteOffset)
+    XCTAssertEqual(bytes[Int(offset)], 0x40)
+    let location = try XCTUnwrap((result["locations"] as? [[String: Any]])?.first)
+    let physical = try XCTUnwrap(location["physicalLocation"] as? [String: Any])
+    XCTAssertEqual((physical["artifactLocation"] as? [String: String])?["uri"], "a%5Cb.usdz")
+    XCTAssertEqual((physical["region"] as? [String: UInt64])?["byteOffset"], offset)
+    let sarifInput = try XCTUnwrap(
+      (native["properties"] as? [String: Any])?["input"] as? [String: Any])
+    XCTAssertEqual(sarifInput["displayName"] as? String, "a\\\\b.usdz")
+    let json = try object(ReportEncoder.encode(report, format: .json))
+    XCTAssertEqual((json["input"] as? [String: Any])?["displayName"] as? String, "a\\\\b.usdz")
+    let text = String(decoding: try ReportEncoder.encode(report, format: .text), as: UTF8.self)
+    XCTAssertTrue(text.contains("input: a\\\\b.usdz\n"))
+    for format in ReportFormat.allCases {
+      let output = String(decoding: try ReportEncoder.encode(report, format: format), as: UTF8.self)
+      XCTAssertFalse(output.contains(directory.path), format.rawValue)
+    }
+    let distinct = try runs(customReport(displayName: "/private/b.usdz"))[0]
+    let distinctArtifact = try XCTUnwrap((distinct["artifacts"] as? [[String: Any]])?.first)
+    XCTAssertEqual((distinctArtifact["location"] as? [String: String])?["uri"], "b.usdz")
+    XCTAssertNotEqual(
+      (artifact["location"] as? [String: String])?["uri"],
+      (distinctArtifact["location"] as? [String: String])?["uri"])
   }
 
   func testAppleProfileLevelsCategoriesAndAcceptedIncompleteMeaning() throws {
