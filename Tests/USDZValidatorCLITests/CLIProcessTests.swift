@@ -315,17 +315,24 @@ final class CLIProcessTests: XCTestCase {
   }
   func testNormalExecutableIgnoresHookEnvironment() throws {
     let good = Fixtures.root.appendingPathComponent("valid-usda.usdz")
+    let arguments = ["validate", good.path, "--format", "json"]
+    let controlledEnvironment = ["PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"]
+    let normal = try CLIHarness.run(
+      arguments: arguments, environment: controlledEnvironment, executable: executable)
+    XCTAssertEqual(normal.exitCode, 0)
+    _ = try json(normal)
     for scenario in [
       "internalFailure", "checkerUnavailable", "checkerSuccess", "checkerFailure", "encodingCap",
     ] {
+      var environment = controlledEnvironment
+      environment["UVK_CLI_TEST_SCENARIO"] = scenario
+      environment["UVK_CLI_TEST_EXECUTABLE"] = "/invalid"
+      environment["UVK_CLI_EXECUTABLE"] = "/invalid"
       let result = try CLIHarness.run(
-        arguments: ["validate", good.path, "--format", "json"],
-        environment: [
-          "UVK_CLI_TEST_SCENARIO": scenario, "UVK_CLI_TEST_EXECUTABLE": "/invalid",
-          "UVK_CLI_EXECUTABLE": "/invalid",
-        ], executable: executable)
-      XCTAssertEqual(result.exitCode, 0)
-      _ = try json(result)
+        arguments: arguments, environment: environment, executable: executable)
+      XCTAssertEqual(result.exitCode, normal.exitCode)
+      XCTAssertEqual(result.stdout, normal.stdout)
+      XCTAssertEqual(result.stderr, normal.stderr)
     }
   }
   func testBrokenPipeIsOperationalFailure() throws {

@@ -25,7 +25,7 @@ UVK_COMPAT_EXPORT_DIR="$PWD/.verification/compat" swift test --filter GoldenComp
 .venv/bin/python Scripts/verify-schemas.py --directory .verification/compat
 ```
 
-The export environment variable is read only in the test target. Without it the test writes no exports. The directory option adds validation to the checked-in corpus; it accepts immediate files named `report*.json`, `external*.json`, or `state*.json` as native report v1; `catalogue*.json` or `rule-catalogue*.json` as catalogue v1; `budget*.json` or `config*.json` as budget config v1; and `*.sarif` as SARIF 2.1.0. Unsupported names and empty/missing directories fail. Use a dedicated export directory.
+The export environment variable is read only in the test target. Without it the test writes no exports. The directory option adds validation to the checked-in corpus; it accepts immediate files named `report*.json`, `external*.json`, or `state*.json` as native report v1; `catalogue*.json` or `rule-catalogue*.json` as catalogue v1; `budget*.json` or `config*.json` as budget config v1; and `*.sarif` as SARIF 2.1.0. Unsupported names and empty/missing directories fail. Use a dedicated export directory. The release runner also uses `--expected-export-count 73` to reject a missing portion of the fixed corpus. The 73 actual Swift exports are validated alongside 13 reviewed checked-in documents. See [the release procedure](../docs/releasing.md) for immutable evidence manifests and exact cross-host byte/native-ID comparison; none of these commands regenerate independent golden expectations.
 
 ## Contract boundaries
 

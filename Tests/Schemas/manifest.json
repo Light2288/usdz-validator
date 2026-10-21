@@ -188,7 +188,7 @@
     },
     {
       "path": "Scripts/verify-schemas.py",
-      "sha256": "f179ae4d41ae82adc93cd911d35dd11c49ac9ee5eb2cc6aee0434d6c1c8f518f",
+      "sha256": "d6dbe2ae096e0b10940366f9f402c7dad727c249e4c35edf591dd65d4eb28c4f",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -350,7 +350,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "e1c16733e028765b0bbc895ef1151924f019daee6a4bfbab755327d099354d15",
+      "sha256": "ae0404ca778198763c47f949658cdf98391b0ca17f2f287cd605f5d7db30f6e0",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",

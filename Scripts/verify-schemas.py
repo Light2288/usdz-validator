@@ -207,8 +207,11 @@ def exported_kind(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--directory', type=Path, help='also verify exports in this directory')
+    parser.add_argument('--expected-export-count', type=int, help='require this many directory exports')
     parser.add_argument('--self-test', action='store_true', help='also run independent contract mutation tests')
     args = parser.parse_args()
+    if args.expected_export_count is not None and (args.directory is None or args.expected_export_count < 1):
+        parser.error('--expected-export-count requires --directory and a positive count')
     try:
         count = verify_corpus()
         if args.directory is not None:
@@ -217,6 +220,8 @@ def main():
             paths = sorted(path for path in args.directory.iterdir() if path.is_file())
             if not paths:
                 raise ValueError(f'{args.directory}: no exported documents')
+            if args.expected_export_count is not None and len(paths) != args.expected_export_count:
+                raise ValueError(f'{args.directory}: expected {args.expected_export_count} exports; observed {len(paths)}')
             for path in paths:
                 validate_document(path, exported_kind(path))
             count += len(paths)
