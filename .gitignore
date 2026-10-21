@@ -4,3 +4,7 @@
 # Local verification artifacts and resource measurements.
 .verification/
 verification-output/
+
+# Development-only offline schema checks.
+__pycache__/
+*.py[cod]

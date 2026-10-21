@@ -1,0 +1,1219 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "tool": {
+      "$ref": "#/$defs/tool"
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "byteSize": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sensitiveDetails": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "absolutePath": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "absolutePath"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "displayName",
+        "byteSize"
+      ]
+    },
+    "configuration": {
+      "$ref": "#/$defs/configuration"
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "areas": {
+          "type": "object",
+          "properties": {
+            "containerStructure": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            },
+            "entrySafety": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            },
+            "references": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            },
+            "byteBudgets": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            },
+            "textureDimensions": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            },
+            "appleAdvice": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "notRun"
+                  ]
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reasonID": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/location"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ruleID",
+                      "reasonID",
+                      "location"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "requested",
+                "state",
+                "reasons"
+              ]
+            }
+          },
+          "required": []
+        },
+        "isComplete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "areas",
+        "isComplete"
+      ]
+    },
+    "nativeFindings": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/finding"
+          },
+          {
+            "properties": {
+              "provenance": {
+                "properties": {
+                  "kind": {
+                    "const": "native"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "externalCheck": {
+      "$ref": "#/$defs/external"
+    },
+    "operationalErrors": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "category": {
+                "const": "configuration"
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "invalidBudget",
+                  "invalidSchemaVersion",
+                  "unknownKey",
+                  "duplicateKey",
+                  "invalidValue",
+                  "sizeLimitExceeded",
+                  "trailingData",
+                  "invalidEncoding",
+                  "unreadableConfiguration"
+                ]
+              }
+            },
+            "required": [
+              "category",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "category": {
+                "const": "operational"
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "inputUnavailable",
+                  "inputNotRegular",
+                  "inputSymbolicLink",
+                  "inputChanged",
+                  "inputReadFailed",
+                  "outputUnavailable",
+                  "outputUnsafe",
+                  "outputWriteFailed",
+                  "reportEncodingFailed",
+                  "reportLimitExceeded"
+                ]
+              }
+            },
+            "required": [
+              "category",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "category": {
+                "const": "internalFailure"
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "unexpectedFailure",
+                  "invariantViolation"
+                ]
+              }
+            },
+            "required": [
+              "category",
+              "reason"
+            ]
+          }
+        ]
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "native": {
+          "$ref": "#/$defs/counts"
+        },
+        "external": {
+          "$ref": "#/$defs/counts"
+        },
+        "externalOutcome": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "noFailureReported",
+                "failureReported"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "native",
+        "external",
+        "externalOutcome"
+      ]
+    },
+    "validationStatus": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed",
+        "incomplete",
+        "error"
+      ]
+    },
+    "gateDecision": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "acceptedIncomplete": {
+      "type": "boolean"
+    },
+    "exitCode": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        64,
+        70
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "tool",
+    "input",
+    "configuration",
+    "coverage",
+    "nativeFindings",
+    "externalCheck",
+    "operationalErrors",
+    "summary",
+    "validationStatus",
+    "gateDecision",
+    "acceptedIncomplete",
+    "exitCode"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:usdz-validation-kit:report:1",
+  "title": "USDZ Validation Kit report v1",
+  "$comment": "Required fields and enums are stable. Additional optional fields and unknown rule IDs are permitted. Sensitive detail fields are optional. Runtime limits and disclosure are enforced by the product.",
+  "$defs": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "archiveSpecification",
+        "appleCompatibility",
+        "policy",
+        "validatorLimitation"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "error",
+        "warning",
+        "note"
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "general-v1",
+        "apple-portable-v1"
+      ]
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": [
+            "general-v1",
+            "apple-portable-v1"
+          ]
+        },
+        "budgets": {
+          "type": "object",
+          "properties": {
+            "archiveBytes": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "fileBytes": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "fileCount": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "textureBytes": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "totalTextureBytes": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "textureMaxDimension": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "archiveBytes",
+            "fileBytes",
+            "fileCount",
+            "textureBytes",
+            "totalTextureBytes",
+            "textureMaxDimension"
+          ]
+        },
+        "safetyEnvelopeVersion": {
+          "type": "integer",
+          "const": 1
+        },
+        "gatePolicy": {
+          "type": "object",
+          "properties": {
+            "failOn": {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning"
+              ]
+            },
+            "allowIncomplete": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "failOn",
+            "allowIncomplete"
+          ]
+        },
+        "includeSensitiveDetails": {
+          "type": "boolean"
+        },
+        "externalCheck": {
+          "type": "string",
+          "enum": [
+            "disabled",
+            "usdchecker"
+          ]
+        }
+      },
+      "required": [
+        "profile",
+        "budgets",
+        "safetyEnvelopeVersion",
+        "gatePolicy",
+        "includeSensitiveDetails",
+        "externalCheck"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "entryName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archiveByteOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "layerByteOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "column": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "entryName",
+        "archiveByteOffset",
+        "layerByteOffset",
+        "line",
+        "column"
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "properties": {
+        "ruleID": {
+          "type": "string",
+          "minLength": 1
+        },
+        "occurrenceID": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "archiveSpecification",
+            "appleCompatibility",
+            "policy",
+            "validatorLimitation"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warning",
+            "note"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "integer",
+              "boolean",
+              "null"
+            ],
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          }
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenance": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "native"
+                },
+                "validatorVersion": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "kind",
+                "validatorVersion"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "usdchecker"
+                },
+                "tool": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "version": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sensitiveDetails": {
+                  "type": "object",
+                  "properties": {
+                    "invocationID": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "invocationID"
+                  ]
+                }
+              },
+              "required": [
+                "kind",
+                "tool",
+                "version"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "ruleID",
+        "occurrenceID",
+        "category",
+        "severity",
+        "message",
+        "evidence",
+        "location",
+        "provenance"
+      ]
+    },
+    "external": {
+      "type": "object",
+      "properties": {
+        "requested": {
+          "type": "boolean"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "versionProbe",
+                "validation"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "available",
+            "unavailable"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "strict-root-package-only-v1",
+                "strict-root-package-only-arkit-v1"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "notRequested",
+            "unavailable",
+            "unsupportedVersion",
+            "skippedUnsafeInput",
+            "completed",
+            "launchFailed",
+            "timedOut",
+            "outputLimitExceeded"
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "noFailureReported",
+                "failureReported"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exitCode": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signal": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminationReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "exited",
+                "uncaughtSignal",
+                "terminated",
+                "killed",
+                "launchError",
+                "invalidRequest",
+                "captureError",
+                "reapError"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stdoutBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "stderrBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "hasStdout": {
+          "type": "boolean"
+        },
+        "hasStderr": {
+          "type": "boolean"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/finding"
+              },
+              {
+                "properties": {
+                  "provenance": {
+                    "properties": {
+                      "kind": {
+                        "const": "usdchecker"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "sensitiveDetails": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "arguments": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "stdout": {
+                  "type": "string"
+                },
+                "stderr": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "arguments",
+                "stdout",
+                "stderr"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requested",
+        "phase",
+        "availability",
+        "version",
+        "policy",
+        "status",
+        "outcome",
+        "exitCode",
+        "signal",
+        "terminationReason",
+        "stdoutBytes",
+        "stderrBytes",
+        "hasStdout",
+        "hasStderr",
+        "findings"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "bySeverity": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            "warning": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            "note": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            }
+          },
+          "required": [
+            "error",
+            "warning",
+            "note"
+          ]
+        },
+        "byCategory": {
+          "type": "object",
+          "properties": {
+            "archiveSpecification": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            "appleCompatibility": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            "policy": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            "validatorLimitation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            }
+          },
+          "required": [
+            "archiveSpecification",
+            "appleCompatibility",
+            "policy",
+            "validatorLimitation"
+          ]
+        }
+      },
+      "required": [
+        "bySeverity",
+        "byCategory"
+      ]
+    }
+  }
+}
