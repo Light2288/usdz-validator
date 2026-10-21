@@ -90,3 +90,33 @@ extension ValidationReport {
       operationalErrors: [failure])
   }
 }
+
+#if UVK_PROCESS_TESTING
+  extension Validator {
+    /// Fixed compile-only fakes retain native inspection, adapter orchestration, and gate policy.
+    public static func processTestScenario(_ scenario: String) throws -> Validator {
+      guard
+        ["internalFailure", "checkerUnavailable", "checkerSuccess", "checkerFailure"].contains(
+          scenario)
+      else {
+        throw ValidationError.internalFailure(.invariantViolation)
+      }
+      let adapter = USDCheckerAdapter(
+        execute: { request in
+          let probe = request.arguments == ["--version"]
+          let output = probe ? Data("Apple USD Tools (0.25.11)\n".utf8) : Data()
+          return ProcessResult(
+            outcome: .completed, exitCode: probe || scenario != "checkerFailure" ? 0 : 17,
+            signal: nil, stdout: output, stderr: Data(), stdoutByteCount: UInt64(output.count),
+            stderrByteCount: 0, truncated: false, terminationReason: .exited,
+            processIdentifier: nil, childReaped: true)
+        }, isExecutable: { _ in scenario != "checkerUnavailable" })
+      if scenario == "internalFailure" {
+        return Validator(
+          adapter: adapter,
+          inspect: { _, _ in throw ValidationError.internalFailure(.invariantViolation) })
+      }
+      return Validator(adapter: adapter)
+    }
+  }
+#endif

@@ -130,6 +130,22 @@
       "history": [
         "2026-10-21: Original project-authored deterministic helper source created for Task 18 bounded process lifecycle tests."
       ]
+    },
+    {
+      "id": "uvk-cli-harness-v1",
+      "path": "Tests/TestSupport/CLIHarness.swift",
+      "kind": "generator",
+      "purpose": "Test-only executable harness with separate byte streams and a bounded child lifetime for CLI argument, report, exit, and compile-only fake-checker contracts.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "21f03f8292a8a066bd0e31e70834da4188dca39f59ea734f88477af687cda0d2",
+      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation and Darwin. CLIProcessTests launch only the built usdz-validator selected by the matching suite or harness-only UVK_CLI_EXECUTABLE / UVK_CLI_TEST_EXECUTABLE. Separate temporary stdout/stderr files prevent pipe backpressure; a 15-second deadline terminates and reaps a stuck child. Scripts/test-cli.sh builds a normal release binary and an isolated UVK_PROCESS_TESTING binary. The latter accepts only fixed internalFailure/checkerUnavailable/checkerSuccess/checkerFailure scenarios through a wholly compile-guarded source hook and Validator constructor; fake ProcessResult values exercise the real native engine, adapter orchestration, coverage and gate without any installed checker. Native test archives use the manifest-defined original Fixtures and ArchiveRecipe; the PXR-USDCsynthetic bytes explicitly model incomplete native coverage and are not a conforming-scene oracle. No downloads or arbitrary executable/arguments are accepted by the production CLI.",
+      "history": [
+        "2026-10-21: Original MIT helper added for Task 20 process-level stream and exit contracts."
+      ]
     }
   ]
 }
