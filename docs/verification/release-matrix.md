@@ -53,3 +53,35 @@ After the approved documentation-only policy amendment, fresh evidence was creat
 Fresh compatibility-manifest SHA-256: `bd05bb146c2643d21a8beb5feb4d34c57d57424fa669d0ba1a1bd1ba4aeeff80`. This manifest binds the amended `Tools/README.md` and its refreshed inventory hash. The 86 document bytes/native IDs, configurations and validator versions match the original current-host corpus; the only changed input bindings are `Tools/README.md` and `Tests/Schemas/manifest.json`. Self-comparison of the fresh directory exited 0 as a local integrity check only. No second host, minimum-target or CPython 3.12 result is established.
 
 This focused refresh is not a full release run and has no copied or fabricated `summary.json`. Original 19/19 current-host release evidence above remains preserved for unchanged product/test/script bytes. Broad Swift suites were not rerun for this documentation-only amendment. Final Task 27 review remains separate.
+
+
+## Final I1 parser fix full-run evidence — 2026-10-21
+
+This distinct full run verifies the product after the classic EOCD framing fix. Command: `sh Scripts/verify-release.sh --evidence-dir .build/verification/final-fix` (exit 0). The new directory preserves genuine environment capture, all per-step stdout/stderr, `summary.json`, immutable dependency-lock snapshot, 73 exports, 13 reviewed documents, compatibility manifest and resource measurements. Original `current` and focused `amended` evidence above remain preserved.
+
+All **19/19 required current-host gates PASS**: environment, format-check, resolve, resolved-lock, build, test, cli-test, release-build, release-test, address-sanitizer, schema-self-test, schema-tests, verification-tools, examples, golden-export, export-schemas, export-manifest, resource-tests and resource-measurements. Every gate exited 0.
+
+The observed host remains macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`, target `arm64-apple-macosx27.0.0`) / arm64, with CPython 3.14.7, formatter `main`, `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` (no inherited override), Mac17,6 Apple M5 Max, 38,654,705,664 bytes memory and internal Apple Fabric SSD. Validator version: **0.1.0**; safety envelope version: **1**. Relevant unchanged limits: archive 512 MiB, entry 256 MiB, directory 16 MiB, 10,000 entries, 64 KiB read chunks and 1,152 MiB cumulative native reads. Resource acceptance remains <=268,435,456 bytes RSS and <=60 seconds per measured native invocation.
+
+| Fresh observed check | Result |
+| --- | --- |
+| Debug, release and Address Sanitizer full suites | Each: 237 XCTest cases, zero failures, seven explicit optional skips. Dedicated CLI/resource gates cover their optional cases; installed smoke remains unrequested. |
+| CLI contracts | 20 tests, zero failures/skips. |
+| Schema self-test, schema contracts, verification tools | Nine tests each, zero failures/skips; 13 reviewed documents validated offline. |
+| Examples and golden corpus | Five documented native commands; one golden compatibility test; 73 exports + 13 reviewed documents = 86 bound documents, 75 input hashes, four configurations, validator 0.1.0. All PASS. |
+| Real-size resource tests | Eight tests, zero failures/skips. |
+| Independent release resource measurements | Nine cases PASS; maximum RSS 208,715,776 bytes; maximum elapsed 1.762 seconds. Exact corpus hashes, commands, exits and output sizes are in [resource-results.md](resource-results.md) and its preserved evidence copy. |
+| Supported 412-byte payload-marker reproduction | Final measured release executable returns exit 0, complete requested native coverage, zero native findings and empty stderr. |
+
+Evidence SHA-256:
+
+- `summary.json`: `770dce27af560dc534a17de0b0db595fcbf27bf0348ca446ef21cfbc128afdbd`.
+- `compatibility-manifest.json`: `cbc9e674636356d0461234e97a558717e9901eb482cd3bea2a7c1dd85345f217`.
+- `resource-results.md`: `bd64248b644d8df5bc5ce918f212e268028f96c280221e79144293c32b9aa85b`.
+- Unchanged `Package.resolved`: `eaf09ea422bb561945aac9d7e4192f0d051d7c647e3cb1eb7ffa8d4f57b9b937`.
+- Updated fixture provenance manifest: `526e1bfa89bf2008605fbc4729b98243ce69a292a1dca0da05b4f61648082f8e`; every original fixture ID, metadata field, byte content and generator hash is preserved, with only nested in-test regression provenance added.
+- Parser source: `bceca98cebb57654486f4605ed82472951f97ed04bee2beafc8ccbdf3812a30d`.
+
+The runner captures release executable SHA-256 `30c1b8d069495c3940cffdaefaaf1cd4792d156fc7d88f20d6ed70d1c7faaea4` before the later `swift test -c release` build. That build relinks the same executable path (see `logs/release-test.stderr`); the final measured executable SHA-256 is `f54fc70f44c3f9d5cfef7c3a8cddca34123e439c43799965ed82cae9698f7ffe`, also independently confirmed against the current file and the supported 412-byte reproduction. Both observed hashes remain preserved without rewriting the runner summary.
+
+Final machine statuses: `currentHostStatus: PASS`, `releaseStatus: UNVERIFIED`, `matrix.current: PASS`; baseline, crossHost and python312 stay `UNVERIFIED`; installed checker smoke stays `SKIPPED` because it was not requested. These observations apply the existing amended policy and do not establish deferred environments or final Task 27 acceptance.

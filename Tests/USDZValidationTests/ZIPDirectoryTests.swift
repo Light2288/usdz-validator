@@ -304,6 +304,110 @@ final class ZIPDirectoryTests: XCTestCase {
     }
   }
 
+  func testPayloadClassicEOCDCandidateDoesNotDisplaceSupportedArchive() throws {
+    // Original PCM WAVE: fmt(16), JUNK(96), data(4). JUNK contains a plausible
+    // classic EOCD at archive byte 180, claiming 134..<180 as its directory.
+    let fakeEnd = try ArchiveRecipe(
+      entries: [],
+      endRecordPatches: [
+        .uint16(at: 8, 1), .uint16(at: 10, 1),
+        .uint32(at: 12, 46), .uint32(at: 16, 134), .uint16(at: 20, 210),
+      ]
+    ).encode()
+    var audio = Data([
+      0x52, 0x49, 0x46, 0x46, 144, 0, 0, 0, 0x57, 0x41, 0x56, 0x45,
+      0x66, 0x6d, 0x74, 0x20, 16, 0, 0, 0, 1, 0, 1, 0,
+      0x40, 0x1f, 0, 0, 0x40, 0x1f, 0, 0, 1, 0, 8, 0,
+      0x4a, 0x55, 0x4e, 0x4b, 96, 0, 0, 0,
+    ])
+    audio.append(Data(repeating: 0x41, count: 96))
+    audio.append(Data([0x64, 0x61, 0x74, 0x61, 4, 0, 0, 0, 128, 128, 128, 128]))
+    try ArchiveRecipe.overwrite(&audio, at: 52, with: fakeEnd)
+    let encoding = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usda".utf8), payload: Data("#usda 1.0\n".utf8)),
+      .init(nameBytes: Data("audio.wav".utf8), payload: audio),
+    ]).encodeWithLayout()
+    // Hand-checked layout and independent Python zipfile/zlib CRC oracle.
+    XCTAssertEqual(encoding.bytes.count, 412)
+    XCTAssertEqual(encoding.centralDirectory, 280)
+    XCTAssertEqual(encoding.endRecord, 390)
+    XCTAssertEqual(encoding.bytes.subdata(in: 180..<202), fakeEnd)
+    XCTAssertEqual(encoding.bytes.subdata(in: 134..<138), Data([0, 0, 0x57, 0x41]))
+
+    let result = try inspect(encoding.bytes)
+    XCTAssertEqual(result.findings.map(\.ruleID), [])
+    XCTAssertNil(result.findings.first?.evidence["reason"])
+    let directory = try XCTUnwrap(result.directory)
+    XCTAssertEqual(directory.endRecordOffset, 390)
+    XCTAssertEqual(directory.centralDirectoryRange, 280..<390)
+    XCTAssertEqual(directory.archiveCommentLength, 0)
+    XCTAssertEqual(
+      directory.records.map(\.nameBytes), [Data("root.usda".utf8), Data("audio.wav".utf8)])
+    XCTAssertEqual(directory.records.map(\.centralHeaderOffset), [280, 335])
+    XCTAssertEqual(directory.records.map(\.crc32), [0xe74c_7082, 0x20a7_821a])
+
+    let reader = BoundedReader(size: UInt64(encoding.bytes.count), ledger: ResourceLedger()) {
+      offset, count in
+      XCTAssertLessThanOrEqual(count, 65_536)
+      return encoding.bytes.subdata(in: Int(offset)..<(Int(offset) + count))
+    }
+    let diagnostics = NativeDiagnostics()
+    let index = try XCTUnwrap(
+      ZIPIndex.build(directory: directory, reader: reader, diagnostics: diagnostics))
+    XCTAssertEqual(index.entries.map(\.localHeaderOffset), [0, 74])
+    XCTAssertEqual(index.entries.map(\.payloadRange), [64..<74, 128..<280])
+    for entry in index.entries {
+      XCTAssertTrue(try StoredPayload.check(entry: entry, reader: reader, diagnostics: diagnostics))
+    }
+    XCTAssertTrue(diagnostics.finish().0.isEmpty)
+  }
+
+  func testPayloadClassicCandidateRequiresCompleteCentralFraming() throws {
+    for field in [28, 30, 32] {
+      var payload = Data(repeating: 0x41, count: 100)
+      var header = Data(repeating: 0, count: 46)
+      try patch(&header, at: 0, value: 0x0201_4b50)
+      try ArchiveRecipe.overwrite(
+        &header, at: field, with: ArchiveRecipe.HeaderPatch.uint16(at: 0, 11).bytes)
+      try ArchiveRecipe.overwrite(&payload, at: 0, with: header)
+      let fakeEnd = try ArchiveRecipe(
+        entries: [],
+        endRecordPatches: [
+          .uint16(at: 8, 1), .uint16(at: 10, 1),
+          .uint32(at: 12, 56), .uint32(at: 16, 64), .uint16(at: 20, 99),
+        ]
+      ).encode()
+      try ArchiveRecipe.overwrite(&payload, at: 56, with: fakeEnd)
+      // The signature fits, but each variable field in turn extends beyond 64..<120.
+      let encoding = try ArchiveRecipe(entries: [
+        .init(nameBytes: Data("root.usda".utf8), payload: payload)
+      ]).encodeWithLayout()
+      let result = try inspect(encoding.bytes)
+      XCTAssertEqual(result.directory?.endRecordOffset, 219, "field \(field)")
+      XCTAssertEqual(result.directory?.records.first?.nameBytes, Data("root.usda".utf8))
+      XCTAssertTrue(result.findings.isEmpty)
+    }
+  }
+
+  func testClassicFramingFailureRetainsMalformedEndRecordFallback() throws {
+    let encoding = try recipe().encodeWithLayout()
+    var signature = encoding.bytes
+    try patch(&signature, at: encoding.centralDirectory, value: 0)
+    let fields = try recipe(centralPatches: [.uint16(at: 28, 10)]).encode()
+    let count = try ArchiveRecipe(
+      entries: [entry(), entry()],
+      endRecordPatches: [.uint16(at: 8, 1), .uint16(at: 10, 1)]
+    ).encode()
+    for (bytes, reason) in [
+      (signature, "centralSignature"), (fields, "centralFields"), (count, "directoryCount"),
+    ] {
+      let result = try inspect(bytes)
+      XCTAssertNil(result.directory)
+      XCTAssertEqual(result.findings.map(\.ruleID), ["UVK-ARC-001"])
+      XCTAssertEqual(result.findings.first?.evidence["reason"], .string(reason))
+    }
+  }
+
   func testZIP64LocatorCannotBeHiddenByCopiedDirectoryAndCommentEOCD() throws {
     let original = try recipe().encodeWithLayout()
     let copiedDirectory = original.bytes.subdata(in: original.centralDirectory..<original.endRecord)

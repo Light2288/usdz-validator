@@ -216,7 +216,14 @@ struct ZIPDirectory {
       if classicRange && countFits && (count != 0 || emptyAtStart)
         && (!unsupported || emptyAtStart)
       {
-        return index
+        // Range/count plausibility alone cannot distinguish an EOCD-shaped payload
+        // from metadata. Keep malformed candidates as fallback for stable diagnostics.
+        if emptyAtStart { return index }
+        if try directoryFramingFits(
+          reader: reader, start: UInt64(start), end: directoryEnd, count: count)
+        {
+          return index
+        }
       }
       if unsupported {
         // A missing ZIP64 field is never a real classic offset/size. For candidate

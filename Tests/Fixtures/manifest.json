@@ -81,6 +81,19 @@
         "2026-10-21: Add prohibited Unix member-type modes for safe exact namespace fixtures.",
         "2026-10-21: Add original raw USDA lexical stress recipes for bounded text/token/count scanning; synthetic USDC headers in unit tests establish recognition only, never valid-scene provenance.",
         "2026-10-21: Add verbatim triple-delimited USDA literal recipes for package-only reference resolution and pinned delimiter-unescape integration."
+      ],
+      "regressionRecipes": [
+        {
+          "id": "uvk-classic-eocd-payload-regression-v1",
+          "path": "Tests/USDZValidationTests/ZIPDirectoryTests.swift",
+          "sha256": "caa4c032a72d465e02ab73e24b9e100a4e72c809ddb75e6efbd321a108a3678c",
+          "purpose": "Supported stored/aligned archive whose PCM WAVE JUNK bytes contain a plausible classic EOCD; verify directory identity, ordered local mapping and both stored CRCs. Adjacent vectors cover central variable-field framing and stable malformed-record fallback.",
+          "recipe": "Run swift test --filter ZIPDirectoryTests/testPayloadClassicEOCDCandidateDoesNotDisplaceSupportedArchive. In-test original MIT bytes: root.usda contains #usda 1.0 LF (10 bytes); audio.wav is RIFF size144, WAVE PCM fmt16 mono8000Hz unsigned8bit, JUNK96 filled0x41 with EOCD at JUNK offset8, data4 filled128. EOCD-shaped marker at archive180 declares counts1, directoryBytes46, directoryOffset134, commentLength210. ArchiveRecipe updates CRCs before encoding classic stored aligned64 members. Real directory280..<390 and EOCD390; archive412 bytes, CRC32 root=e74c7082 audio=20a7821a. Independent Python struct/zipfile/zlib oracle validates ordering, index and CRCs; no downloads or product reader.",
+          "archiveSHA256": "985e256188442723a608310b0ecccafbaf4a47899cda7a38fa48d68c0a47ca16",
+          "history": [
+            "2026-10-21: Add original in-memory Task27 I1 regression recipe; existing fixture bytes, IDs and generator hashes remain unchanged."
+          ]
+        }
       ]
     },
     {
