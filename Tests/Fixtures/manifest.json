@@ -114,6 +114,22 @@
       "history": [
         "2026-10-21: Add project-authored MIT PNG/JPEG header recipes for bounded dimension inspection without pixel decoding or external assets."
       ]
+    },
+    {
+      "id": "uvk-process-scenarios-v1",
+      "path": "Tests/TestSupport/ProcessScenarios.swift",
+      "kind": "generator",
+      "purpose": "Fixed shell-builtin-only controlled child scenarios for concurrent output, combined capture bounds, exit status, exact context, abnormal signal and TERM-resistant timeout tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "50ec3219c20835038879c4e0de70a068f19000f29d50ab9c78d9afc10e104012",
+      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation. ProcessRunnerTests pass only these fixed constants (or their fixed three-iteration composition) to /bin/sh -c in tests. Scenarios use only shell builtins printf, trap, kill, test [, :, exit, assignment, arithmetic and while loops; no external commands, downloaded assets, installed USD tool, interpolated user input or additional helper executable. Each stream writes 4096 constant 64-byte records in concurrentOutput; test-only outer deadlines bound scenarios.",
+      "history": [
+        "2026-10-21: Original project-authored deterministic helper source created for Task 18 bounded process lifecycle tests."
+      ]
     }
   ]
 }
