@@ -38,6 +38,19 @@ struct ProcessRunner {
   private static let reapGrace: TimeInterval = 1
   private static let drainGrace: TimeInterval = 0.2
 
+  private let synchronousWait: @Sendable (pid_t, inout Int32) -> pid_t
+  private let beforeDeferredReap: @Sendable () -> Void
+
+  init(
+    synchronousWait: @escaping @Sendable (pid_t, inout Int32) -> pid_t = { pid, status in
+      waitpid(pid, &status, WNOHANG)
+    },
+    beforeDeferredReap: @escaping @Sendable () -> Void = {}
+  ) {
+    self.synchronousWait = synchronousWait
+    self.beforeDeferredReap = beforeDeferredReap
+  }
+
   func run(_ request: ProcessRequest) -> ProcessResult {
     guard request.outputLimit >= 0, request.timeout.isFinite, request.timeout >= 0,
       !request.executable.path.utf8.contains(0), !request.workingDirectory.path.utf8.contains(0),
@@ -73,7 +86,7 @@ struct ProcessRunner {
     var outcome: ProcessResult.Outcome?
     while outcome == nil {
       capture.drainAvailable()
-      let waited = waitpid(pid, &status, WNOHANG)
+      let waited = synchronousWait(pid, &status)
       reaped = waited == pid
       reapFailed = waited < 0 && errno != EINTR
       timedOut = ProcessInfo.processInfo.systemUptime >= deadline
@@ -92,7 +105,7 @@ struct ProcessRunner {
       let reapDeadline = killDeadline + Self.reapGrace
       while !reaped && !reapFailed {
         capture.drainAvailable()
-        let waited = waitpid(pid, &status, WNOHANG)
+        let waited = synchronousWait(pid, &status)
         reaped = waited == pid
         reapFailed = waited < 0 && errno != EINTR
         let now = ProcessInfo.processInfo.systemUptime
@@ -104,6 +117,7 @@ struct ProcessRunner {
         if !reaped && !reapFailed { capture.waitForReadiness() }
       }
     }
+    if !reaped { retainReapOwnership(of: pid) }
     let drained = capture.finish(within: Self.drainGrace)
     // Late buffered bytes may expose an overflow after an exit/timeout observation.
     // Completion never overwrites a stronger observation, regardless of pipe readiness order.
@@ -129,6 +143,25 @@ struct ProcessRunner {
       stdoutByteCount: capture.stdoutByteCount, stderrByteCount: capture.stderrByteCount,
       truncated: capture.overflow || !drained, terminationReason: reason,
       processIdentifier: pid, childReaped: reaped)
+  }
+
+  /// GCD retains this PID-specific cleanup operation after the synchronous result returns.
+  /// The child remains owned until waitpid establishes it was reaped or is no longer ours.
+  /// No later signal can hit a reused PID: deferred cleanup only waits for this exact child.
+  private func retainReapOwnership(of pid: pid_t) {
+    let beforeReap = beforeDeferredReap
+    DispatchQueue.global(qos: .utility).async {
+      beforeReap()
+      var status: Int32 = 0
+      while true {
+        let waited = waitpid(pid, &status, 0)
+        if waited == pid || (waited < 0 && errno == ECHILD) { return }
+        if waited < 0 && errno == EINTR { continue }
+        // Retain ownership on any unexpected wait error instead of abandoning the child
+        // or spinning. The synchronous result already exposes unsuccessful cleanup.
+        Thread.sleep(forTimeInterval: 0.01)
+      }
+    }
   }
 
   static func observedOutcome(overflow: Bool, timedOut: Bool, completed: Bool) -> ProcessResult

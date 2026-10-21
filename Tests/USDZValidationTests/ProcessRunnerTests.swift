@@ -46,6 +46,44 @@ final class ProcessRunnerTests: XCTestCase {
     }
   }
 
+  func testReapOwnershipContinuesAfterSynchronousGrace() {
+    bounded {
+      for _ in 0..<3 {
+        let reaperStarted = DispatchSemaphore(value: 0)
+        let releaseReaper = DispatchSemaphore(value: 0)
+        let runner = ProcessRunner(
+          synchronousWait: { _, _ in 0 },
+          beforeDeferredReap: {
+            reaperStarted.signal()
+            releaseReaper.wait()
+          })
+        let start = ContinuousClock.now
+        let result = runner.run(Self.request(ProcessScenarios.ignoresTermination, timeout: 0.01))
+        XCTAssertLessThan(start.duration(to: .now), .seconds(2))
+        XCTAssertEqual(result.outcome, .timedOut)
+        XCTAssertEqual(result.terminationReason, .reapError)
+        XCTAssertFalse(result.childReaped)
+        guard let pid = result.processIdentifier else {
+          XCTFail("missing child PID")
+          return
+        }
+        // A bounded return must retain an independent owner; hold that owner until these
+        // assertions finish so cleanup cannot race the pending-result checks.
+        XCTAssertEqual(reaperStarted.wait(timeout: .now() + 0.5), .success)
+        XCTAssertEqual(kill(pid, 0), 0)
+        releaseReaper.signal()
+        let deadline = ContinuousClock.now.advanced(by: .seconds(2))
+        while kill(pid, 0) == 0 && ContinuousClock.now < deadline { usleep(5_000) }
+        var status: Int32 = 0
+        errno = 0
+        // This call never drives successful cleanup: kill's ESRCH observes disappearance
+        // first. Without the independent owner, waitpid reaps the zombie and this fails.
+        XCTAssertEqual(waitpid(pid, &status, WNOHANG), -1)
+        XCTAssertEqual(errno, ECHILD)
+      }
+    }
+  }
+
   func testHeldWriterHasBoundedDrainAndCancellation() {
     bounded {
       var out: [Int32] = [0, 0]
@@ -121,19 +159,23 @@ final class ProcessRunnerTests: XCTestCase {
         XCTAssertEqual(exact.stdout, Data("abcd".utf8))
         XCTAssertEqual(exact.stderr, Data("EFGH".utf8))
         XCTAssertFalse(exact.truncated)
+        Self.assertReaped(exact)
         let beyond = ProcessRunner().run(Self.request(ProcessScenarios.oneByteOverflow, limit: 8))
         XCTAssertEqual(beyond.outcome, .outputLimitExceeded)
         XCTAssertEqual(beyond.stdout.count + beyond.stderr.count, 8)
         XCTAssertEqual(beyond.stdoutByteCount + beyond.stderrByteCount, 9)
         XCTAssertTrue(beyond.truncated)
+        Self.assertReaped(beyond)
       }
       let empty = ProcessRunner().run(Self.request(ProcessScenarios.immediateExit, limit: 0))
       XCTAssertEqual(empty.outcome, .completed)
       XCTAssertFalse(empty.stdoutPresent)
       XCTAssertFalse(empty.stderrPresent)
+      Self.assertReaped(empty)
       let zero = ProcessRunner().run(Self.request(ProcessScenarios.oneByteOverflow, limit: 0))
       XCTAssertEqual(zero.outcome, .outputLimitExceeded)
       XCTAssertTrue(zero.stdout.isEmpty && zero.stderr.isEmpty)
+      Self.assertReaped(zero)
       for limit in [16_384, 1_048_576] {
         // The same fixed producer runs enough times in one shell to exceed either phase cap.
         let script =
@@ -157,6 +199,7 @@ final class ProcessRunnerTests: XCTestCase {
       let result = ProcessRunner().run(context)
       XCTAssertEqual(result.outcome, .completed)
       XCTAssertEqual(result.stdout, Data("literal|unset|/private/tmp".utf8))
+      Self.assertReaped(result)
       let nonzero = ProcessRunner().run(Self.request(ProcessScenarios.successfulExit))
       XCTAssertEqual(nonzero.outcome, .completed)
       XCTAssertEqual(nonzero.exitCode, 7)
