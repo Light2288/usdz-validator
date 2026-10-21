@@ -182,6 +182,39 @@
         },
         "counterScope": "Existing BoundedReader/ResourceLedger instrument a supplemental real-parser composition pass for each case. The separate public Validator/NativeEngine run is repeated and compared but its private ledger is not exposed. Source reads stay in archive/member ranges, at most 65536 bytes per read and min(1207959552, 8 * case archive bytes) cumulatively. Entry/finding/message/evidence limits are asserted; no new product seam."
       }
+    },
+    {
+      "id": "uvk-resource-recipes-v1",
+      "path": "Tests/TestSupport/ResourceRecipes.swift",
+      "kind": "generator",
+      "purpose": "Independent streamed deterministic temporary maximum-envelope ZIP/USDA/JPEG recipes and boundary metadata; no committed giant assets.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "3bec3959637497d5efcc293c3e0f815d25d159b84e4730b8209061f39773e10d",
+      "recipe": "Compile committed Swift 6 source with Foundation. ResourceRecipes.write(entries:to:archiveBytes:) writes a classic stored ZIP to a caller-owned temporary URL, fixed DOS 1980-01-01, 64-byte payload alignment, CRC-32/ISO-HDLC table, at most 65536-byte stream chunks and O(entry count) bounded metadata. Segment bytes/repeated/fill retain no full archive or large member. Entry.declaredSize explicitly creates metadata-only 256MiB and aggregate512MiB declaration boundaries whose physically stored payload plus ZIP overhead cannot fit the archive ceiling. Entry.commentBytes fills central comments for exact/one-above16MiB directory sizes. archiveBytes fills only the bounded EOCD comment to reach exactly512MiB. nearArchiveLimit writes root.usda, a.wav=268435456 B bytes and b.wav=268434432 B bytes. text(tokens:tokenBytes:totalBytes:) emits #usda 1.0 LF, raw a asset tokens and space padding for lexical limits. jpegHeader(paddingBytes:) streams SOI, APP1 segments and SOF0 so the frame ends at/one byte above1048576; header-only JPEG is not a valid complete image/scene oracle. ResourceBoundaryTests opt into expensive sizes with UVK_RUN_RESOURCE_TESTS=1; small counter/metadata/token/config/report proofs always run. Every temporary file is deleted after its test.",
+      "history": [
+        "2026-10-21: Original MIT streamed temporary resource recipes and independently timed release CLI corpus added for Task24."
+      ],
+      "measurementGenerator": {
+        "path": "Scripts/verify-resources.py",
+        "source": "project-authored",
+        "license": "MIT",
+        "licenseText": "LICENSE",
+        "sha256": "12d1b457a7eff3a0fb356baecefd02a17a4e0cc71a237dcd5495f31a7e0cdcf0",
+        "recipe": "Run python3 Scripts/verify-resources.py --executable .build/release/usdz-validator --output docs/verification/resource-results.md. Independent Python struct/zlib classic-ZIP writer uses the same fixed timestamp/alignment/segments with <=65536-byte payload chunks and no downloads. Corpus: near512MiB (each entry<=256MiB),10000 entries,16MiB+100000 self-reference tokens,1MiB JPEG scan,9990 real missing-reference findings with1100-byte names as JSON/SARIF,10001-token finding truncation, and9990 real findings with4096-byte names for operational JSON/SARIF output-cap rejection. Fixture generation/hash/report verification occur outside one /usr/bin/time -l native child per case. Darwin arm64/internalSSD required; kill/reap process group after60seconds. Actual archive corpus hashes/command/exit/report size/RSS/elapsed/toolchain/host are recorded in resource-results.md. No external checker requested.",
+        "corpusSHA256": {
+          "near-512-mib": "5391ada98fd8ea1bb3c1e06572940d8739709a82b47c2fbef096df8e50202a90",
+          "10000-entries": "0da9b5eddeb0f1472a1d1a49e50940bb0996206e91908867a5dba417f23f15da",
+          "16-mib-100000-tokens": "e69ae8a6582687100ab7e7d05ac86b59070572ba508578763a5ac0e5b89fa45f",
+          "header-1-mib": "a5fc35449b2d7208e7d8008086ead89f49b5ad8054ba773014fd4eb36ab14e28",
+          "near-report-json-and-sarif": "cde6d03bb40f300f7374fc8382be6574951ba2d5ae97af4350c57ba571fe5bc4",
+          "findings-truncation": "c77c5366d856aaa83c595ac76aa4becca403aabbedee8f5be3ae4689e48affe7",
+          "report-cap-json-and-sarif": "856c095bf0f2afcae13bde5d20173c5d7230759c691f244c36054699d78c2e94"
+        }
+      }
     }
   ]
 }

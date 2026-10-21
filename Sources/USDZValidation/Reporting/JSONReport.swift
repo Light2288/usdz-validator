@@ -18,11 +18,13 @@ enum JSONReport {
       areas[area.rawValue] = .object([
         "requested": .bool(result.requested), "state": .string(result.state.rawValue),
         "reasons": .array(
-          result.reasons.map {
-            .object([
-              "ruleID": renderer.text($0.ruleID), "reasonID": renderer.text($0.reasonID),
-              "location": renderer.location($0.location),
-            ])
+          result.reasons.map { reason in
+            .deferred {
+              .object([
+                "ruleID": renderer.text(reason.ruleID), "reasonID": renderer.text(reason.reasonID),
+                "location": renderer.location(reason.location),
+              ])
+            }
           }),
       ])
     }
@@ -53,7 +55,8 @@ enum JSONReport {
       "coverage": .object([
         "areas": .object(areas), "isComplete": .bool(report.coverage.isComplete),
       ]),
-      "nativeFindings": .array(try report.nativeFindings.map(renderer.finding)),
+      "nativeFindings": .array(
+        report.nativeFindings.map { finding in .deferred { try renderer.finding(finding) } }),
       "externalCheck": try renderer.external(report.externalCheck),
       "operationalErrors": .array(report.operationalErrors.map(renderer.error)),
       "summary": .object([
@@ -140,7 +143,8 @@ enum JSONReport {
         "stdoutBytes": .integer(external.stdoutBytes),
         "stderrBytes": .integer(external.stderrBytes),
         "hasStdout": .bool(external.hasStdout), "hasStderr": .bool(external.hasStderr),
-        "findings": .array(try external.findings.map(finding)),
+        "findings": .array(
+          external.findings.map { value in .deferred { try finding(value) } }),
       ]
       if sensitive {
         fields["sensitiveDetails"] =

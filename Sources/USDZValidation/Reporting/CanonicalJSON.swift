@@ -9,6 +9,8 @@ indirect enum JSONValue {
   case unsignedInteger(UInt64)
   case bool(Bool)
   case null
+  // Large report collections project one bounded member only when the encoder reaches it.
+  case deferred(() throws -> JSONValue)
 }
 
 enum CanonicalJSON {
@@ -43,6 +45,7 @@ enum CanonicalJSON {
     case .unsignedInteger(let value): try buffer.append(Data(String(value).utf8))
     case .bool(let value): try buffer.append(Data((value ? "true" : "false").utf8))
     case .null: try buffer.append(Data("null".utf8))
+    case .deferred(let project): try write(project(), into: &buffer)
     }
   }
 

@@ -42,7 +42,10 @@ enum SARIFReport {
         "tool": .object(["driver": .object(nativeDriver)]),
         "artifacts": .array([.object(artifact)]),
         "invocations": .array([.object(nativeInvocation)]),
-        "results": .array(try array(model["nativeFindings"]).map { try result($0, uri: uri) }),
+        "results": .array(
+          try array(model["nativeFindings"]).map { value in
+            .deferred { try result(value, uri: uri) }
+          }),
         "properties": .object(properties),
       ])
     ]
@@ -93,7 +96,8 @@ enum SARIFReport {
           "tool": .object(["driver": .object(driver)]),
           "artifacts": .array([.object(artifact)]),
           "invocations": .array([.object(invocation)]),
-          "results": .array(try findings.map { try result($0, uri: uri) }),
+          "results": .array(
+            findings.map { value in .deferred { try result(value, uri: uri) } }),
           "properties": .object(externalProperties),
         ]))
     }
@@ -190,6 +194,7 @@ enum SARIFReport {
           return omittingUnavailable(value)
         })
     case .array(let values): return .array(values.map(omittingUnavailable))
+    case .deferred(let project): return .deferred { omittingUnavailable(try project()) }
     default: return value
     }
   }
@@ -200,6 +205,7 @@ enum SARIFReport {
   }
 
   private static func object(_ value: JSONValue?) throws -> [String: JSONValue] {
+    if case .deferred(let project) = value { return try object(project()) }
     guard case .object(let fields) = value else {
       throw ValidationError.operational(.reportEncodingFailed)
     }
