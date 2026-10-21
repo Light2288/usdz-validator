@@ -99,10 +99,10 @@ final class NativeDiagnostics {
     let finding = Finding(
       ruleID: ruleID, occurrenceID: FindingIdentity.native(retainedKey),
       category: descriptor?.category ?? .policy, severity: descriptor?.defaultSeverity ?? .error,
-      message: Self.bounded(message, bytes: 1_024),
+      message: Privacy.bounded(message, bytes: 1_024),
       evidence: evidence.mapValues { value in
         if case .string(let string) = value {
-          return .string(Self.bounded(string, bytes: 4_096))
+          return .string(Privacy.bounded(string, bytes: 4_096))
         }
         return value
       },
@@ -143,8 +143,9 @@ final class NativeDiagnostics {
     }
     guard !reasonsTruncated else { return }
     let boundedReason = CoverageReason(
-      ruleID: Self.bounded(reason.ruleID, bytes: 4_096),
-      reasonID: Self.bounded(reason.reasonID, bytes: 4_096), location: Self.bounded(reason.location)
+      ruleID: Privacy.bounded(reason.ruleID, bytes: 4_096),
+      reasonID: Privacy.bounded(reason.reasonID, bytes: 4_096),
+      location: Self.bounded(reason.location)
     )
     let identity = ReasonIdentity(area: area, reason: boundedReason)
     guard !reasonIdentities.contains(identity) else { return }
@@ -208,24 +209,9 @@ final class NativeDiagnostics {
   private static func bounded(_ location: FindingLocation?) -> FindingLocation? {
     location.map {
       FindingLocation(
-        entryName: $0.entryName.map { bounded($0, bytes: 4_096) },
+        entryName: $0.entryName.map { Privacy.bounded($0, bytes: 4_096) },
         archiveByteOffset: $0.archiveByteOffset, layerByteOffset: $0.layerByteOffset,
         line: $0.line, column: $0.column)
     }
-  }
-
-  private static func bounded(_ value: String, bytes: Int) -> String {
-    // Materialize only a fixed prefix, including when value's storage belongs to a large slice.
-    let prefix = Array(value.utf8.prefix(bytes + 1))
-    guard prefix.count > bytes else { return String(decoding: prefix, as: UTF8.self) }
-    let marker = "[truncated]"
-    var retainedCount = bytes - marker.utf8.count
-    while retainedCount > 0 {
-      if let retained = String(bytes: prefix.prefix(retainedCount), encoding: .utf8) {
-        return retained + marker
-      }
-      retainedCount -= 1
-    }
-    return marker
   }
 }
