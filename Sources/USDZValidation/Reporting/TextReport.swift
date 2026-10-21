@@ -55,6 +55,8 @@ enum TextReport {
     try writer.line("external exit: ", external.exitCode.map(String.init) ?? "unavailable")
     try writer.line("external signal: ", external.signal.map(String.init) ?? "unavailable")
     try writer.line(
+      "external termination reason: ", external.terminationReason?.rawValue ?? "unavailable")
+    try writer.line(
       "external stdout bytes: ", String(external.stdoutBytes),
       " present: ", String(external.hasStdout))
     try writer.line(

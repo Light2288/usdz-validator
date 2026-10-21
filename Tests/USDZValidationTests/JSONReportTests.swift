@@ -5,6 +5,27 @@ import XCTest
 @testable import USDZValidation
 
 final class JSONReportTests: XCTestCase {
+  func testSafeTerminationReasonInJSONAndText() throws {
+    for reason: ExternalTerminationReason? in [nil, .reapError, .captureError, .uncaughtSignal] {
+      let report = ValidationReport(
+        input: ReportInput(displayName: "input.usdz", byteSize: 1),
+        configuration: try ValidationConfiguration(externalCheck: .usdchecker),
+        coverage: Coverage(areas: [:]), nativeFindings: [],
+        externalCheck: ExternalCheck(
+          requested: true, status: .launchFailed, terminationReason: reason))
+      let json = try object(ReportEncoder.encode(report, format: .json))
+      let check = try XCTUnwrap(json["externalCheck"] as? [String: Any])
+      if let reason {
+        XCTAssertEqual(check["terminationReason"] as? String, reason.rawValue)
+      } else {
+        XCTAssertTrue(check["terminationReason"] is NSNull)
+      }
+      let text = String(decoding: try ReportEncoder.encode(report, format: .text), as: UTF8.self)
+      XCTAssertTrue(
+        text.contains("external termination reason: \(reason?.rawValue ?? "unavailable")\n"))
+    }
+  }
+
   func testCanonicalV1Envelope() throws {
     let output = try ReportEncoder.encode(makeReport(.complete), format: .json)
     let document = try object(output)

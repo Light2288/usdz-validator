@@ -184,6 +184,12 @@ public enum ExternalOutcome: String, Equatable, Sendable {
   case failureReported
 }
 
+/// Fixed process observations only; never contains an underlying OS diagnostic.
+public enum ExternalTerminationReason: String, Equatable, Sendable {
+  case exited, uncaughtSignal, terminated, killed, launchError, invalidRequest, captureError,
+    reapError
+}
+
 public struct ExternalSensitiveDetails: Equatable, Sendable {
   public let arguments: [String]
   public let stdout: String
@@ -206,6 +212,7 @@ public struct ExternalCheck: Equatable, Sendable {
   public let outcome: ExternalOutcome?
   public let exitCode: Int32?
   public let signal: Int32?
+  public let terminationReason: ExternalTerminationReason?
   public let stdoutBytes: Int64
   public let stderrBytes: Int64
   public let hasStdout: Bool
@@ -220,6 +227,7 @@ public struct ExternalCheck: Equatable, Sendable {
     availability: ExternalAvailability = .unknown, version: String? = nil,
     policy: ExternalPolicy? = nil, status: ExternalStatus, outcome: ExternalOutcome? = nil,
     exitCode: Int32? = nil, signal: Int32? = nil,
+    terminationReason: ExternalTerminationReason? = nil,
     stdoutBytes: Int64 = 0, stderrBytes: Int64 = 0, hasStdout: Bool = false,
     hasStderr: Bool = false,
     sensitiveDetails: ExternalSensitiveDetails? = nil, findings: [Finding] = []
@@ -233,6 +241,7 @@ public struct ExternalCheck: Equatable, Sendable {
     self.outcome = outcome
     self.exitCode = exitCode
     self.signal = signal
+    self.terminationReason = terminationReason
     self.stdoutBytes = stdoutBytes
     self.stderrBytes = stderrBytes
     self.hasStdout = hasStdout

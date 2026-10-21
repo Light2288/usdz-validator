@@ -5,6 +5,19 @@ import XCTest
 @testable import USDZValidation
 
 final class SARIFReportTests: XCTestCase {
+  func testSafeTerminationReasonOmittedOnlyWhenUnavailable() throws {
+    for reason: ExternalTerminationReason? in [nil, .reapError, .captureError, .uncaughtSignal] {
+      let report = try customReport(
+        external: ExternalCheck(
+          requested: true, status: .launchFailed, terminationReason: reason))
+      let properties = try XCTUnwrap(try runs(report)[1]["properties"] as? [String: Any])
+      let external = try XCTUnwrap(properties["externalCheck"] as? [String: Any])
+      XCTAssertEqual(external["terminationReason"] as? String, reason?.rawValue)
+      if reason == nil { XCTAssertNil(external["terminationReason"]) }
+      XCTAssertEqual(try invocation(runs(report)[1])["executionSuccessful"] as? Bool, false)
+    }
+  }
+
   func testRunsAndLocations() throws {
     let report = try makeReport(.native)
     let document = try object(ReportEncoder.encode(report, format: .sarif))

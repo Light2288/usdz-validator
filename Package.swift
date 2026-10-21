@@ -22,6 +22,7 @@ let package = Package(
     ),
     .target(name: "TestSupport", path: "Tests/TestSupport"),
     .testTarget(name: "USDZValidationTests", dependencies: ["USDZValidation", "TestSupport"]),
+    .testTarget(name: "LibraryConsumerTests", dependencies: ["USDZValidation"]),
   ],
   swiftLanguageModes: [.v6]
 )

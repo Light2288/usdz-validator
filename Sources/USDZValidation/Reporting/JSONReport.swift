@@ -136,6 +136,7 @@ enum JSONReport {
         "outcome": external.outcome.map { .string($0.rawValue) } ?? .null,
         "exitCode": external.exitCode.map { .integer(Int64($0)) } ?? .null,
         "signal": external.signal.map { .integer(Int64($0)) } ?? .null,
+        "terminationReason": external.terminationReason.map { .string($0.rawValue) } ?? .null,
         "stdoutBytes": .integer(external.stdoutBytes),
         "stderrBytes": .integer(external.stderrBytes),
         "hasStdout": .bool(external.hasStdout), "hasStderr": .bool(external.hasStderr),
