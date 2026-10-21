@@ -5,6 +5,27 @@ import XCTest
 @testable import USDZValidation
 
 final class TextReportTests: XCTestCase {
+  func testAlphabeticCombiningMarkProseRedactsPathsAndPreservesRelativeMember() throws {
+    let detail = "detail=\u{0345}/Users/fixture-owner/input"
+    let member = "Textures/a\u{0345}/b.png"
+    let finding = Finding(
+      ruleID: "UVK-PATH-004", occurrenceID: "stable-alphabetic-mark-id", category: .policy,
+      severity: .error, message: detail, evidence: ["detail": .string(detail)],
+      location: FindingLocation(entryName: member, archiveByteOffset: 64),
+      provenance: .native(validatorVersion: "0.1.0"))
+    let report = ValidationReport(
+      input: ReportInput(displayName: "input.usdz", byteSize: 123),
+      configuration: try ValidationConfiguration(), coverage: Coverage(areas: [:]),
+      nativeFindings: [finding])
+    let text = String(decoding: try ReportEncoder.encode(report, format: .text), as: UTF8.self)
+    XCTAssertFalse(text.contains("/Users/fixture-owner/"))
+    XCTAssertTrue(text.contains("  message: [redacted path]\n"))
+    XCTAssertTrue(text.contains("  evidence detail: [redacted path]\n"))
+    XCTAssertTrue(text.contains("  member: " + member + "\n"))
+    XCTAssertTrue(text.contains("stable-alphabetic-mark-id"))
+    XCTAssertEqual(report.nativeFindings, [finding])
+  }
+
   func testCombiningMarkBasenameRelocationAndPathRedaction() throws {
     let path = "/\u{0301}Users/fixture-owner/input"
     let finding = Finding(

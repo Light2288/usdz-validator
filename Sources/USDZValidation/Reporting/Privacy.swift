@@ -29,11 +29,18 @@ enum Privacy {
       case .member, .reference:
         if unsafePath(retained) { return "[redacted path]" }
       case .message, .evidence:
+        var inToken = false
         if retained.unicodeScalars.split(whereSeparator: { scalar in
-          switch scalar.value {
-          case 0x2f, 0x3a, 0x5c, 0x2e, 0x5f, 0x2d, 0x2b, 0x7e, 0x25: return false
-          default: return !scalar.properties.isAlphabetic && scalar.properties.numericType == nil
+          // Marks extend names, but cannot conceal a leading path separator after punctuation.
+          switch scalar.properties.generalCategory {
+          case .nonspacingMark, .spacingMark, .enclosingMark: return !inToken
+          default: break
           }
+          switch scalar.value {
+          case 0x2f, 0x3a, 0x5c, 0x2e, 0x5f, 0x2d, 0x2b, 0x7e, 0x25: inToken = true
+          default: inToken = scalar.properties.isAlphabetic || scalar.properties.numericType != nil
+          }
+          return !inToken
         })
         .contains(where: { unsafePath(String(String.UnicodeScalarView($0))) }) {
           return "[redacted path]"

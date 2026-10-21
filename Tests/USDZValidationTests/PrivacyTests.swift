@@ -4,6 +4,25 @@ import XCTest
 @testable import USDZValidation
 
 final class PrivacyTests: XCTestCase {
+  func testAlphabeticCombiningMarksCannotConcealAbsoluteProsePaths() {
+    for value in [
+      "detail=\u{0345}/Users/fixture-owner/input",
+      "detail`\u{0345}/Users/fixture-owner/input",
+      "detail \"\u{0345}/Users/fixture-owner/input",
+    ] {
+      for kind: DisclosureKind in [.message, .evidence] {
+        XCTAssertEqual(
+          Privacy.render(value, kind: kind, sensitive: false), "[redacted path]", value)
+        XCTAssertEqual(Privacy.render(value, kind: kind, sensitive: true), value)
+      }
+    }
+    for relative in ["Textures/a\u{0345}/b.png", "Sources/\u{0345}texture.png"] {
+      for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+        XCTAssertEqual(Privacy.render(relative, kind: kind, sensitive: false), relative)
+      }
+    }
+  }
+
   func testCombiningMarksCannotHideASCIIPathSyntax() {
     XCTAssertEqual(
       Privacy.render("/private/\u{0301}input.usdz", kind: .basename, sensitive: false),
