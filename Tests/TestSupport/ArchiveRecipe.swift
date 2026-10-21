@@ -224,15 +224,19 @@ public struct ArchiveRecipe: Sendable {
 
   /// Original raw USDA lexical stress recipe; values are authored verbatim, without escaping.
   /// Deliberately malformed values can exercise lexer boundaries independently of product code.
-  public static func repeatedUSDALiterals(valueBytes: Data, count: Int, paddingBytes: Int = 0)
+  public static func repeatedUSDALiterals(
+    valueBytes: Data, count: Int, paddingBytes: Int = 0, tripleDelimited: Bool = false
+  )
     -> Data
   {
     precondition(count >= 0 && paddingBytes >= 0)
     var bytes = Data("#usda 1.0\n".utf8)
+    let delimiter = Data(repeating: 0x40, count: tripleDelimited ? 3 : 1)
     for _ in 0..<count {
-      bytes.append(0x40)
+      bytes.append(delimiter)
       bytes.append(valueBytes)
-      bytes.append(contentsOf: [0x40, 0x20])
+      bytes.append(delimiter)
+      bytes.append(0x20)
     }
     bytes.append(Data(repeating: 0x20, count: paddingBytes))
     return bytes
