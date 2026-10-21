@@ -121,7 +121,11 @@ enum CommandDriver {
     }
     do {
       let data = try ReportEncoder.encode(report, format: ReportFormat(rawValue: options.format)!)
-      try streams.stdout(data)
+      if let output = options.output {
+        try ReportDestination.write(data, to: URL(fileURLWithPath: output), input: url)
+      } else {
+        try streams.stdout(data)
+      }
     } catch {
       return diagnostic(
         "report output failed", code: deliveryFailureCode(preserving: report.exitCode),

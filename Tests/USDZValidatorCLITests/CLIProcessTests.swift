@@ -48,6 +48,81 @@ final class CLIProcessTests: XCTestCase {
     XCTAssertTrue(result.stderr.isEmpty)
     return try XCTUnwrap(JSONSerialization.jsonObject(with: result.stdout) as? [String: Any])
   }
+  func testOutputDestinationAndFailurePrivacy() throws {
+    try withAssets { directory, good, binary, bad in
+      let output = directory.appendingPathComponent("report\u{001B}\n.json")
+      for format in ["text", "json", "sarif"] {
+        for (asset, expected) in [
+          (good, Int32(0)), (binary, 2), (bad, 1), (directory.appendingPathComponent("missing"), 3),
+        ] {
+          try Data("previous report".utf8).write(to: output)
+          let result = try run([
+            "validate", asset.path, "--format", format, "--output", output.path,
+          ])
+          XCTAssertEqual(result.exitCode, expected)
+          XCTAssertTrue(result.stdout.isEmpty)
+          let bytes = try Data(contentsOf: output)
+          XCTAssertEqual(bytes.last, 10)
+          if format != "text" {
+            XCTAssertEqual(bytes.first, 123)
+            if bytes.first == 123 { _ = try JSONSerialization.jsonObject(with: bytes) }
+          }
+          XCTAssertEqual(bytes, try run(["validate", asset.path, "--format", format]).stdout)
+        }
+      }
+      let original = try Data(contentsOf: good)
+      let link = directory.appendingPathComponent("hardlink")
+      XCTAssertEqual(Darwin.link(good.path, link.path), 0)
+      let symbolic = directory.appendingPathComponent("symlink")
+      try FileManager.default.createSymbolicLink(at: symbolic, withDestinationURL: output)
+      for destination in [
+        good, link, symbolic, directory, directory.appendingPathComponent("missing/report"),
+      ] {
+        let asset = destination == good || destination == link ? good : bad
+        let protected = try run(["validate", asset.path, "--output", destination.path])
+        XCTAssertEqual(protected.exitCode, 3)
+        XCTAssertTrue(protected.stdout.isEmpty)
+        XCTAssertFalse(protected.stderr.isEmpty)
+        XCTAssertFalse(String(decoding: protected.stderr, as: UTF8.self).contains(directory.path))
+        XCTAssertFalse(protected.stderr.contains(27))
+      }
+      XCTAssertEqual(try Data(contentsOf: good), original)
+      for asset in [binary, bad] {
+        let failed = try run([
+          "validate", asset.path, "--output",
+          directory.appendingPathComponent("missing/report").path,
+        ])
+        XCTAssertEqual(failed.exitCode, 3)
+        XCTAssertTrue(failed.stdout.isEmpty)
+        XCTAssertFalse(failed.stderr.isEmpty)
+      }
+      let failure = try run(
+        ["validate", good.path, "--output", directory.path], scenario: "internalFailure")
+      XCTAssertEqual(failure.exitCode, 70)
+      XCTAssertTrue(failure.stdout.isEmpty)
+      XCTAssertFalse(failure.stderr.isEmpty)
+    }
+  }
+
+  func testEncodingCapPreservesExistingOutput() throws {
+    try withAssets { directory, good, _, _ in
+      let output = directory.appendingPathComponent("report")
+      let previous = Data("previous report".utf8)
+      try previous.write(to: output)
+      let result = try run(
+        ["validate", good.path, "--format", "text", "--output", output.path],
+        scenario: "encodingCap")
+      XCTAssertEqual(result.exitCode, 3)
+      XCTAssertTrue(result.stdout.isEmpty)
+      XCTAssertFalse(result.stderr.isEmpty)
+      XCTAssertEqual(try Data(contentsOf: output), previous)
+      XCTAssertFalse(String(decoding: result.stderr, as: UTF8.self).contains(directory.path))
+      XCTAssertEqual(
+        try FileManager.default.contentsOfDirectory(atPath: directory.path).sorted(),
+        ["arbitrary.asset", "bad", "gap", "report"])
+    }
+  }
+
   func testInvocationAndExitMatrix() throws {
     for args in [
       ["--help"], ["--version"], ["validate", "--help"], ["rules", "--help"], ["help", "validate"],
@@ -240,7 +315,9 @@ final class CLIProcessTests: XCTestCase {
   }
   func testNormalExecutableIgnoresHookEnvironment() throws {
     let good = Fixtures.root.appendingPathComponent("valid-usda.usdz")
-    for scenario in ["internalFailure", "checkerUnavailable", "checkerSuccess", "checkerFailure"] {
+    for scenario in [
+      "internalFailure", "checkerUnavailable", "checkerSuccess", "checkerFailure", "encodingCap",
+    ] {
       let result = try CLIHarness.run(
         arguments: ["validate", good.path, "--format", "json"],
         environment: [

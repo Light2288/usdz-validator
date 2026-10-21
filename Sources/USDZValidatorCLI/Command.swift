@@ -18,6 +18,9 @@ struct USDZValidatorCommand: ParsableCommand {
       arguments: Array(CommandLine.arguments.dropFirst()), streams: .standard
     ) { url, configuration in
       #if UVK_PROCESS_TESTING
+        if let report = ProcessTestHooks.report(fileAt: url, configuration: configuration) {
+          return report
+        }
         if let validator = try ProcessTestHooks.validator() {
           return try validator.validate(fileAt: url, configuration: configuration)
         }
@@ -35,6 +38,8 @@ struct ValidateCommand: ParsableCommand {
       "Validate exactly one local regular file; stdin, URLs, and batch input are unsupported.")
   @Argument(help: "Local input path (use -- before an option-like filename).") var input: String
   @Option(help: "Report format: text, json, or sarif.") var format = "text"
+  @Option(help: "Write the complete report by atomic replacement at this local path.") var output:
+    String?
   @Option(help: "Native profile: general-v1 or apple-portable-v1.") var profile = "general-v1"
   @Option(help: "Explicit UTF-8 JSON budget configuration (at most 64 KiB).") var config: String?
   @Option(name: .long, help: "Blocking severity: error or warning.") var failOn = "error"
@@ -53,7 +58,8 @@ struct ValidateCommand: ParsableCommand {
     guard ReportFormat(rawValue: format) != nil, Profile(rawValue: profile) != nil,
       FailureThreshold(rawValue: failOn) != nil,
       !input.isEmpty, input != "-", !input.utf8.contains(0), !input.contains("://"),
-      URL(string: input)?.scheme == nil
+      URL(string: input)?.scheme == nil,
+      output.map({ !$0.isEmpty && !$0.utf8.contains(0) }) ?? true
     else { throw ArgumentParser.ValidationError("Invalid validation options or local path.") }
   }
 }
