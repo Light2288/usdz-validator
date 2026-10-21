@@ -14,8 +14,9 @@ enum Privacy {
     let limit = kind == .message ? 1_024 : 4_096
     let retained: String
     if kind == .basename {
-      let separator = value.lastIndex { $0 == "/" || $0 == "\\" }
-      let start = separator.map { value.index(after: $0) } ?? value.startIndex
+      let scalars = value.unicodeScalars
+      let separator = scalars.lastIndex { $0.value == 0x2f || $0.value == 0x5c }
+      let start = separator.map { scalars.index(after: $0) } ?? scalars.startIndex
       retained = bounded(value[start...], bytes: limit)
     } else {
       retained = bounded(value, bytes: limit)
@@ -28,10 +29,13 @@ enum Privacy {
       case .member, .reference:
         if unsafePath(retained) { return "[redacted path]" }
       case .message, .evidence:
-        if retained.split(whereSeparator: {
-          !$0.isLetter && !$0.isNumber && !"/:\\._-+~%".contains($0)
+        if retained.unicodeScalars.split(whereSeparator: { scalar in
+          switch scalar.value {
+          case 0x2f, 0x3a, 0x5c, 0x2e, 0x5f, 0x2d, 0x2b, 0x7e, 0x25: return false
+          default: return !scalar.properties.isAlphabetic && scalar.properties.numericType == nil
+          }
         })
-        .contains(where: { unsafePath(String($0)) }) {
+        .contains(where: { unsafePath(String(String.UnicodeScalarView($0))) }) {
           return "[redacted path]"
         }
       case .basename: break
@@ -50,21 +54,31 @@ enum Privacy {
   }
 
   private static func unsafePath(_ value: String) -> Bool {
-    if value.isEmpty || value.hasPrefix("/") || value.hasPrefix("~") || value.contains("\\") {
+    // ASCII grammar is byte-defined; combining marks must not hide separators or punctuation.
+    let bytes = value.utf8
+    if bytes.isEmpty || bytes.first == 0x2f || bytes.first == 0x7e || bytes.contains(0x5c) {
       return true
     }
-    if value.split(separator: "/", omittingEmptySubsequences: false).contains("..") {
+    if bytes.split(separator: 0x2f, omittingEmptySubsequences: false)
+      .contains(where: { $0.elementsEqual([0x2e, 0x2e]) })
+    {
       return true
     }
-    if let colon = value.firstIndex(of: ":") {
-      let scheme = value[..<colon]
-      if scheme.first?.isASCII == true, scheme.first?.isLetter == true,
-        scheme.allSatisfy({ $0.isASCII && ($0.isLetter || $0.isNumber || "+-.".contains($0)) })
+    if let colon = bytes.firstIndex(of: 0x3a) {
+      let scheme = bytes[..<colon]
+      if let first = scheme.first, isASCIILetter(first),
+        scheme.allSatisfy({
+          isASCIILetter($0) || (0x30...0x39).contains($0) || $0 == 0x2b || $0 == 0x2d || $0 == 0x2e
+        })
       {
         return true
       }
     }
     return false
+  }
+
+  private static func isASCIILetter(_ byte: UInt8) -> Bool {
+    (0x41...0x5a).contains(byte) || (0x61...0x7a).contains(byte)
   }
 
   private static func escaped(_ value: String, bytes: Int) -> String {

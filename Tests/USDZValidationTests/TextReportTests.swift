@@ -5,6 +5,41 @@ import XCTest
 @testable import USDZValidation
 
 final class TextReportTests: XCTestCase {
+  func testCombiningMarkBasenameRelocationAndPathRedaction() throws {
+    let path = "/\u{0301}Users/fixture-owner/input"
+    let finding = Finding(
+      ruleID: "UVK-PATH-004", occurrenceID: "stable-combining-id", category: .policy,
+      severity: .error, message: "unsafe reference `\u{0301}" + path + "`",
+      evidence: ["reference": .string(path)],
+      location: FindingLocation(entryName: path, archiveByteOffset: 64),
+      provenance: .native(validatorVersion: "0.1.0"))
+    let configuration = try ValidationConfiguration()
+    let coverage = Coverage(areas: [
+      .references: CoverageAreaResult(
+        requested: true, state: .partial,
+        reasons: [
+          CoverageReason(ruleID: "UVK-PATH-004", reasonID: "unsafeReference")
+        ])
+    ])
+    let first = ValidationReport(
+      input: ReportInput(displayName: "/private/\u{0301}input.usdz", byteSize: 123),
+      configuration: configuration, coverage: coverage, nativeFindings: [finding])
+    let relocated = ValidationReport(
+      input: ReportInput(displayName: "/elsewhere/\u{0301}input.usdz", byteSize: 123),
+      configuration: configuration, coverage: coverage, nativeFindings: [finding])
+    let bytes = try ReportEncoder.encode(first, format: .text)
+    let text = String(decoding: bytes, as: UTF8.self)
+    XCTAssertTrue(text.contains("input: \u{0301}input.usdz\n"))
+    XCTAssertFalse(text.contains("private/"))
+    XCTAssertFalse(text.contains(path))
+    XCTAssertFalse(text.contains("fixture-owner"))
+    XCTAssertTrue(text.contains("stable-combining-id"))
+    XCTAssertTrue(text.contains("unsafeReference"))
+    XCTAssertEqual(bytes, try ReportEncoder.encode(relocated, format: .text))
+    XCTAssertEqual(first.nativeFindings, [finding])
+    XCTAssertEqual(first.coverage, coverage)
+  }
+
   func testEquivalentMeaning() throws {
     let location = FindingLocation(
       entryName: "root.usda", archiveByteOffset: 64, layerByteOffset: 9, line: 2, column: 1)

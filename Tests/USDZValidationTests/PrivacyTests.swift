@@ -4,6 +4,39 @@ import XCTest
 @testable import USDZValidation
 
 final class PrivacyTests: XCTestCase {
+  func testCombiningMarksCannotHideASCIIPathSyntax() {
+    XCTAssertEqual(
+      Privacy.render("/private/\u{0301}input.usdz", kind: .basename, sensitive: false),
+      "\u{0301}input.usdz")
+    XCTAssertEqual(
+      Privacy.render("C:\\private\\\u{0301}input.usdz", kind: .basename, sensitive: false),
+      "\u{0301}input.usdz")
+    for path in [
+      "/\u{0301}Users/fixture-owner/input", "folder\\\u{0301}private/input",
+      "../\u{0301}fixture-owner/input", "folder/../\u{0301}fixture-owner/input",
+      "https:\u{0301}//fixture-owner/input", "C:\u{0301}private/input", "~\u{0301}private/input",
+    ] {
+      for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+        XCTAssertEqual(Privacy.render(path, kind: kind, sensitive: false), "[redacted path]", path)
+      }
+      for prefix in ["detail=\u{0301}", "detail`\u{0301}", "detail \"\u{0301}"] {
+        for kind: DisclosureKind in [.message, .evidence] {
+          XCTAssertEqual(
+            Privacy.render(prefix + path, kind: kind, sensitive: false), "[redacted path]",
+            prefix + path)
+        }
+      }
+    }
+    for kind: DisclosureKind in [.member, .reference, .message, .evidence] {
+      XCTAssertEqual(
+        Privacy.render("Sources/\u{0301}texture.png", kind: kind, sensitive: false),
+        "Sources/\u{0301}texture.png")
+      XCTAssertEqual(
+        Privacy.render("/\u{0301}Users/fixture-owner/input", kind: kind, sensitive: true),
+        "/\u{0301}Users/fixture-owner/input")
+    }
+  }
+
   func testMaliciousNamesAndDisclosure() throws {
     let owner = "/Users/fixture-owner/"
     XCTAssertEqual(
