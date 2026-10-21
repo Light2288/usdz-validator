@@ -98,6 +98,22 @@
       "history": [
         "2026-10-21: Original project-authored fixture/generator created for v0.1."
       ]
+    },
+    {
+      "id": "uvk-image-header-recipes-v1",
+      "path": "Tests/TestSupport/ImageRecipes.swift",
+      "kind": "generator",
+      "purpose": "Original deterministic PNG IHDR and JPEG SOF header vectors, bounded segment padding and controlled malformed-header mutations; header-only JPEG bytes are not valid complete-image or scene oracles.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "c50686ce677bb34a91dc185bf776461921dea209966e32984f0a5391d0a2639e",
+      "recipe": "Compile committed Swift 6 ImageRecipes.swift with Foundation and ArchiveRecipe.swift. pngHeader(width:height:) writes the PNG signature, 13-byte RGBA 8-bit IHDR with caller-selected big-endian dimensions and independent CRC-32. jpegHeader(marker:width:height:precision:leadingSegments:) writes SOI and one three-component SOF (default SOF0, 16x8, precision 8); SOF1/SOF2 and unsupported marker values are selected explicitly. jpegSegment(marker:fields:) encodes the two-byte inclusive length. jpegPadding(byteCount:) writes exact-sized APP1 segments of at most 65,537 total bytes with 0x42 bodies. Tests truncate every header prefix and mutate signatures, IHDR lengths including 0xffffffff, dimensions, CRC, frame lengths/counts/components and marker framing. Leading padding puts marker/length fields across 64 KiB boundaries and SOF ends at/one byte beyond 1,048,576; un-read trailing 0xab bytes model pixels. These are original header-only vectors, not decoder-validation fixtures; Fixtures.pixelPNG() supplies the original complete PNG.",
+      "history": [
+        "2026-10-21: Add project-authored MIT PNG/JPEG header recipes for bounded dimension inspection without pixel decoding or external assets."
+      ]
     }
   ]
 }
