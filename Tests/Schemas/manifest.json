@@ -120,38 +120,38 @@
     },
     {
       "path": "Examples/report-v1.json",
-      "sha256": "bf5871ec579d025a00db0e63b15b4b3c304406c2397f72fe6d44efa6e1e3e9e0",
+      "sha256": "14aabbe083be68def1a0b590cc62b06513b54e1a8ef501cfc9160a20e0057407",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "example",
-      "recipe": "Exact copy of Tests/Goldens/report-complete-v1.json.",
+      "recipe": "Independently project Tests/Goldens/report-complete-v1.json onto the committed complete USDA fixture: input.displayName valid-usda.usdz and input.byteSize 469; retain all other literal complete fields. Serialize sorted compact UTF-8 JSON plus LF. Verify, without regeneration, using .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz --format json. Fixture SHA-256: ffbb1f0aabab7dee1b7b85250b7ab53684385bfcf089de1bd2b53189ac500184.",
       "format": "report"
     },
     {
       "path": "Examples/report.sarif",
-      "sha256": "c9946e94246dfc32b5ffeaa57812c07c8513b081db22402c161d47663def52cb",
+      "sha256": "03c7d17a28e608b6583200e7677d4892408a992fb24ff528b217996d78c2ece2",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "example",
-      "recipe": "Exact copy of Tests/Goldens/native-v1.sarif.",
+      "recipe": "Independently project Tests/Goldens/native-v1.sarif onto the committed complete USDA fixture: artifact URI valid-usda.usdz and length 469; empty results; properties input/coverage/counts/status/gate/exit/acceptedIncomplete equal the complete JSON example; preserve all native descriptors, provenance, configuration and invocation. Serialize sorted compact UTF-8 JSON plus LF. Verify, without regeneration, using .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz --format sarif. Fixture SHA-256: ffbb1f0aabab7dee1b7b85250b7ab53684385bfcf089de1bd2b53189ac500184.",
       "format": "sarif"
     },
     {
       "path": "NOTICE",
-      "sha256": "a184d3948fd413da1da9d76213be3f554d10bf274b2e38fcf3ca2e506863561a",
+      "sha256": "732f86f07f9bf8de6fa7482233e0bbb70598c72dbb3eadfd2c9f8ac351bb71f9",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
-      "license": "MIT AND LicenseRef-OASIS-SARIF-Document AND PSF-2.0",
+      "license": "MIT AND Apache-2.0 WITH Swift-exception AND LicenseRef-OASIS-SARIF-Document AND PSF-2.0",
       "licenseText": "NOTICE",
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "development-tool-or-notice",
-      "recipe": "Retain complete OASIS published Notices and verbatim license texts extracted from all six pinned Python distributions; source URLs/artifact hashes are in this manifest."
+      "recipe": "Retain complete OASIS published Notices and verbatim license texts extracted from all six pinned Python distributions; source URLs/artifact hashes are in this manifest. Also retain verbatim LICENSE.txt from apple/swift-argument-parser 1.5.0 resolved revision 41982a3656a71c768319979febd796c6fd111d5c (https://github.com/apple/swift-argument-parser/blob/41982a3656a71c768319979febd796c6fd111d5c/LICENSE.txt), Apache License 2.0 with Swift Runtime Library Exception; source copyright from its ArgumentParser sources. Preserve original project-contributor MIT attribution."
     },
     {
       "path": "Schemas/budget-config-v1.schema.json",
@@ -350,7 +350,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "b5e140c858fb5b4f43513e49122682b38a472edb05a1492d48a93bc2396c57d1",
+      "sha256": "e1c16733e028765b0bbc895ef1151924f019daee6a4bfbab755327d099354d15",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
