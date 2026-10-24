@@ -218,26 +218,6 @@ extension USDCResourceTests {
       XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcMetadataBlockBytes))
     }
 
-    // Every repeated numeric array edge counts, even when the body is shared and skipped.
-    let fanout = try USDCMutationRecipe.valueCrate(
-      reps: Array(repeating: 0x8003_0000_0000_0058, count: 8),
-      body: USDCReferenceTests.word(250_000))
-    let work = ResourceLedger()
-    XCTAssertThrowsError(try USDCReferenceTests.scan(fanout, ledger: work)) {
-      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
-    }
-    XCTAssertEqual(work.usdcLiveBytes, 0)
-    for count in [250_000, 250_001] {
-      let bytes = try USDCMutationRecipe.valueCrate(
-        reps: [0x8003_0000_0000_0058], body: USDCReferenceTests.word(UInt64(count)))
-      if count == 250_000 {
-        XCTAssertEqual(try USDCReferenceTests.scan(bytes).state, .complete)
-      } else {
-        XCTAssertThrowsError(try USDCReferenceTests.scan(bytes)) {
-          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcItems))
-        }
-      }
-    }
     // Keep both 32/33-depth and shared-body identity checks in the focused resource suite.
     for depth in [32, 33] {
       let bytes = try USDCMutationRecipe.deepAssetCrate(depth: depth, sharedFields: 2)
@@ -313,48 +293,62 @@ extension USDCResourceTests {
 }
 
 extension USDCResourceTests {
-  // Refunding work or starting a new work ledger at scanner entry must lose these
-  // literal invocation totals even though every individual layer fits its allowance.
-  func testCrossLayerWorkReachesExactLimitWithoutRefunding() throws {
-    // Hand-counted one-field numeric-array recipe: TOC 33, tokens 9, strings 4,
-    // fields 5, fieldsets 7, paths 45, specs 10, live traversal/scratch 134 = 247.
-    // Array elements add their declared count. No expected total comes from a scan.
-    let layers: [(items: UInt64, cumulativeWork: UInt64)] = [
-      (250_000, 250_247), (250_000, 500_494), (250_000, 750_741),
-      (250_000, 1_000_988), (250_000, 1_251_235), (250_000, 1_501_482),
-      (250_000, 1_751_729), (248_024, 2_000_000),
+  // Refunding work, deduplicating numeric payloads or resetting between layers loses these totals.
+  func testRepeatedNumericVisitsAndCrossLayerActualWork() throws {
+    // One-field recipe: TOC 33, tokens 9, strings 4, fields 5, fieldsets 7,
+    // paths 45, specs 10, live traversal/scratch 134 = 247, regardless of numeric count.
+    // Each additional field adds 3 field-table + 3 fieldset-table units and
+    // 132 live units (2 fieldset edges, 32+96 scratch slots, token lookup, ValueRep).
+    let layers: [(fields: Int, count: UInt64, cumulativeWork: UInt64)] = [
+      (1, 250_000, 247), (1, .max, 494), (2, 250_001, 879), (8, .max, 2_092),
     ]
     let ledger = ResourceLedger()
     let retained = try ledger.reserveUSDCStorage(17)
     defer { retained.release() }
-    let baselineLiveBytes: UInt64 = 17
-    for (index, layer) in layers.enumerated() {
+    for layer in layers {
       let bytes = try USDCMutationRecipe.valueCrate(
-        reps: [0x8003_0000_0000_0058], body: USDCReferenceTests.word(layer.items))
+        reps: Array(repeating: 0x8003_0000_0000_0058, count: layer.fields),
+        body: USDCReferenceTests.word(layer.count))
       let input = USDCReferenceTests.input(bytes, ledger: ledger)
       let state = try USDCReader.scan(
         entry: input.entry, reader: input.reader,
         onReference: { _ in XCTFail("Numeric arrays contain no asset values") },
         onIssue: { _ in XCTFail("Supported numeric-array structure") })
       XCTAssertEqual(state, .complete)
-      XCTAssertEqual(ledger.usdcWorkUnits, layer.cumulativeWork, "layer \(index)")
-      XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes, "layer \(index)")
+      XCTAssertEqual(ledger.usdcWorkUnits, layer.cumulativeWork)
+      XCTAssertEqual(ledger.usdcLiveBytes, 17)
     }
-    XCTAssertThrowsError(try ledger.consumeUSDCWork(1)) {
-      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+  }
+
+  // A count exemption must never make actual repeated traversal unlimited.
+  func testActualNumericVisitsExhaustStructuralWork() throws {
+    // From the independent breakdown above: 109 fixed units + 138 per field.
+    // 14,491 fields cost 1,999,867. One more would cost 2,000,005;
+    // its final 96-slot coordinate reservation is rejected at 1,999,906.
+    for (fields, expectedWork): (Int, UInt64) in [(14_491, 1_999_867), (14_492, 1_999_906)] {
+      let bytes = try USDCMutationRecipe.valueCrate(
+        reps: Array(repeating: 0x8003_0000_0000_0058, count: fields),
+        body: USDCReferenceTests.word(.max))
+      let ledger = ResourceLedger()
+      let retained = try ledger.reserveUSDCStorage(17)
+      let input = USDCReferenceTests.input(bytes, ledger: ledger)
+      func scan() throws -> USDCScanState {
+        try USDCReader.scan(
+          entry: input.entry, reader: input.reader,
+          onReference: { _ in XCTFail("Numeric arrays contain no asset values") },
+          onIssue: { _ in XCTFail("Hard work stops must propagate") })
+      }
+      if fields == 14_491 {
+        XCTAssertEqual(try scan(), .complete)
+      } else {
+        XCTAssertThrowsError(try scan()) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+        }
+      }
+      XCTAssertEqual(ledger.usdcWorkUnits, expectedWork)
+      XCTAssertEqual(ledger.usdcLiveBytes, 17)
+      retained.release()
+      XCTAssertEqual(ledger.usdcLiveBytes, 0)
     }
-    XCTAssertEqual(ledger.usdcWorkUnits, 2_000_000)
-    let nextBytes = try USDCMutationRecipe.valueCrate(reps: [])
-    let next = USDCReferenceTests.input(nextBytes, ledger: ledger)
-    XCTAssertThrowsError(
-      try USDCReader.scan(
-        entry: next.entry, reader: next.reader,
-        onReference: { _ in XCTFail("Exhausted invocation must not emit") },
-        onIssue: { _ in XCTFail("Work stops must propagate as typed resource failures") })
-    ) {
-      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
-    }
-    XCTAssertEqual(ledger.usdcWorkUnits, 2_000_000)
-    XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes)
   }
 }

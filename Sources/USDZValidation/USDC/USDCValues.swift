@@ -345,7 +345,12 @@ enum USDCValues {
       if flags & 0x80 != 0 {
         if payload == 0 { return }
         var c = try cursor(payload)
-        _ = try count(&c, stride: 1)
+        if (1...9).contains(tag) || (13...30).contains(tag) {
+          // Numeric geometry stays opaque: only the bounded count header is inspected.
+          _ = try c.integer()
+        } else {
+          _ = try count(&c, stride: 1)
+        }
         return
       }
       // These bodies are source-proven non-asset containers. No body unpacking is
