@@ -661,7 +661,7 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "bd8359b9fef6afa290d67453606a4d60b427f8213065a1a5997dce753d50eb3b",
+      "sha256": "99a93b6703cb2fb9714a3da13fbd644f031d59197f646790ff06223124b3f0bb",
       "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
       "history": [
         "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
@@ -1097,7 +1097,7 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "02b4553ae3a16c9ca21ee333947244ac7a57c62223aa4ea053bb942070b9a527",
+      "sha256": "3849565a5ed6e7b12f0c2d4b50edaba89d619790b09d213a043ae960c6ba4237",
       "recipe": "Compile committed Swift 6 TestSupport source with Foundation only; no product decoder import. See docs/fixtures.md.",
       "history": [
         "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
@@ -1113,11 +1113,179 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "a8bbebc5a48ed59b52e7b7f36d323cc7b3f67b73c17b1e1e4761f88669195f1c",
+      "sha256": "fc4278a8a117c265bac572df362656cac2899d90335aa8e8b45f0cf8e1864658",
       "recipe": "Compile committed Swift 6 TestSupport source with Foundation only; no product decoder import. See docs/fixtures.md.",
       "history": [
         "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
       ]
+    },
+    {
+      "id": "uvk-usdc-task6-clip-empty-usda",
+      "path": "Tests/Fixtures/USDC/extra/clip-empty.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-empty",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "c4ae14b86abd6ed0a3729172b762aee441a9247ab4921a7460baa505795beec7"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-empty-usdc",
+      "path": "Tests/Fixtures/USDC/extra/clip-empty.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-empty",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/clip-empty.usda -o Tests/Fixtures/USDC/extra/clip-empty.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "60f1953518abd731c70a739e466735351a14467c60dcbcc1a99e49ddbcbf8f41"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-template-usda",
+      "path": "Tests/Fixtures/USDC/extra/clip-template.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-template",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "14fac65fd916e1df876b26b7cff8b18e5372665796a218053a1ac427ceb412f7"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-template-usdc",
+      "path": "Tests/Fixtures/USDC/extra/clip-template.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-template",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/clip-template.usda -o Tests/Fixtures/USDC/extra/clip-template.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "578c529c82f444fb9b0de80fa589ef18dfbdc1039641405770a77ede796a3865"
+    },
+    {
+      "id": "uvk-usdc-task6-internal-reference-customdata-usda",
+      "path": "Tests/Fixtures/USDC/extra/internal-reference-customdata.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: internal-reference-customdata",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "3035dd7b53c65022ebf8a9d587dc9d13d37cf85586135ad7b7c9ce495cb4fce8"
+    },
+    {
+      "id": "uvk-usdc-task6-internal-reference-customdata-usdc",
+      "path": "Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: internal-reference-customdata",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/internal-reference-customdata.usda -o Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "878f5c11a2c40aa8954247739e991eb6a1652b8ea468f5dbe7950938ff2608bb"
+    },
+    {
+      "id": "uvk-usdc-task6-provenance-json",
+      "path": "Tests/Fixtures/USDC/extra/provenance.json",
+      "kind": "evidence",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: provenance",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "6753ff9b9eb06dbc808541bc5807723243163ec962bdc8b649402e68fbec7883"
+    },
+    {
+      "id": "uvk-usdc-task6-unregistered-list-usda",
+      "path": "Tests/Fixtures/USDC/extra/unregistered-list.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: unregistered-list",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "9dd0a1ec577a5895e74ee14a1a4dab81cd6e12d778375b24ba1159804e6ba185"
+    },
+    {
+      "id": "uvk-usdc-task6-unregistered-list-usdc",
+      "path": "Tests/Fixtures/USDC/extra/unregistered-list.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: unregistered-list",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/unregistered-list.usda -o Tests/Fixtures/USDC/extra/unregistered-list.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "59615cedf9adfa190aa5b8b60a15964a6aec4c90a0741b2852fc33d00bb86e38"
     }
   ]
 }

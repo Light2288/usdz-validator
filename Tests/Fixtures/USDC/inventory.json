@@ -1872,5 +1872,153 @@
         }
       ]
     }
+  ],
+  "extraCases": [
+    {
+      "id": "extra/clip-template",
+      "crate": "extra/clip-template.usdc",
+      "source": "extra/clip-template.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": false,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/clip-template.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/clip-template.usdc"
+      ],
+      "crateSHA256": "578c529c82f444fb9b0de80fa589ef18dfbdc1039641405770a77ede796a3865",
+      "sourceSHA256": "14fac65fd916e1df876b26b7cff8b18e5372665796a218053a1ac427ceb412f7",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/clip-empty",
+      "crate": "extra/clip-empty.usdc",
+      "source": "extra/clip-empty.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/clip-empty.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/clip-empty.usdc"
+      ],
+      "crateSHA256": "60f1953518abd731c70a739e466735351a14467c60dcbcc1a99e49ddbcbf8f41",
+      "sourceSHA256": "c4ae14b86abd6ed0a3729172b762aee441a9247ab4921a7460baa505795beec7",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/unregistered-list",
+      "crate": "extra/unregistered-list.usdc",
+      "source": "extra/unregistered-list.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": false,
+      "rawUnregisteredValues": [
+        "@raw-a.png@",
+        "@raw-b.png@"
+      ],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/unregistered-list.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/unregistered-list.usdc"
+      ],
+      "crateSHA256": "59615cedf9adfa190aa5b8b60a15964a6aec4c90a0741b2852fc33d00bb86e38",
+      "sourceSHA256": "9dd0a1ec577a5895e74ee14a1a4dab81cd6e12d778375b24ba1159804e6ba185",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [
+        "ListInfoKeys omits arbitraryMetadata; export text corroborates raw syntax only"
+      ],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/internal-reference-customdata",
+      "crate": "extra/internal-reference-customdata.usdc",
+      "source": "extra/internal-reference-customdata.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "internal-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "internal-meta.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0,
+            "customData",
+            "nested"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/internal-reference-customdata.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc"
+      ],
+      "crateSHA256": "878f5c11a2c40aa8954247739e991eb6a1652b8ea468f5dbe7950938ff2608bb",
+      "sourceSHA256": "3035dd7b53c65022ebf8a9d587dc9d13d37cf85586135ad7b7c9ce495cb4fce8",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    }
   ]
 }

@@ -23,8 +23,11 @@ public enum USDCFixtureCoordinate: Decodable, Equatable, Sendable {
 
   public init(from decoder: any Decoder) throws {
     let value = try decoder.singleValueContainer()
-    if let index = try? value.decode(Int.self) { self = .index(index) }
-    else { self = .key(try value.decode(String.self)) }
+    if let index = try? value.decode(Int.self) {
+      self = .index(index)
+    } else {
+      self = .key(try value.decode(String.self))
+    }
   }
 }
 
@@ -59,12 +62,21 @@ public enum USDCFixtures {
   public static var root: URL { Fixtures.root.appendingPathComponent("USDC", isDirectory: true) }
 
   /// Load committed evidence only; no writer, oracle, product decoder or research checkout is used.
-  public static func cases() throws -> [USDCFixtureCase] {
-    struct Inventory: Decodable { let cases: [USDCFixtureRecord] }
-    let inventory = try JSONDecoder().decode(Inventory.self,
+  public static func cases() throws -> [USDCFixtureCase] { try load(extra: false) }
+
+  public static func extraCases() throws -> [USDCFixtureCase] { try load(extra: true) }
+
+  private static func load(extra: Bool) throws -> [USDCFixtureCase] {
+    struct Inventory: Decodable {
+      let cases: [USDCFixtureRecord]
+      let extraCases: [USDCFixtureRecord]
+    }
+    let inventory = try JSONDecoder().decode(
+      Inventory.self,
       from: Data(contentsOf: root.appendingPathComponent("inventory.json")))
-    return try inventory.cases.map { record in
-      USDCFixtureCase(id: record.id,
+    return try (extra ? inventory.extraCases : inventory.cases).map { record in
+      USDCFixtureCase(
+        id: record.id,
         crate: try Data(contentsOf: root.appendingPathComponent(record.crate)),
         version: record.version, expectedValues: record.expectedValues.map { Data($0.utf8) },
         expectedInspectionComplete: record.expectedInspectionComplete, metadata: record)

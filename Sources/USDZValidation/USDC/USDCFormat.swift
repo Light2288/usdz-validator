@@ -135,3 +135,43 @@ enum USDCIntegers {
     return output
   }
 }
+
+/// Admitted representation matrix, pinned to OpenUSD 96c1989167d2aaab5bd34627f32a321a6b79866b.
+/// Types: crateDataTypes.h. Scalar/array flags: crateFile.cpp _IsAlwaysInlined,
+/// _ValueHandler::Pack/PackArray, _WritePossiblyCompressedArray; optional scalar
+/// inlining: crateValueInliners.h _EncodeInline overloads. No geometry validity is claimed.
+enum USDCValueFormat {
+  static let payloadMask: UInt64 = 0x0000_ffff_ffff_ffff
+
+  static func admit(tag: UInt8, flags: UInt8, payload: UInt64, version: USDCVersion) throws {
+    guard tag > 0, tag <= 57 else { throw USDCFailure.unsupported(.unsupportedValue) }
+    // crateFile.cpp Write(GfTimeCode) and Write(SdfPathExpression) request these floors.
+    guard !(tag == 56 && version.minor < 9), !(tag == 57 && version.minor < 10) else {
+      throw USDCFailure.unsupported(.unsupportedValue)
+    }
+    let admitted: Bool
+    switch tag {
+    case 1, 2: admitted = flags == 0x40 || flags == 0x80
+    case 3, 4: admitted = flags == 0x40 || flags == 0x80 || flags == 0xa0
+    case 5, 6: admitted = flags == 0 || flags == 0x40 || flags == 0x80 || flags == 0xa0
+    case 7, 8: admitted = flags == 0x40 || flags == 0x80 || flags == 0xa0
+    case 9: admitted = flags == 0 || flags == 0x40 || flags == 0x80 || flags == 0xa0
+    case 10, 11: admitted = flags == 0x40 || flags == 0x80
+    // Non-inline asset scalar is backed by Reader::Read<SdfAssetPath> (string index).
+    case 12: admitted = flags == 0 || flags == 0x40 || flags == 0x80
+    case 13, 14, 15, 19...30: admitted = flags == 0 || flags == 0x40 || flags == 0x80
+    case 16...18: admitted = flags == 0 || flags == 0x80
+    case 31: admitted = flags == 0 || (flags == 0x40 && payload == 0)
+    // Reader::_Read(SdfListOp/vector), ReadMap and Write overloads are non-array bodies.
+    case 32...41, 45...50, 52...55: admitted = flags == 0
+    case 42...44, 51: admitted = flags == 0x40
+    // Genuine authored fixtures demonstrate 0/0x80. No inferred inline/compressed forms.
+    case 56, 57: admitted = flags == 0 || flags == 0x80
+    default: admitted = false
+    }
+    guard admitted else { throw USDCFailure.unsupported(.unsupportedValue) }
+    if flags == 0x40, payload > UInt64(UInt32.max) {
+      throw USDCFailure.unsupported(.unsupportedValue)
+    }
+  }
+}
