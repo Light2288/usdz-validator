@@ -30,6 +30,7 @@ final class RuleCatalogueTests: XCTestCase {
       ("UVK-LIM-004", .validatorLimitation, .warning, .references),
       ("UVK-LIM-005", .validatorLimitation, .warning, .budgets),
       ("UVK-LIM-006", .validatorLimitation, .warning, .container),
+      ("UVK-LIM-007", .validatorLimitation, .warning, .references),
       ("UVK-PATH-001", .policy, .error, .references),
       ("UVK-PATH-002", .policy, .error, .references),
       ("UVK-PATH-003", .policy, .error, .references),
@@ -40,9 +41,10 @@ final class RuleCatalogueTests: XCTestCase {
       ("UVK-POL-001", .policy, .error, .container),
       ("UVK-POL-002", .policy, .error, .container),
       ("UVK-RES-001", .policy, .error, nil),
+      ("UVK-USD-001", .policy, .error, .references),
     ]
     XCTAssertEqual(apple.map(\.ruleID), expected.map { $0.0 })
-    XCTAssertEqual(Set(apple.map(\.ruleID)).count, 32)
+    XCTAssertEqual(Set(apple.map(\.ruleID)).count, 34)
     XCTAssertEqual(general.map(\.ruleID), expected.dropFirst(2).map { $0.0 })
     for (rule, category, severity, family) in expected {
       let descriptor = try XCTUnwrap(apple.first { $0.ruleID == rule })

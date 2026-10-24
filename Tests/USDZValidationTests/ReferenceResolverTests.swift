@@ -5,6 +5,66 @@ import XCTest
 @testable import USDZValidation
 
 final class ReferenceResolverTests: XCTestCase {
+  func testUSDAAdapterPreservesKeysAndUnescaping() throws {
+    let namespace = try package([member("root.usda"), member("a@@@b.png")])
+    let author = try XCTUnwrap(namespace.defaultEntry)
+    let value = Data("missing.png".utf8)
+    let token = AssetToken(
+      rawValueBytes: value, valueBytes: value, layerByteOffset: 17, line: 3, column: 5,
+      delimiter: .single, classification: .literal)
+    let adapter = NativeDiagnostics()
+    ReferenceResolver.check(
+      token: token, author: author, namespace: namespace, diagnostics: adapter)
+    let direct = NativeDiagnostics()
+    ReferenceResolver.check(
+      occurrence: ReferenceOccurrence(
+        valueBytes: value, classification: .literal, site: .usda(offset: 17, line: 3, column: 5)),
+      author: author, namespace: namespace, diagnostics: direct)
+    XCTAssertEqual(adapter.finish().0, direct.finish().0)
+    XCTAssertEqual(
+      adapter.finish().0.first?.occurrenceID,
+      "389f990e973f1429aa75625ed4fbadd3f646014d68c712ec5c359169915caac6")
+    let source = ArchiveRecipe.repeatedUSDALiterals(
+      valueBytes: Data("a\\@@@b.png".utf8), count: 1, tripleDelimited: true)
+    XCTAssertTrue(
+      try scanPackage([member("root.usda", payload: source), member("a@@@b.png")]).findings.isEmpty)
+    let binary = NativeDiagnostics()
+    ReferenceResolver.check(
+      occurrence: ReferenceOccurrence(
+        valueBytes: Data("a\\@@@b.png".utf8), classification: .literal,
+        site: .usdc(try USDCReferenceLocator(specIndex: 0, fieldOrdinal: 0))),
+      author: author, namespace: namespace, diagnostics: binary)
+    // A serialized backslash remains unsafe rather than being unescaped into a valid target.
+    XCTAssertEqual(binary.finish().0.map(\.ruleID), ["UVK-PATH-004"])
+  }
+
+  func testBinaryResolverReusesLiteralAnchorsAndExpressionSafePrefixes() throws {
+    let namespace = try package([
+      member("stage/root.usda"), member("stage/sub/author.usdc"), member("stage/fallback.png"),
+      member("stage/sub/local.png"), member("stage/sub/dir/", directory: true),
+    ])
+    let author = try XCTUnwrap(
+      namespace.regularEntry(namedUTF8: Data("stage/sub/author.usdc".utf8)))
+    let cases: [(String, [String])] = [
+      ("local.png", []), ("fallback.png", []), ("./fallback.png", ["UVK-PATH-006"]),
+      ("dir/", ["UVK-PATH-006"]), ("", []), ("../../../escape", ["UVK-PATH-005"]),
+      ("../../../${ROOT}/asset", ["UVK-PATH-005", "UVK-LIM-003"]),
+      ("${ROOT}/../../asset", ["UVK-LIM-003"]),
+      ("https://privacy-sentinel.invalid/key", ["UVK-PATH-004", "UVK-LIM-003"]),
+    ]
+    for (value, rules) in cases {
+      let diagnostics = NativeDiagnostics()
+      let bytes = Data(value.utf8)
+      ReferenceResolver.check(
+        occurrence: ReferenceOccurrence(
+          valueBytes: bytes, classification: ReferenceClassifier.classify(bytes),
+          site: .usdc(try USDCReferenceLocator(specIndex: 2, fieldOrdinal: 4))),
+        author: author, namespace: namespace, diagnostics: diagnostics)
+      XCTAssertEqual(diagnostics.finish().0.map(\.ruleID), rules, value)
+      XCTAssertFalse(String(describing: diagnostics.finish()).contains("privacy-sentinel"))
+    }
+  }
+
   func testAuthorAndDefaultAnchors() throws {
     let namespace = try package([
       member("stage/root.usda"), member("stage/sub/author.usda"),

@@ -303,7 +303,7 @@
     },
     {
       "path": "Tests/Goldens/rule-catalogue-v1.json",
-      "sha256": "8ec4d6adf8e01222bb7a54043526440b94c8d3614b697d03e3268031232b6f41",
+      "sha256": "0096b14cc2642b71bbaceeb1c596084e2201a0e34573a6455ff271ba442dcb9c",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -311,7 +311,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Independently author the 34 descriptor literals in the retained catalogue, preserving order, nullable family and schema/envelope metadata; include binary partial-inspection and malformed-structure descriptors and shared-reference applicability. Serialize sorted compact UTF-8 JSON plus LF. Never capture product output.",
       "format": "catalogue"
     },
     {

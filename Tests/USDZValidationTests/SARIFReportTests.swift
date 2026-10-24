@@ -31,7 +31,7 @@ final class SARIFReportTests: XCTestCase {
     let driver = try XCTUnwrap((native["tool"] as? [String: Any])?["driver"] as? [String: Any])
     XCTAssertEqual(driver["name"] as? String, "usdz-validator")
     let rules = try XCTUnwrap(driver["rules"] as? [[String: Any]])
-    XCTAssertEqual(rules.count, 30)
+    XCTAssertEqual(rules.count, 32)
     XCTAssertEqual(rules.first?["id"] as? String, "UVK-ARC-001")
     XCTAssertFalse(rules.contains { $0["id"] as? String == "USDCK-001" })
     let rule = try XCTUnwrap(rules.first { $0["id"] as? String == "UVK-LIM-002" })
@@ -445,7 +445,7 @@ final class SARIFReportTests: XCTestCase {
     let native = try runs(report)[0]
     let driver = try XCTUnwrap((native["tool"] as? [String: Any])?["driver"] as? [String: Any])
     let rules = try XCTUnwrap(driver["rules"] as? [[String: Any]])
-    XCTAssertEqual(rules.count, 32)
+    XCTAssertEqual(rules.count, 34)
     XCTAssertEqual(rules.first?["id"] as? String, "UVK-APL-001")
     XCTAssertEqual(
       (rules.first?["properties"] as? [String: String])?["category"], "appleCompatibility")

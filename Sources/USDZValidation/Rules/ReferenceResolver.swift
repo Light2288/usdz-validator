@@ -7,13 +7,24 @@ enum ReferenceResolver {
     token: AssetToken, author: ZIPEntry, namespace: PackageNamespace,
     diagnostics: NativeDiagnostics
   ) {
-    let value = token.valueBytes
+    check(
+      occurrence: ReferenceOccurrence(
+        valueBytes: token.valueBytes, classification: token.classification,
+        site: .usda(offset: token.layerByteOffset, line: token.line, column: token.column)),
+      author: author, namespace: namespace, diagnostics: diagnostics)
+  }
+
+  static func check(
+    occurrence: ReferenceOccurrence, author: ZIPEntry, namespace: PackageNamespace,
+    diagnostics: NativeDiagnostics
+  ) {
+    let value = occurrence.valueBytes
     guard !value.isEmpty else { return }
-    let unsupported = token.classification == .unsupportedExpression
+    let unsupported = occurrence.classification == .unsupportedExpression
     let unsafe = isUnsafe(value)
     if unsafe {
       report(
-        "UVK-PATH-004", reason: "unsafeReference", token: token, author: author,
+        "UVK-PATH-004", reason: "unsafeReference", occurrence: occurrence, author: author,
         diagnostics: diagnostics)
     }
     if unsupported {
@@ -21,18 +32,18 @@ enum ReferenceResolver {
       // Components after an expression might have unknown depth and are never guessed.
       if !unsafe, normalize(literalPrefix(value), relativeTo: directory(author)) == nil {
         report(
-          "UVK-PATH-005", reason: "packageRootEscape", token: token, author: author,
+          "UVK-PATH-005", reason: "packageRootEscape", occurrence: occurrence, author: author,
           diagnostics: diagnostics)
       }
       report(
-        "UVK-LIM-003", reason: "unsupportedReference", token: token, author: author,
+        "UVK-LIM-003", reason: "unsupportedReference", occurrence: occurrence, author: author,
         diagnostics: diagnostics)
       return
     }
     guard !unsafe else { return }
     guard let candidate = normalize(value, relativeTo: directory(author)) else {
       report(
-        "UVK-PATH-005", reason: "packageRootEscape", token: token, author: author,
+        "UVK-PATH-005", reason: "packageRootEscape", occurrence: occurrence, author: author,
         diagnostics: diagnostics)
       return
     }
@@ -48,7 +59,7 @@ enum ReferenceResolver {
       || namespace.regularEntry(namedUTF8: candidate) != nil
     {
       report(
-        "UVK-PATH-006", reason: "directoryTarget", token: token, author: author,
+        "UVK-PATH-006", reason: "directoryTarget", occurrence: occurrence, author: author,
         diagnostics: diagnostics)
       return
     }
@@ -56,7 +67,7 @@ enum ReferenceResolver {
     if !anchored, let defaultEntry = namespace.defaultEntry {
       guard let fallback = normalize(value, relativeTo: directory(defaultEntry)) else {
         report(
-          "UVK-PATH-005", reason: "packageRootEscape", token: token, author: author,
+          "UVK-PATH-005", reason: "packageRootEscape", occurrence: occurrence, author: author,
           diagnostics: diagnostics)
         return
       }
@@ -65,13 +76,13 @@ enum ReferenceResolver {
         || namespace.regularEntry(namedUTF8: fallback) != nil
       {
         report(
-          "UVK-PATH-006", reason: "directoryTarget", token: token, author: author,
+          "UVK-PATH-006", reason: "directoryTarget", occurrence: occurrence, author: author,
           diagnostics: diagnostics)
         return
       }
     }
     report(
-      "UVK-PATH-006", reason: "missingTarget", token: token, author: author,
+      "UVK-PATH-006", reason: "missingTarget", occurrence: occurrence, author: author,
       diagnostics: diagnostics)
   }
 
@@ -141,7 +152,7 @@ enum ReferenceResolver {
   }
 
   private static func report(
-    _ ruleID: String, reason: String, token: AssetToken, author: ZIPEntry,
+    _ ruleID: String, reason: String, occurrence: ReferenceOccurrence, author: ZIPEntry,
     diagnostics: NativeDiagnostics
   ) {
     let message: String
@@ -152,10 +163,16 @@ enum ReferenceResolver {
     default:
       message = "The asset reference requires unsupported expression or identifier resolution."
     }
-    // Authored locations survive delimiter unescaping. Reference bytes stay out of
-    // default evidence; only the safe reason code and package layer location are retained.
-    USDLayer.gap(
-      ruleID, reason: reason, entry: author, diagnostics: diagnostics,
-      message: message, offset: token.layerByteOffset, line: token.line, column: token.column)
+    switch occurrence.site {
+    case .usda(let offset, let line, let column):
+      // Preserve the original USDA key tuple and authored delimiter location.
+      USDLayer.gap(
+        ruleID, reason: reason, entry: author, diagnostics: diagnostics,
+        message: message, offset: offset, line: line, column: column)
+    case .usdc(let locator):
+      USDCReporting.record(
+        ruleID: ruleID, reason: reason, message: message, locator: locator,
+        entry: author, diagnostics: diagnostics)
+    }
   }
 }
