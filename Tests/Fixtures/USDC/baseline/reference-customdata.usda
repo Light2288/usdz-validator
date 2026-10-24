@@ -1,0 +1,6 @@
+#usda 1.0
+def Scope "Root" (
+    references = @ref.usda@</Target> (customData = { asset nested = @ref-meta.png@ })
+)
+{
+}

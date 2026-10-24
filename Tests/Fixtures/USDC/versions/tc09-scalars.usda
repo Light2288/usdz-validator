@@ -1,0 +1,12 @@
+#usda 1.0
+(
+ customLayerData = { timecode clock = 1.25
+ asset texture = @clock-meta.png@ }
+)
+def Scope "Root"
+{
+ timecode positive = 12.5
+ timecode negative = -3.125
+ timecode precise = 1.23456789012345
+ asset image = @clock-texture.png@
+}

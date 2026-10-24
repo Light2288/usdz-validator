@@ -1,0 +1,8 @@
+#usda 1.0
+def Scope "Root"
+{
+ pathExpression propertyPattern = "/Root.texture_png"
+ pathExpression referencePattern = "%/Root:collection"
+ pathExpression[] empty = []
+ string misleading = "not-an-asset.png"
+}

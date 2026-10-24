@@ -1,0 +1,116 @@
+{
+  "origin": ".verification/usdc-feasibility-09-010-2026-10-24/version-fixture-results.json",
+  "role": "Historical experiment observations only; authored source and pinned OpenUSD type mapping define expected live tags, not these candidate diagnostics.",
+  "cases": [
+    {
+      "name": "tc09-scalars",
+      "writer": "apple",
+      "newTypeFlags": {
+        "56/0": 4
+      }
+    },
+    {
+      "name": "tc09-scalars",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "56/0": 4
+      }
+    },
+    {
+      "name": "tc09-arrays",
+      "writer": "apple",
+      "newTypeFlags": {
+        "56/128": 4,
+        "56/0": 2
+      }
+    },
+    {
+      "name": "tc09-arrays",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "56/128": 4,
+        "56/0": 2
+      }
+    },
+    {
+      "name": "tc09-empty",
+      "writer": "apple",
+      "newTypeFlags": {
+        "56/0": 1,
+        "56/128": 1
+      }
+    },
+    {
+      "name": "tc09-empty",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "56/0": 1,
+        "56/128": 1
+      }
+    },
+    {
+      "name": "pe10-mixed",
+      "writer": "apple",
+      "newTypeFlags": {
+        "57/0": 3,
+        "56/0": 1,
+        "57/128": 2
+      }
+    },
+    {
+      "name": "pe10-mixed",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "57/0": 3,
+        "56/0": 1,
+        "57/128": 2
+      }
+    },
+    {
+      "name": "pe10-containers",
+      "writer": "apple",
+      "newTypeFlags": {
+        "57/0": 3,
+        "57/128": 2
+      }
+    },
+    {
+      "name": "pe10-containers",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "57/0": 3,
+        "57/128": 2
+      }
+    },
+    {
+      "name": "pe10-empty",
+      "writer": "apple",
+      "newTypeFlags": {
+        "57/128": 1,
+        "57/0": 2
+      }
+    },
+    {
+      "name": "pe10-empty",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "57/128": 1,
+        "57/0": 2
+      }
+    },
+    {
+      "name": "pe10-asset-expression",
+      "writer": "apple",
+      "newTypeFlags": {
+        "57/0": 1
+      }
+    },
+    {
+      "name": "pe10-asset-expression",
+      "writer": "openusd",
+      "newTypeFlags": {
+        "57/0": 1
+      }
+    }
+  ]
+}

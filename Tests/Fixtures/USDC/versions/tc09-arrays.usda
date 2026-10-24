@@ -1,0 +1,10 @@
+#usda 1.0
+def Scope "Root"
+{
+ timecode[] clocks = [0, 1.25, -2.5, 5000000000.125]
+ timecode[] empty = []
+ timecode animated.timeSamples = { 0: 1.5, 1: -4.125 }
+ timecode[] arrays.timeSamples = { 0: [1, 2.5], 1: [3.25] }
+ asset[] images = [@same.png@, @same.png@]
+ asset image.timeSamples = { 0: @animated-a.png@, 1: @animated-b.png@ }
+}
