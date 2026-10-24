@@ -47,9 +47,26 @@ final class ValidatorTests: XCTestCase {
     XCTAssertEqual(disclosed.input.sensitiveDetails?.absolutePath, url.path)
   }
 
+  // Unsupported versions remain gateable limitations; truncated supported bootstrap is an error.
+  func testTruncatedBinaryIsConclusiveCorruptionEvenWhenIncompleteAllowed() throws {
+    try withInput(
+      ArchiveRecipe(entries: [
+        .init(nameBytes: Data("root.usdc".utf8), payload: Data("PXR-USDC".utf8))
+      ]).encode()
+    ) { url in
+      let report = try Validator().validate(
+        fileAt: url,
+        configuration: ValidationConfiguration(
+          gatePolicy: GatePolicy(allowIncomplete: true)))
+      XCTAssertEqual(report.exitCode, 1)
+      XCTAssertTrue(report.nativeFindings.contains { $0.ruleID == "UVK-USD-001" })
+      XCTAssertTrue(report.nativeFindings.contains { $0.ruleID == "UVK-LIM-002" })
+    }
+  }
+
   func testNativeSubtreesUnchanged() throws {
     let binary = try ArchiveRecipe(entries: [
-      .init(nameBytes: Data("root.usdc".utf8), payload: Data("PXR-USDCsynthetic".utf8))
+      .init(nameBytes: Data("root.usdc".utf8), payload: USDCFixtures.unsupportedVersion())
     ]).encode()
     for bytes in [try Fixtures.validUSDA(), binary] {
       try withInput(bytes) { url in

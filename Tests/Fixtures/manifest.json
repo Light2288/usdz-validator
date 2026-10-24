@@ -19,7 +19,7 @@
       "generator": {
         "name": "TestSupport.Fixtures and ArchiveRecipe",
         "version": "1",
-        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift, Tests/TestSupport/Fixtures.swift, Tests/TestSupport/USDCFixtures.swift and Tests/TestSupport/USDCMutationRecipe.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
         "sourceLicense": "MIT"
       }
     },
@@ -57,7 +57,7 @@
       "generator": {
         "name": "TestSupport.Fixtures and ArchiveRecipe",
         "version": "1",
-        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift, Tests/TestSupport/Fixtures.swift, Tests/TestSupport/USDCFixtures.swift and Tests/TestSupport/USDCMutationRecipe.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
         "sourceLicense": "MIT"
       }
     },
@@ -106,10 +106,11 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "78a524ee0139066cf39aa39c46a6907a0a6eb4beaa4746e2db22c2851c0e949a",
-      "recipe": "Compile the committed Swift 6 source with Foundation and ArchiveRecipe.swift only. Invoke pixelPNG() and validUSDA() as recorded by the generated assets. Fixtures.root resolves committed canonical sources from this source file; write(_:basename:in:) writes caller-provided data only to the requested basename.",
+      "sha256": "87305bdf771dcc17ebe2bd636a4885fbe7ea25c104040aed7ac3a7b0115c3c17",
+      "recipe": "Compile the committed Swift 6 source with Foundation, ArchiveRecipe.swift, USDCFixtures.swift and USDCMutationRecipe.swift. Invoke pixelPNG(), validUSDA() and validUSDC() as recorded by the generated assets. Fixtures.root resolves committed canonical sources from this source file; write(_:basename:in:) writes caller-provided data only to the requested basename.",
       "history": [
-        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+        "2026-10-21: Original project-authored fixture/generator created for v0.1.",
+        "2026-10-24: Task7 adds durable binary-package generation and intact unsupported-version negative fixture helper."
       ]
     },
     {
@@ -155,7 +156,7 @@
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
       "sha256": "21f03f8292a8a066bd0e31e70834da4188dca39f59ea734f88477af687cda0d2",
-      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation and Darwin. CLIProcessTests launch only the built usdz-validator selected by the matching suite or harness-only UVK_CLI_EXECUTABLE / UVK_CLI_TEST_EXECUTABLE. Separate temporary stdout/stderr files prevent pipe backpressure; a 15-second deadline terminates and reaps a stuck child. Scripts/test-cli.sh builds a normal release binary and an isolated UVK_PROCESS_TESTING binary. The latter accepts only fixed internalFailure/checkerUnavailable/checkerSuccess/checkerFailure scenarios through a wholly compile-guarded source hook and Validator constructor; fake ProcessResult values exercise the real native engine, adapter orchestration, coverage and gate without any installed checker. Native test archives use the manifest-defined original Fixtures and ArchiveRecipe; the PXR-USDCsynthetic bytes explicitly model incomplete native coverage and are not a conforming-scene oracle. No downloads or arbitrary executable/arguments are accepted by the production CLI.",
+      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation and Darwin. CLIProcessTests launch only the built usdz-validator selected by the matching suite or harness-only UVK_CLI_EXECUTABLE / UVK_CLI_TEST_EXECUTABLE. Separate temporary stdout/stderr files prevent pipe backpressure; a 15-second deadline terminates and reaps a stuck child. Scripts/test-cli.sh builds a normal release binary and an isolated UVK_PROCESS_TESTING binary. The latter accepts only fixed internalFailure/checkerUnavailable/checkerSuccess/checkerFailure scenarios through a wholly compile-guarded source hook and Validator constructor; fake ProcessResult values exercise the real native engine, adapter orchestration, coverage and gate without any installed checker. Native test archives use the manifest-defined original Fixtures and ArchiveRecipe; exit-2 binary scenarios use the intact baseline empty crate with deliberately unsupported version 0.11.0; truncated PXR-USDC bootstrap bytes independently test conclusive corruption. Native binary coverage uses the committed containers crate packaged with all five referenced PNG targets by Fixtures.validUSDC(). No downloads or arbitrary executable/arguments are accepted by the production CLI.",
       "history": [
         "2026-10-21: Original MIT helper added for Task 20 process-level stream and exit contracts."
       ]
@@ -1097,10 +1098,11 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "3849565a5ed6e7b12f0c2d4b50edaba89d619790b09d213a043ae960c6ba4237",
-      "recipe": "Compile committed Swift 6 TestSupport source with Foundation only; no product decoder import. See docs/fixtures.md.",
+      "sha256": "ecdb3798d2c8939838e54339443eac3e34d185dd492cf2daff2909479a1f5946",
+      "recipe": "Compile committed Swift 6 TestSupport source with Foundation and USDCMutationRecipe.swift; no product decoder import. cases()/extraCases() load committed corpus and independent expectations. unsupportedVersion() copies baseline/empty.usdc and changes only version bytes 8...10 to 0.11.0 as explicit unsupported-version negative evidence; never use it as a supported-version oracle. See docs/fixtures.md.",
       "history": [
-        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes.",
+        "2026-10-24: Task7 adds durable binary-package generation and intact unsupported-version negative fixture helper."
       ]
     },
     {
@@ -1286,6 +1288,28 @@
         "sourceLicense": "MIT"
       },
       "sha256": "59615cedf9adfa190aa5b8b60a15964a6aec4c90a0741b2852fc33d00bb86e38"
+    },
+    {
+      "id": "uvk-original-usdc-package-v2",
+      "path": "Tests/Fixtures/valid-usdc.usdz",
+      "kind": "generated-asset",
+      "purpose": "Aligned stored CRC-correct binary package with a genuine 0.8.0 containers crate and all independently authored asset targets, including both selected and unselected variants.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "80327bd2aad06fda419f3c67037c2da525b58c616577db1491a45e344dde0ebe",
+      "recipe": "Call Fixtures.validUSDC(): root.usdc first from the committed USDC/baseline/containers.usdc evidence; same.png, selected.png, unselected.png, a.png and b.png each contain Fixtures.pixelPNG(). ArchiveRecipe uses 64-byte payload alignment, classic single-disk ZIP, stored method, fixed DOS date 1980-01-01 and independent CRC-32. No product decoder, writer, oracle or download runs in tests.",
+      "history": [
+        "2026-10-24: Task7 original deterministic package generated from committed versioned binary evidence and original PNG data."
+      ],
+      "generator": {
+        "name": "TestSupport.Fixtures and ArchiveRecipe",
+        "version": "2",
+        "arguments": "Compile Tests/TestSupport/{ArchiveRecipe,Fixtures,USDCFixtures,USDCMutationRecipe}.swift with temporary main.swift: import Foundation; try Fixtures.validUSDC().write(to: Fixtures.root.appendingPathComponent(\"valid-usdc.usdz\"))",
+        "sourceLicense": "MIT"
+      }
     }
   ]
 }

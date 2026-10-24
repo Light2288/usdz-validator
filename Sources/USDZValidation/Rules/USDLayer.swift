@@ -81,11 +81,7 @@ enum USDLayer {
           "UVK-ARC-007", reason: "suffixSignature", entry: entry, diagnostics: diagnostics,
           message: "The USD member suffix disagrees with its bounded signature.")
       }
-      if kind == .usdc {
-        gap(
-          "UVK-LIM-002", reason: "binaryReferences", entry: entry, diagnostics: diagnostics,
-          message: "Native reference inspection is unavailable for binary USD.")
-      } else if kind == .unsupportedEncoding {
+      if kind == .unsupportedEncoding {
         gap(
           "UVK-LIM-004", reason: "textEncoding", entry: entry, diagnostics: diagnostics,
           message: "Recognized USD text uses an unsupported encoding or byte order mark.")

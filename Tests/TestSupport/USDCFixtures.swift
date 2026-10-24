@@ -61,6 +61,13 @@ public struct USDCFixtureRecord: Decodable, Sendable {
 public enum USDCFixtures {
   public static var root: URL { Fixtures.root.appendingPathComponent("USDC", isDirectory: true) }
 
+  /// Intact metadata with a deliberately unsupported version; negative evidence only.
+  public static func unsupportedVersion() throws -> Data {
+    try USDCMutationRecipe.patch(
+      Data(contentsOf: root.appendingPathComponent("baseline/empty.usdc")),
+      at: 8, bytes: Data([0, 11, 0]))
+  }
+
   /// Load committed evidence only; no writer, oracle, product decoder or research checkout is used.
   public static func cases() throws -> [USDCFixtureCase] { try load(extra: false) }
 

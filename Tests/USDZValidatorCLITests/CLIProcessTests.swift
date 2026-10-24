@@ -35,7 +35,7 @@ final class CLIProcessTests: XCTestCase {
     let good = try Fixtures.write(Fixtures.validUSDA(), basename: "arbitrary.asset", in: directory)
     let binary = try Fixtures.write(
       ArchiveRecipe(entries: [
-        .init(nameBytes: Data("root.usdc".utf8), payload: Data("PXR-USDCsynthetic".utf8))
+        .init(nameBytes: Data("root.usdc".utf8), payload: USDCFixtures.unsupportedVersion())
       ]).encode(), basename: "gap", in: directory)
     let bad = try Fixtures.write(Data("invalid ZIP".utf8), basename: "bad", in: directory)
     try body(directory, good, binary, bad)
@@ -48,6 +48,50 @@ final class CLIProcessTests: XCTestCase {
     XCTAssertTrue(result.stderr.isEmpty)
     return try XCTUnwrap(JSONSerialization.jsonObject(with: result.stdout) as? [String: Any])
   }
+  // Default CLI validation must inspect binary assets while checker execution stays opt-in.
+  func testAutomaticBinaryInspectionAndCheckerOptIn() throws {
+    let fixture = Fixtures.root.appendingPathComponent("valid-usdc.usdz")
+    let native = try json(run(["validate", fixture.path, "--format", "json"]))
+    XCTAssertEqual(native["exitCode"] as? Int, 0)
+    XCTAssertEqual((native["coverage"] as? [String: Any])?["isComplete"] as? Bool, true)
+    XCTAssertEqual(
+      (native["externalCheck"] as? [String: Any])?["status"] as? String, "notRequested")
+    try withAssets { directory, _, _, _ in
+      let missing = try Fixtures.write(
+        ArchiveRecipe(entries: [
+          .init(
+            nameBytes: Data("root.usdc".utf8),
+            payload: Data(
+              contentsOf: USDCFixtures.root.appendingPathComponent("baseline/containers.usdc")))
+        ]).encode(),
+        basename: "missing-targets", in: directory)
+      let document = try json(run(["validate", missing.path, "--format", "json"]))
+      XCTAssertEqual(document["exitCode"] as? Int, 1)
+      let findings = document["nativeFindings"] as? [[String: Any]]
+      XCTAssertEqual(findings?.filter { $0["ruleID"] as? String == "UVK-PATH-006" }.count, 7)
+      let truncated = try Fixtures.write(
+        ArchiveRecipe(entries: [
+          .init(nameBytes: Data("root.usdc".utf8), payload: Data("PXR-USDC".utf8))
+        ]).encode(),
+        basename: "truncated", in: directory)
+      let corrupt = try json(
+        run(["validate", truncated.path, "--format", "json", "--allow-incomplete"]))
+      XCTAssertEqual(corrupt["exitCode"] as? Int, 1)
+      XCTAssertTrue(
+        (corrupt["nativeFindings"] as? [[String: Any]])?.contains {
+          $0["ruleID"] as? String == "UVK-USD-001"
+        } == true)
+    }
+  }
+
+  func testBinaryCheckerRemainsExplicit() throws {
+    let fixture = Fixtures.root.appendingPathComponent("valid-usdc.usdz")
+    let native = try run(["validate", fixture.path], scenario: "checkerFailure")
+    XCTAssertEqual(native.exitCode, 0)
+    let requested = try run(["validate", fixture.path, "--usdchecker"], scenario: "checkerFailure")
+    XCTAssertEqual(requested.exitCode, 1)
+  }
+
   func testOutputDestinationAndFailurePrivacy() throws {
     try withAssets { directory, good, binary, bad in
       let output = directory.appendingPathComponent("report\u{001B}\n.json")

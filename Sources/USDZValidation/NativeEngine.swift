@@ -12,6 +12,18 @@ enum NativeEngine {
   static func inspect(snapshot: FileSnapshot, configuration: ValidationConfiguration) throws
     -> NativeResult
   {
+    let result = try inspect(
+      size: snapshot.size, configuration: configuration, ledger: ResourceLedger(),
+      readAt: { try snapshot.read(offset: $0, count: $1) })
+    try snapshot.verifyUnchanged()
+    return result
+  }
+
+  /// The snapshot and bounded in-memory callers share the same pipeline and invocation ledger.
+  static func inspect(
+    size: UInt64, configuration: ValidationConfiguration, ledger: ResourceLedger,
+    readAt: @escaping (UInt64, Int) throws -> Data
+  ) throws -> NativeResult {
     let budgets = configuration.budgets
     let dimensionsRequested = budgets.textureMaxDimension != nil
     let diagnostics = NativeDiagnostics(
@@ -21,20 +33,20 @@ enum NativeEngine {
         budgets.textureBytes, budgets.totalTextureBytes,
       ].contains { $0 != nil },
       textureDimensionsRequested: dimensionsRequested)
-    let reader = BoundedReader(size: snapshot.size, ledger: ResourceLedger()) { offset, count in
+    let reader = BoundedReader(size: size, ledger: ledger) { offset, count in
       guard !diagnostics.processingTruncated else {
         throw InspectionFailure.resourceLimit(.findings)
       }
-      return try snapshot.read(offset: offset, count: count)
+      return try readAt(offset, count)
     }
     guard let directory = try ZIPDirectory.read(from: reader, diagnostics: diagnostics),
       let index = try ZIPIndex.build(directory: directory, reader: reader, diagnostics: diagnostics)
     else {
       // The archive size remains known even when member metadata is unavailable.
       BudgetRules.evaluate(
-        archiveBytes: snapshot.size, entries: [], dimensions: [:],
+        archiveBytes: size, entries: [], dimensions: [:],
         configuration: configuration, diagnostics: diagnostics)
-      return try finish(snapshot, diagnostics: diagnostics, containerEligible: false)
+      return finish(size, diagnostics: diagnostics, containerEligible: false)
     }
 
     let namespace = PackageNamespace.build(index: index, diagnostics: diagnostics)
@@ -79,14 +91,14 @@ enum NativeEngine {
         diagnostics.mark(area: .containerStructure, state: .partial, reason: reason)
       }
       BudgetRules.evaluate(
-        archiveBytes: snapshot.size, entries: budgetEntries, dimensions: [:],
+        archiveBytes: size, entries: budgetEntries, dimensions: [:],
         configuration: configuration, diagnostics: diagnostics,
         knownRegularFileCount: knownRegularFileCount)
       ProfileRules.evaluate(
         entries: index.entries, layerKinds: [:], profile: configuration.profile,
         diagnostics: diagnostics)
       diagnostics.complete(area: .byteBudgets)
-      return try finish(snapshot, diagnostics: diagnostics, containerEligible: false)
+      return finish(size, diagnostics: diagnostics, containerEligible: false)
     }
     diagnostics.complete(area: .entrySafety)
 
@@ -197,10 +209,63 @@ enum NativeEngine {
         if let reason = failures[entry.localHeaderOffset], isLayer(kind) || kind == .usdz {
           diagnostics.mark(area: .references, state: .partial, reason: reason)
         }
-        guard layerKinds[entry.localHeaderOffset] == .usda else { continue }
-        try USDALexer.scan(entry: entry, reader: reader, diagnostics: diagnostics) { token in
-          ReferenceResolver.check(
-            token: token, author: entry, namespace: namespace, diagnostics: diagnostics)
+        switch layerKinds[entry.localHeaderOffset] {
+        case .usda:
+          try USDALexer.scan(entry: entry, reader: reader, diagnostics: diagnostics) { token in
+            ReferenceResolver.check(
+              token: token, author: entry, namespace: namespace, diagnostics: diagnostics)
+          }
+        case .usdc:
+          var recoveredInventory = false
+          var uninspectedReason: String?
+          let state: USDCScanState
+          do {
+            state = try USDCReader.scan(
+              entry: entry, reader: reader,
+              onReference: { occurrence in
+                recoveredInventory = true
+                ReferenceResolver.check(
+                  occurrence: occurrence, author: entry, namespace: namespace,
+                  diagnostics: diagnostics)
+              },
+              onIssue: { issue in
+                if issue.locator == nil, case .unsupported(let reason) = issue.failure {
+                  // Structural prerequisites return uninspected; retain only the fixed
+                  // reason until the layer outcome can choose its whole-layer rule.
+                  uninspectedReason = reason.rawValue
+                } else {
+                  recoveredInventory = true
+                  USDCReporting.record(issue: issue, entry: entry, diagnostics: diagnostics)
+                }
+              })
+          } catch let failure as InspectionFailure {
+            // A thrown safety stop carries no scanner outcome. Only delivered inventory
+            // establishes partial progress; an empty recovered inventory remains unavailable.
+            state = recoveredInventory ? .partial : .uninspected
+            switch failure {
+            case .resourceLimit(let resource):
+              diagnostics.limit(
+                resource,
+                location: FindingLocation(entryName: String(data: entry.nameBytes, encoding: .utf8))
+              )
+            case .shortRead, .malformedRange:
+              USDCReporting.record(
+                issue: USDCIssue(failure: .malformed(.invalidRange), locator: nil),
+                entry: entry, diagnostics: diagnostics)
+            }
+          }
+          // The scanner has released its storage before layer-level reporting or the next member.
+          if state != .complete {
+            USDCReporting.record(
+              ruleID: state == .uninspected ? "UVK-LIM-002" : "UVK-LIM-007",
+              reason: state == .uninspected
+                ? uninspectedReason ?? "binaryReferences" : "partialBinaryReferences",
+              message: state == .uninspected
+                ? "Native reference inspection is unavailable for this binary USD layer."
+                : "Native reference inspection is incomplete for this binary USD layer.",
+              locator: nil, entry: entry, diagnostics: diagnostics)
+          }
+        default: continue
         }
       }
       diagnostics.complete(area: .references)
@@ -225,7 +290,7 @@ enum NativeEngine {
       diagnostics.complete(area: .textureDimensions)
     }
     BudgetRules.evaluate(
-      archiveBytes: snapshot.size, entries: budgetEntries, dimensions: dimensions,
+      archiveBytes: size, entries: budgetEntries, dimensions: dimensions,
       configuration: configuration, diagnostics: diagnostics,
       knownRegularFileCount: knownRegularFileCount)
     diagnostics.complete(area: .byteBudgets)
@@ -246,8 +311,8 @@ enum NativeEngine {
       uniqueKeysWithValues: index.entries.compactMap { entry in
         String(data: entry.nameBytes, encoding: .utf8).map { (entry.payloadRange.lowerBound, $0) }
       })
-    return try finish(
-      snapshot, diagnostics: diagnostics, containerEligible: failedEntries.isEmpty,
+    return finish(
+      size, diagnostics: diagnostics, containerEligible: failedEntries.isEmpty,
       safeNames: safeNames, safePayloadNames: safePayloadNames)
   }
 
@@ -285,10 +350,10 @@ enum NativeEngine {
   }
 
   private static func finish(
-    _ snapshot: FileSnapshot, diagnostics: NativeDiagnostics,
+    _ size: UInt64, diagnostics: NativeDiagnostics,
     containerEligible: Bool, safeNames: [UInt64: String] = [:],
     safePayloadNames: [UInt64: String] = [:]
-  ) throws -> NativeResult {
+  ) -> NativeResult {
     let (findings, coverage) = diagnostics.finish()
     let unsafe = findings.contains {
       ($0.category == .archiveSpecification && $0.severity == .error)
@@ -341,9 +406,8 @@ enum NativeEngine {
               location: located(reason.location, ruleID: reason.ruleID))
           })
       })
-    try snapshot.verifyUnchanged()
     return NativeResult(
-      inputByteSize: snapshot.size, findings: locatedFindings, coverage: locatedCoverage,
+      inputByteSize: size, findings: locatedFindings, coverage: locatedCoverage,
       containerSafeForExternal: containerEligible && !unsafe
         && coverage.areas[.containerStructure]?.state == .complete
         && coverage.areas[.entrySafety]?.state == .complete)

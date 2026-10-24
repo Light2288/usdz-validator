@@ -9,10 +9,10 @@ final class USDLayerTests: XCTestCase {
     for (name, payload, kind, rules): (String, String, LayerKind, [String]) in [
       ("root.usda", "#usda 1.0\n", .usda, []),
       ("root.USDA", "#usda 1.0\r\n", .usda, []),
-      ("root.usdc", "PXR-USDC", .usdc, ["UVK-LIM-002"]),
+      ("root.usdc", "PXR-USDC", .usdc, []),
       ("root.usd", "#usda 1.0", .usda, []),
-      ("root.usd", "PXR-USDC", .usdc, ["UVK-LIM-002"]),
-      ("root.usda", "PXR-USDC", .usdc, ["UVK-ARC-007", "UVK-LIM-002"]),
+      ("root.usd", "PXR-USDC", .usdc, []),
+      ("root.usda", "PXR-USDC", .usdc, ["UVK-ARC-007"]),
       ("root.usdc", "#usda 1.0\n", .usda, ["UVK-ARC-007"]),
       ("root.usda", "#usda 1.00\n", .unrecognized, ["UVK-ARC-007"]),
       ("root.usda", "#usda 1.0garbage", .unrecognized, ["UVK-ARC-007"]),
@@ -24,7 +24,7 @@ final class USDLayerTests: XCTestCase {
       let result = try identify(name, Data(payload.utf8))
       XCTAssertEqual(result.kind, kind, name + ": " + payload)
       XCTAssertEqual(result.findings.map(\.ruleID), rules)
-      if rules.contains("UVK-LIM-002") || rules.contains("UVK-LIM-006") {
+      if rules.contains("UVK-LIM-006") {
         XCTAssertEqual(result.coverage.areas[.references]?.state, .partial)
       }
       if rules.isEmpty { XCTAssertEqual(result.coverage.areas[.references]?.state, .notRun) }
@@ -32,8 +32,8 @@ final class USDLayerTests: XCTestCase {
     }
     // This 8-byte synthetic prefix establishes recognition, never a valid crate/scene.
     let binary = try identify("synthetic.usdc", Data("PXR-USDC".utf8))
-    XCTAssertEqual(binary.findings.first?.location?.entryName, "synthetic.usdc")
-    XCTAssertEqual(binary.findings.first?.location?.layerByteOffset, 0)
+    XCTAssertTrue(binary.findings.isEmpty)
+    XCTAssertEqual(binary.coverage.areas[.references]?.state, .notRun)
   }
 
   func testCaseInsensitiveSuffixCatalogueUsesBytesAndFinalComponent() {
