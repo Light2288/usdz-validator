@@ -255,7 +255,7 @@ enum USDCValues {
         case 10 where template:
           if flags != 0x40 { throw USDCFailure.unsupported(.unsupportedValue) }
           let nonempty = try tables.withStringBytes(at: UInt32(payload)) { !$0.isEmpty }
-          if nonempty { throw USDCFailure.unsupported(.unsupportedValue) }
+          if nonempty { throw USDCFailure.unsupported(.unsupportedReference) }
         case 56, 57:
           if flags == 0x80 && payload == 0 { return }
           var c = try cursor(payload)

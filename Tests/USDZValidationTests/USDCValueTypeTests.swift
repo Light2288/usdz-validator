@@ -32,12 +32,22 @@ final class USDCValueTypeTests: XCTestCase {
 
   // Clip template strings require path semantics even though ordinary string values are harmless.
   func testClipTemplateStringCannotCertifyCoverage() throws {
-    for value in ["clips.###.usd", ""] {
+    for value in [
+      "clips.###.usd", "/private/template-sentinel.usd", "missing-template-sentinel.usd", "",
+    ] {
       let bytes = try USDCMutationRecipe.valueCrate(
         reps: [0x400a_0000_0000_0000], tokens: ["/", "templateAssetPath", value], strings: [2])
       let result = try USDCReferenceTests.scan(bytes)
       XCTAssertEqual(result.issues.isEmpty, value.isEmpty)
       XCTAssertTrue(result.references.isEmpty)
+      if !value.isEmpty {
+        XCTAssertEqual(result.state, .partial)
+        XCTAssertEqual(result.issues.count, 1)
+        guard case .unsupported(let reason) = result.issues.first?.failure else {
+          return XCTFail("Nonempty clip templates must retain an unsupported-reference cause")
+        }
+        XCTAssertEqual(reason.rawValue, "unsupportedReference")
+      }
     }
     let unrelated = try USDCReferenceTests.scan(
       USDCMutationRecipe.valueCrate(reps: [0x400a_0000_0000_0000]))

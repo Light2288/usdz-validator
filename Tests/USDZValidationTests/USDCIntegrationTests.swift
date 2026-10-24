@@ -99,6 +99,41 @@ final class USDCIntegrationTests: XCTestCase {
     XCTAssertEqual(result.coverage.areas[.references]?.state, .partial)
   }
 
+  // A clip-template string must use the reference limitation without guessed targets or prefixes.
+  func testClipTemplateReportsUnsupportedReferenceWithoutSpeculativeFindings() throws {
+    for value in [
+      "clips.###.usd", "/private/template-sentinel.usd", "missing-template-sentinel.usd",
+    ] {
+      let crate = try USDCMutationRecipe.valueCrate(
+        reps: [0x400a_0000_0000_0000], tokens: ["/", "templateAssetPath", value], strings: [2])
+      let result = try inspect(
+        ArchiveRecipe(entries: [.init(nameBytes: Data("root.usdc".utf8), payload: crate)]).encode())
+      XCTAssertEqual(Set(result.findings.map(\.ruleID)), ["UVK-LIM-003", "UVK-LIM-007"])
+      let cause = try XCTUnwrap(result.findings.first { $0.ruleID == "UVK-LIM-003" })
+      XCTAssertEqual(cause.evidence, ["reason": .string("unsupportedReference")])
+      XCTAssertEqual(cause.category, .validatorLimitation)
+      XCTAssertEqual(cause.severity, .warning)
+      XCTAssertEqual(result.coverage.areas[.references]?.state, .partial)
+      XCTAssertTrue(
+        result.coverage.areas[.references]?.reasons.contains {
+          $0.ruleID == "UVK-LIM-003" && $0.reasonID == "unsupportedReference"
+        } == true)
+      let report = ValidationReport(
+        input: ReportInput(displayName: "input.usdz", byteSize: nil),
+        configuration: try ValidationConfiguration(), coverage: result.coverage,
+        nativeFindings: result.findings)
+      XCTAssertEqual(report.exitCode, 2)
+      for format: ReportFormat in [.json, .sarif] {
+        let bytes = try ReportEncoder.encode(report, format: format)
+        let text = String(decoding: bytes, as: UTF8.self)
+        XCTAssertTrue(text.contains("UVK-LIM-003"))
+        XCTAssertTrue(text.contains("unsupportedReference"))
+        XCTAssertFalse(text.contains(value))
+        XCTAssertFalse(text.contains("templateAssetPath"))
+      }
+    }
+  }
+
   // Namespace, stored mapping, integrity, alignment and default gates must precede crate tables.
   func testPrerequisiteFailureForbidsBinaryReads() throws {
     let crate = try binary("root.usdc", "baseline/containers.usdc")

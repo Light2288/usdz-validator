@@ -1,23 +1,23 @@
 # USDC v0.2 current-host verification
 
-**2026-10-24: current-host test acceptance PASS.** The single fresh full gate exited **0**, with all **19/19 required steps PASS**, on local branch `feat/usdc-reference-coverage-v0-2`. Product **0.2.0** is unpublished, safety envelope is **2**, and report/config/catalogue schema major remains **1**. Final whole-branch review is separate and remains the controller's responsibility.
+**2026-10-24: current-host test acceptance PASS.** The single fresh final-fix full gate exited **0**, with all **19/19 required steps PASS**, on local branch `feat/usdc-reference-coverage-v0-2`. Product **0.2.0** is unpublished, safety envelope is **2**, and report/config/catalogue schema major remains **1**. Final whole-branch review is separate and remains the controller's responsibility.
 
 ```sh
-sh Scripts/verify-release.sh --evidence-dir .build/verification/usdc-v0-2-current
+sh Scripts/verify-release.sh --evidence-dir .build/verification/usdc-v0-2-final
 ```
 
-The destination was absent before execution; prior run directories were preserved. Local evidence is in `.build/verification/usdc-v0-2-current/`: genuine `summary.json`, `environment.json`, `logs/`, unchanged `Package.resolved.before`, `exports/`, `checked-in/`, `compatibility-manifest.json`, copied `resource-results.md`, and supplemental `link-inputs/` inspection receipts. Every command, environment override, exit and stdout/stderr path is retained in the summary. No result was copied from an earlier release run.
+The destination was absent before execution; prior run directories were preserved. This run verifies the final-review correction that gives nonempty string clip templates the required `UVK-LIM-003`/`unsupportedReference` cause, alongside the layer-level `UVK-LIM-007` summary. The earlier `usdc-v0-2-current` run and its original receipts remain preserved as pre-fix evidence. Local evidence is in `.build/verification/usdc-v0-2-final/`: genuine `summary.json`, `environment.json`, `logs/`, unchanged `Package.resolved.before`, `exports/`, `checked-in/`, `compatibility-manifest.json`, copied `resource-results.md`, and supplemental `link-inputs/` inspection receipts. Every command, environment override, exit and stdout/stderr path is retained in the summary. No result was copied from an earlier release run.
 
 | Required check | Observed result |
 | --- | --- |
 | Environment, strict formatting, resolve/unchanged lock, debug and release builds | PASS, each exit 0 |
-| Debug, release and ASAN full suites | Each **325 XCTest cases, zero failures, nine explicit opt-in skips** (31 CLI + 292 validation + 2 library-only consumer cases) |
+| Debug, release and ASAN full suites | Each **326 XCTest cases, zero failures, nine explicit opt-in skips** (31 CLI + 293 validation + 2 library-only consumer cases) |
 | Isolated CLI process gate | **22 tests**, zero failures/skips; covers compile-only process-hook paths |
 | Offline schemas and verifier tools | **10 self-tests + 10 schema contracts + 15 verifier tests**, no failures/skips |
 | Documented examples | **Five** exact native commands PASS |
 | Golden/export compatibility | **Two** tests PASS; **81 actual exports + 21 reviewed documents = 102** validated files, bound to **155** final input hashes, version set exactly `["0.2.0"]` |
 | Dedicated real-size resource gate | **Nine** tests, zero failures/skips, including its 26-case process matrix |
-| Standalone final release resource measurements | **26/26 PASS**; maximum peak RSS **208,666,624 bytes <=268,435,456**, maximum elapsed **1.849 seconds <=60** |
+| Standalone final release resource measurements | **26/26 PASS**; maximum peak RSS **208,683,008 bytes <=268,435,456**, maximum elapsed **1.808 seconds <=60** |
 | Vendored C/consumer linkage inspection | Six actual debug/release link-file lists include private LZ4 objects; release CLI/consumer dynamic dependencies list no host LZ4; the consumer links neither ArgumentParser nor TestSupport. Actual ASAN `lz4.o` contains load-check instrumentation. |
 
 Ordinary full suites intentionally skip four compile-only process-hook cases, four expensive resource cases and the unrequested installed checker smoke. Dedicated CLI/resource gates run those required paths without skips. The smoke remains explicitly SKIPPED, not passed. Full log receipts preserve the skip messages. No compiler warnings, sanitizer diagnostics or unexpected failures were observed.
@@ -30,11 +30,11 @@ Mac17,6 / Apple M5 Max / **arm64** / **38,654,705,664 bytes RAM** / internal APF
 
 | Evidence/input | SHA-256 |
 | --- | --- |
-| Evidence `summary.json` | `82d37f63830c14383cbe75587b6e54b82a2441cd739662121411b1309017365a` |
-| Evidence `compatibility-manifest.json` | `53eae7616a2f5366339935d082bdecf0c3202a97e1f854ebde8de58ff9d205af` |
-| Evidence `resource-results.md` | `cea7e4fb26d8832096dbf86645245dfc3a1000b17185de775dbc27a6b4887658` |
-| Evidence `environment.json` | `1041e1b732abb87a74cb61e56bce8100f3c919ea4587e16b45646b42d2243879` |
-| Evidence `link-inputs/receipt.json` | `3bc96d6c2bb3aa401ac0b5fee64840465cef5ed2706e264cec073d7e3b0f0a9e` |
+| Evidence `summary.json` | `244f7371b8e0b7571144ee694fcc8e37570835355ebfad0bff033cc6f21320f3` |
+| Evidence `compatibility-manifest.json` | `f6c57dcc95795a0687463838d0343bf690450b85d2fa95942fd5da0aef028a57` |
+| Evidence `resource-results.md` | `874835f24cd3768fd1cb692646e450b6d63b8e582e76e4c9e1b828e344c94380` |
+| Evidence `environment.json` | `339447292e8c4946cab8a61e3ef024161a5c3fc275f007d3e9e43c7ae9875f7d` |
+| Evidence `link-inputs/receipt.json` | `3f44a91cb628172a0d44a10d8651e004860cfa1cc190a960beee4946dc849112` |
 | `Package.resolved` | `eaf09ea422bb561945aac9d7e4192f0d051d7c647e3cb1eb7ffa8d4f57b9b937` |
 | `Tests/Fixtures/manifest.json` | `5d56d477a11e4e453956c34117793f3251a365942883a21e78dfe18e75796a0b` |
 | `Tests/Schemas/manifest.json` | `4bc8a1f98993eb76b4f9ef3f7bc5e6a8d17c9c0c09f1be1cc473978aac63262f` |
@@ -43,9 +43,12 @@ Mac17,6 / Apple M5 Max / **arm64** / **38,654,705,664 bytes RAM** / internal APF
 | `Tests/Fixtures/USDC/evidence/provenance.json` | `4d1f76a2f17ad2eda9559319dad206066d6ba959a09851b9da837ad992dbe390` |
 | `Tests/Fixtures/USDC/evidence/independent-oracle.json` | `775d6403399b46e614dd8d565f3b59265cf276a4293605d3499ef56c49170f10` |
 | `Scripts/verify-resources.py` | `9ed7f3b250092d43f1072b846ca724709d0866e14d0c5c600215b84449215ea8` |
-| Final measured release executable | `8792a8c46705aaf3781f4b942ae4255c2f5c5d077ae43609715bdf60a4533baa` |
+| `Sources/USDZValidation/USDC/USDCInput.swift` | `2aa4be0572245d5069ecc2a15e35358f20107038d63140f2e5a17284571aa747` |
+| `Sources/USDZValidation/USDC/USDCReporting.swift` | `ecd8269b34ccb1df70416da1261dd30570505f5c5a9e416b0ff5e960a55347d5` |
+| `Sources/USDZValidation/USDC/USDCValues.swift` | `3fcf8e4507874be4841044f9bf406ba67781744ca80179956f1c1f170c14769d` |
+| Final measured release executable | `a107684145a94459c2ed8e06d8b61ad117aa3e40a568db561df843f635fa9f25` |
 
-The runner's earlier pre-release-test executable snapshot is `c65eb0c24e8cf3464afdef93a89f4fc4c5da406ce54a99fda760033f3ce46a70`. The release-test build subsequently relinks the executable; the final measurement hash above matches the actual executable and resource report. Both original observations are preserved; the summary was not rewritten.
+The runner's earlier pre-release-test executable snapshot is `5b0bd12adfe48f2c7e529ec9994bac4ee1137da54cdb26dd690420972b4ed238`. The release-test build subsequently relinks the executable; the final measurement hash above matches the actual executable and resource report. Both original observations are preserved; the summary was not rewritten.
 
 LZ4 **1.10.0**, tag `v1.10.0`, upstream revision `ebb370ca83af193212df4dcbadcc5d87bc0de2f0`, is privately compiled from unchanged source. [The source manifest](../../Sources/CUSDCCompression/source-manifest.json) pins URLs, byte counts and these actual SHA-256 values:
 
@@ -67,7 +70,7 @@ The full debug/release/ASAN suites execute these owning tests; `logs/test.*`, `l
 | AC-02 exact versions | `USDCTableTests.testGenuineVersionsAndAuthoredStructuralJoins`, `testPatchFutureAndMajorVersionsAreUnsupported`; `USDCValueTypeTests.testGenuineTimeCodeAndPathExpressionForms`; original headers in `Tests/Fixtures/USDC` |
 | AC-03 authored occurrences | `USDCReferenceTests.testAll71AuthoredOccurrencesAndSites`, shared-value sites and all-six-list-bucket tests; independent `Tests/Fixtures/USDC/inventory.json` |
 | AC-04 new value types | `USDCValueTypeTests.testGenuineTimeCodeAndPathExpressionForms`, flag/version-negative cases; genuine writer-specific scalar/array/empty/sample originals |
-| AC-05 resolution | `ReferenceResolverTests` binary anchors/safe prefixes, expression-byte classification, clip-template and unrelated-string tests in `USDCValueTypeTests` |
+| AC-05 resolution | `ReferenceResolverTests` binary anchors/safe prefixes, expression-byte classification, `USDCValueTypeTests.testClipTemplateStringCannotCertifyCoverage` and unrelated-string cases; `USDCIntegrationTests.testClipTemplateReportsUnsupportedReferenceWithoutSpeculativeFindings` pins the specific cause, partial coverage, no guessed targets/prefixes, default exit 2 and JSON/SARIF privacy |
 | AC-06 completeness | `USDCIntegrationTests` mixed/uninspected/partial cases, sticky expression/prerequisite gaps; `NativeEngineTests.testCoverageCompletionNeverErasesGaps` |
 | AC-07 failures | `USDCTableTests.testAmbiguousRepresentationIsNotCorruption`, `USDCIntegrationTests.testEarlierFindingSurvivesLaterStop` and `testEarlierValueSurvivesLaterCorruptionInSameLayer`; independent malformed/partial report goldens |
 | AC-08 defensive decoding | `USDCCompressionTests`, `USDCInputTests`, `USDCTableTests`, `USDCValueTypeTests`, `AdversarialTests` and ASAN; typed arithmetic/index/topology/cycle/flag/frame mutations |
@@ -83,7 +86,7 @@ The full debug/release/ASAN suites execute these owning tests; `logs/test.*`, `l
 
 ## Scope, oracle limits and remaining uncertainty
 
-[The inspection boundary](../inspection-boundary.md) defines conditional reference completeness. It is not USD/OpenUSD conformance, composed-dependency, geometry, scene or renderer validation. Expressions/template identifiers are preserved and never evaluated; their resolver gaps use `UVK-LIM-003`. A nonempty string clip `templateAssetPath` is an unsupported value reported by `UVK-LIM-007`. Raw unregistered values, unknown types/flags and unproved representations retain gaps. Earlier findings survive later stops. A zero-occurrence inventory does not establish completeness.
+[The inspection boundary](../inspection-boundary.md) defines conditional reference completeness. It is not USD/OpenUSD conformance, composed-dependency, geometry, scene or renderer validation. Expressions/template identifiers are preserved and never evaluated; their resolver gaps use `UVK-LIM-003`. A nonempty string clip `templateAssetPath` uses `UVK-LIM-003` with reason `unsupportedReference`; the layer-level `UVK-LIM-007` partial-inspection summary coexists. Its literal prefixes and targets are not checked, and empty/unrelated strings remain non-references. Raw unregistered values, unknown types/flags and unproved representations retain gaps. Earlier findings survive later stops. A zero-occurrence inventory does not establish completeness.
 
 The committed development oracle compares semantic multisets of scene-path elements, field, container position and literal authored value, preserving duplicates. Its `ListInfoKeys` omits `arbitraryMetadata` and misses `wrapped.png`; retained typed/raw unregistered textual exports document that omission. `GetInfo("subLayerOffsets")` raises a converter TypeError; sublayer paths are still compared. Zero-versus-zero on the raw wrapper cannot certify absence. The two writers and separately executed oracle share OpenUSD lineage; they are not independent format implementations. Native fixture/scanner tests read committed independent expectations without a writer, Python, oracle environment, installed USD tool or download. The separately opted-in developer resource-measurement harness uses Python as recorded in the gate commands.
 

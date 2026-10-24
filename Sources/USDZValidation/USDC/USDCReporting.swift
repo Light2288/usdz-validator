@@ -12,6 +12,10 @@ enum USDCReporting {
     let reason: String
     let message: String
     switch issue.failure {
+    case .unsupported(.unsupportedReference):
+      ruleID = "UVK-LIM-003"
+      reason = "unsupportedReference"
+      message = "Binary USD reference inspection encountered unsupported reference semantics."
     case .unsupported(let gap):
       ruleID = "UVK-LIM-007"
       reason = gap.rawValue

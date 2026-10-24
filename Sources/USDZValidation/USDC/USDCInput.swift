@@ -6,6 +6,7 @@ enum USDCGapReason: String, Equatable {
   case unsupportedSection
   case unsupportedEncoding
   case unsupportedValue
+  case unsupportedReference
 }
 
 enum USDCCorruptionReason: String, Equatable {
