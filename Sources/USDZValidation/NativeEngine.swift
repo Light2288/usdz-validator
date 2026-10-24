@@ -221,7 +221,7 @@ enum NativeEngine {
           let state: USDCScanState
           do {
             state = try USDCReader.scan(
-              entry: entry, reader: reader,
+              entry: entry, reader: reader, defaultEntry: namespace.defaultEntry,
               onReference: { occurrence in
                 recoveredInventory = true
                 ReferenceResolver.check(

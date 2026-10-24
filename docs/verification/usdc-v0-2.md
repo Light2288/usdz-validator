@@ -1,23 +1,23 @@
 # USDC v0.2 current-host verification
 
-**2026-10-24: current-host test acceptance PASS.** The single fresh final-fix full gate exited **0**, with all **19/19 required steps PASS**, on local branch `feat/usdc-reference-coverage-v0-2`. Product **0.2.0** is unpublished, safety envelope is **2**, and report/config/catalogue schema major remains **1**. Final whole-branch review is separate and remains the controller's responsibility.
+**2026-10-24: current-host test acceptance PASS.** The fresh resolver-accounting full gate exited **0**, with all **19/19 required steps PASS**, on local branch `feat/usdc-reference-coverage-v0-2`. Product **0.2.0** is unpublished, safety envelope is **2**, and report/config/catalogue schema major remains **1**. Final whole-branch review is separate and remains the controller's responsibility.
 
 ```sh
-sh Scripts/verify-release.sh --evidence-dir .build/verification/usdc-v0-2-final
+sh Scripts/verify-release.sh --evidence-dir .build/verification/usdc-v0-2-accounting
 ```
 
-The destination was absent before execution; prior run directories were preserved. This run verifies the final-review correction that gives nonempty string clip templates the required `UVK-LIM-003`/`unsupportedReference` cause, alongside the layer-level `UVK-LIM-007` summary. The earlier `usdc-v0-2-current` run and its original receipts remain preserved as pre-fix evidence. Local evidence is in `.build/verification/usdc-v0-2-final/`: genuine `summary.json`, `environment.json`, `logs/`, unchanged `Package.resolved.before`, `exports/`, `checked-in/`, `compatibility-manifest.json`, copied `resource-results.md`, and supplemental `link-inputs/` inspection receipts. Every command, environment override, exit and stdout/stderr path is retained in the summary. No result was copied from an earlier release run.
+The destination was absent before execution; prior run directories were preserved. This run verifies the additional user-authorized correction that charges resolver component and author/default-directory scratch before binary asset copies and synchronous resolution. It also retains the earlier correction giving nonempty string clip templates the required `UVK-LIM-003`/`unsupportedReference` cause alongside the layer-level `UVK-LIM-007` summary. The earlier `usdc-v0-2-current` and `usdc-v0-2-final` runs remain preserved. The two-owner accounting attempt is preserved separately as `usdc-v0-2-accounting-incomplete-owners2` (interrupted, exit 130, no completed summary); it is not acceptance evidence. Local evidence is in `.build/verification/usdc-v0-2-accounting/`: genuine `summary.json`, `environment.json`, `logs/`, unchanged `Package.resolved.before`, `exports/`, `checked-in/`, `compatibility-manifest.json`, copied `resource-results.md`, and supplemental `link-inputs/` inspection receipts. Every command, environment override, exit and stdout/stderr path is retained in the summary. No result was copied from an earlier release run.
 
 | Required check | Observed result |
 | --- | --- |
 | Environment, strict formatting, resolve/unchanged lock, debug and release builds | PASS, each exit 0 |
-| Debug, release and ASAN full suites | Each **326 XCTest cases, zero failures, nine explicit opt-in skips** (31 CLI + 293 validation + 2 library-only consumer cases) |
+| Debug, release and ASAN full suites | Each **327 XCTest cases, zero failures, nine explicit opt-in skips** (31 CLI + 294 validation + 2 library-only consumer cases) |
 | Isolated CLI process gate | **22 tests**, zero failures/skips; covers compile-only process-hook paths |
 | Offline schemas and verifier tools | **10 self-tests + 10 schema contracts + 15 verifier tests**, no failures/skips |
 | Documented examples | **Five** exact native commands PASS |
 | Golden/export compatibility | **Two** tests PASS; **81 actual exports + 21 reviewed documents = 102** validated files, bound to **155** final input hashes, version set exactly `["0.2.0"]` |
 | Dedicated real-size resource gate | **Nine** tests, zero failures/skips, including its 26-case process matrix |
-| Standalone final release resource measurements | **26/26 PASS**; maximum peak RSS **208,683,008 bytes <=268,435,456**, maximum elapsed **1.808 seconds <=60** |
+| Standalone final release resource measurements | **26/26 PASS**; maximum peak RSS **208,683,008 bytes <=268,435,456**, maximum elapsed **2.092 seconds <=60** |
 | Vendored C/consumer linkage inspection | Six actual debug/release link-file lists include private LZ4 objects; release CLI/consumer dynamic dependencies list no host LZ4; the consumer links neither ArgumentParser nor TestSupport. Actual ASAN `lz4.o` contains load-check instrumentation. |
 
 Ordinary full suites intentionally skip four compile-only process-hook cases, four expensive resource cases and the unrequested installed checker smoke. Dedicated CLI/resource gates run those required paths without skips. The smoke remains explicitly SKIPPED, not passed. Full log receipts preserve the skip messages. No compiler warnings, sanitizer diagnostics or unexpected failures were observed.
@@ -30,11 +30,11 @@ Mac17,6 / Apple M5 Max / **arm64** / **38,654,705,664 bytes RAM** / internal APF
 
 | Evidence/input | SHA-256 |
 | --- | --- |
-| Evidence `summary.json` | `244f7371b8e0b7571144ee694fcc8e37570835355ebfad0bff033cc6f21320f3` |
-| Evidence `compatibility-manifest.json` | `f6c57dcc95795a0687463838d0343bf690450b85d2fa95942fd5da0aef028a57` |
-| Evidence `resource-results.md` | `874835f24cd3768fd1cb692646e450b6d63b8e582e76e4c9e1b828e344c94380` |
-| Evidence `environment.json` | `339447292e8c4946cab8a61e3ef024161a5c3fc275f007d3e9e43c7ae9875f7d` |
-| Evidence `link-inputs/receipt.json` | `3f44a91cb628172a0d44a10d8651e004860cfa1cc190a960beee4946dc849112` |
+| Evidence `summary.json` | `a781f0cb85fa021f9111761a53b46d989d45fde017dd5df1527e5436a9fa765b` |
+| Evidence `compatibility-manifest.json` | `88595ee12846ffca0b97d9bd5ad56211ce14ba3a8337bbfbe132f1fe2f6d5727` |
+| Evidence `resource-results.md` | `65a97e2b775e77e8f62ff3f3a0fad52c355e1fe1d25a188c90f00e6919a47bb9` |
+| Evidence `environment.json` | `02403a30a43ce88b3048a3931da73d5c9963ded29805ca2b63d6d3ad24e53144` |
+| Evidence `link-inputs/receipt.json` | `57ba00fc6761c619145244e16a11cfc3d5a946930855d5fbde50e833847233b5` |
 | `Package.resolved` | `eaf09ea422bb561945aac9d7e4192f0d051d7c647e3cb1eb7ffa8d4f57b9b937` |
 | `Tests/Fixtures/manifest.json` | `5d56d477a11e4e453956c34117793f3251a365942883a21e78dfe18e75796a0b` |
 | `Tests/Schemas/manifest.json` | `4bc8a1f98993eb76b4f9ef3f7bc5e6a8d17c9c0c09f1be1cc473978aac63262f` |
@@ -43,12 +43,15 @@ Mac17,6 / Apple M5 Max / **arm64** / **38,654,705,664 bytes RAM** / internal APF
 | `Tests/Fixtures/USDC/evidence/provenance.json` | `4d1f76a2f17ad2eda9559319dad206066d6ba959a09851b9da837ad992dbe390` |
 | `Tests/Fixtures/USDC/evidence/independent-oracle.json` | `775d6403399b46e614dd8d565f3b59265cf276a4293605d3499ef56c49170f10` |
 | `Scripts/verify-resources.py` | `9ed7f3b250092d43f1072b846ca724709d0866e14d0c5c600215b84449215ea8` |
-| `Sources/USDZValidation/USDC/USDCInput.swift` | `2aa4be0572245d5069ecc2a15e35358f20107038d63140f2e5a17284571aa747` |
+| `Sources/USDZValidation/NativeEngine.swift` | `cb64ae9bd74b68c250b482557effb0a68f296332067b253f65218cd613e9591a` |
+| `Sources/USDZValidation/Rules/ReferenceResolver.swift` | `c88c914c9a16ac9ac8b4b587b6e477d395003009ca1b088670796e0720f20927` |
+| `Sources/USDZValidation/USDC/USDCReader.swift` | `e39effbe2b5714150dddf7985dd488748bd02fcc49d1f6f34a383cced1ddc723` |
+| `Sources/USDZValidation/USDC/USDCInput.swift` | `0c1604be873173dff889bf1cf76d47f35f1890249073d9c099499543a4153ba7` |
 | `Sources/USDZValidation/USDC/USDCReporting.swift` | `ecd8269b34ccb1df70416da1261dd30570505f5c5a9e416b0ff5e960a55347d5` |
-| `Sources/USDZValidation/USDC/USDCValues.swift` | `3fcf8e4507874be4841044f9bf406ba67781744ca80179956f1c1f170c14769d` |
-| Final measured release executable | `a107684145a94459c2ed8e06d8b61ad117aa3e40a568db561df843f635fa9f25` |
+| `Sources/USDZValidation/USDC/USDCValues.swift` | `1bbf55903eaaf4c58fa70d08026bad77c2c2e16bf35fa4da3c996eadc01e48cb` |
+| Final measured release executable | `91e071cfd13a90e68bd972ce3d699adc4d0f6fd2f584a274388be5b04529394f` |
 
-The runner's earlier pre-release-test executable snapshot is `5b0bd12adfe48f2c7e529ec9994bac4ee1137da54cdb26dd690420972b4ed238`. The release-test build subsequently relinks the executable; the final measurement hash above matches the actual executable and resource report. Both original observations are preserved; the summary was not rewritten.
+The runner's earlier pre-release-test executable snapshot is `c902f10c8311734840a188a6ae460cdeb5b495e433c8f28a2dc1ab33f9f15cce`. The release-test build subsequently relinks the executable; the final measurement hash above matches the actual executable and resource report. Both original observations are preserved; the summary was not rewritten.
 
 LZ4 **1.10.0**, tag `v1.10.0`, upstream revision `ebb370ca83af193212df4dcbadcc5d87bc0de2f0`, is privately compiled from unchanged source. [The source manifest](../../Sources/CUSDCCompression/source-manifest.json) pins URLs, byte counts and these actual SHA-256 values:
 
@@ -62,7 +65,7 @@ The complete BSD-2-Clause license is retained verbatim in the private target and
 
 ## Acceptance traceability
 
-The full debug/release/ASAN suites execute these owning tests; `logs/test.*`, `logs/release-test.*` and `logs/address-sanitizer.*` are the fresh receipts. Earlier implementation reports under `.superpowers/sdd/2026-10-24-usdc-reference-coverage-v0-2/` preserve development RED/GREEN details, but are not substituted for this gate.
+The full debug/release/ASAN suites execute these owning tests; `logs/test.*`, `logs/release-test.*` and `logs/address-sanitizer.*` are the fresh receipts. Earlier implementation reports archived under `.build/verification/usdc-v0-2-reviews/execution-workspace/` preserve development RED/GREEN details, but are not substituted for this gate.
 
 | Criterion | Actual proof and durable inputs |
 | --- | --- |
@@ -74,7 +77,7 @@ The full debug/release/ASAN suites execute these owning tests; `logs/test.*`, `l
 | AC-06 completeness | `USDCIntegrationTests` mixed/uninspected/partial cases, sticky expression/prerequisite gaps; `NativeEngineTests.testCoverageCompletionNeverErasesGaps` |
 | AC-07 failures | `USDCTableTests.testAmbiguousRepresentationIsNotCorruption`, `USDCIntegrationTests.testEarlierFindingSurvivesLaterStop` and `testEarlierValueSurvivesLaterCorruptionInSameLayer`; independent malformed/partial report goldens |
 | AC-08 defensive decoding | `USDCCompressionTests`, `USDCInputTests`, `USDCTableTests`, `USDCValueTypeTests`, `AdversarialTests` and ASAN; typed arithmetic/index/topology/cycle/flag/frame mutations |
-| AC-09 aggregate limits | `USDCResourceTests`, including exact cross-layer work 2,000,000/+1, 16 MiB block/+1, 32 MiB decode, 64 MiB live, 250,000 items/+1, depth 32/33, 4,096/4,097 UTF-8 bytes and shared 100,000 occurrences; pre-allocation throwing closures and released reservations |
+| AC-09 aggregate limits | `USDCResourceTests`, including exact cross-layer work 2,000,000/+1, 16 MiB block/+1, 32 MiB decode, 64 MiB live, 250,000 items/+1, depth 32/33, 4,096/4,097 UTF-8 bytes and shared 100,000 occurrences; pre-allocation throwing closures and released reservations; `USDCIntegrationTests.testResolverComponentScratchStopsBeforeResolutionAndReleasesStorage` exercises many-component asset, author and default paths through the real resolver, stops before resolution with 64 KiB remaining, and verifies release on both outcomes |
 | AC-10 package-local access | `USDCContainmentTests.testChildOnlyDenyPolicy` six EPERM controls and 27 genuine inputs/72 occurrences; `testRealSnapshotReadsOnlySuppliedInputRanges`; `ResourceBoundaryTests.testRealSizeBinaryLayerUsesOnlyBoundedMetadataReads` |
 | AC-11 binary identities | `USDCReportingTests`, `USDCReportTests`, existing `GoldenCompatibilityTests` relocation/rename/repeat checks; independent fixed digest vectors and absent fictional regions |
 | AC-12 reporting/gates | `USDCReportTests`, JSON/SARIF/privacy/gate/profile/external suites; `logs/export-schemas.*`, `exports/`, `checked-in/` and compatibility manifest (81 actual exports + 21 reviewed files); historical USDA vectors preserved |

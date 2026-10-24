@@ -7,10 +7,10 @@ enum USDCScanState: Equatable {
 enum USDCReader {
   /// Callbacks are synchronous. All table/value storage is destroyed before returning or throwing.
   static func scan(
-    entry: ZIPEntry, reader: BoundedReader,
+    entry: ZIPEntry, reader: BoundedReader, defaultEntry: ZIPEntry? = nil,
     onReference: (ReferenceOccurrence) -> Void, onIssue: (USDCIssue) -> Void
   ) throws -> USDCScanState {
-    let input = USDCInput(entry: entry, reader: reader)
+    let input = USDCInput(entry: entry, reader: reader, defaultEntry: defaultEntry)
     let tables: USDCTables
     do {
       tables = try USDCTables.read(input: input)

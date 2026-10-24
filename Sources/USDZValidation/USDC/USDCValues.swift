@@ -111,8 +111,10 @@ enum USDCValues {
         try ledger.consumeTokens(1)
         try ledger.consumeUSDCWork(1)
         if omitEmpty && bytes.isEmpty { return }
-        // Serialized Data, classifier's temporary Array, and bounded syntax-search scratch.
-        let reservation = try ledger.reserveUSDCStorage(UInt64(bytes.count) * 4 + 1024)
+        // Admission precedes copies and the synchronous resolver's component/anchor scratch.
+        let reservation = try ledger.reserveUSDCStorage(
+          ReferenceResolver.binaryScratchCapacity(
+            valueBytes: bytes, author: input.entry, defaultEntry: input.defaultEntry))
         defer { reservation.release() }
         try { () throws -> Void in
           let data = Data(bytes)

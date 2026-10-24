@@ -30,6 +30,13 @@ enum USDCFailure: Error, Equatable {
 struct USDCInput {
   let entry: ZIPEntry
   let reader: BoundedReader
+  let defaultEntry: ZIPEntry?
+
+  init(entry: ZIPEntry, reader: BoundedReader, defaultEntry: ZIPEntry? = nil) {
+    self.entry = entry
+    self.reader = reader
+    self.defaultEntry = defaultEntry
+  }
 
   /// Data does not expose capacity: charge twice the requested payload plus 256 bytes
   /// for staging overhead. This is conservative accounting, not a Foundation/RSS bound.

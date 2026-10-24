@@ -134,6 +134,43 @@ final class USDCIntegrationTests: XCTestCase {
     }
   }
 
+  // Short components need resolver arrays even when their serialized bytes fit the old charge.
+  func testResolverComponentScratchStopsBeforeResolutionAndReleasesStorage() throws {
+    let cases = [
+      (String(repeating: "a/", count: 2047) + "a", "root.usdc", "root.usdc"),
+      ("missing.png", "root.usdc", String(repeating: "a/", count: 2000) + "author.usdc"),
+      ("missing.png", String(repeating: "d/", count: 2000) + "root.usdc", "author.usdc"),
+    ]
+    for (value, defaultName, authorName) in cases {
+      let crate = try USDCMutationRecipe.valueCrate(
+        reps: [0x400c_0000_0000_0002], tokens: ["/", "default", value, ""])
+      var entries: [ArchiveRecipe.Entry] = []
+      if defaultName != authorName {
+        entries.append(try binary(defaultName, "baseline/empty.usdc"))
+      }
+      entries.append(.init(nameBytes: Data(authorName.utf8), payload: crate))
+      let bytes = try ArchiveRecipe(entries: entries).encode()
+      let normalLedger = ResourceLedger()
+      let normal = try inspect(bytes, ledger: normalLedger)
+      XCTAssertEqual(normal.findings.map(\.ruleID), ["UVK-PATH-006"])
+      XCTAssertEqual(normalLedger.usdcLiveBytes, 0)
+
+      let ledger = ResourceLedger()
+      let heldBytes = SafetyResource.usdcWorkingBytes.limit - 65_536
+      let held = try ledger.reserveUSDCStorage(heldBytes)
+      defer { held.release() }
+      let limited = try inspect(bytes, ledger: ledger)
+      XCTAssertTrue(
+        limited.findings.contains {
+          $0.ruleID == "UVK-RES-001" && $0.evidence["resource"] == .string("usdcWorkingBytes")
+        })
+      XCTAssertFalse(limited.findings.contains { $0.ruleID == "UVK-PATH-006" })
+      XCTAssertEqual(ledger.usdcLiveBytes, heldBytes)
+      held.release()
+      XCTAssertEqual(ledger.usdcLiveBytes, 0)
+    }
+  }
+
   // Namespace, stored mapping, integrity, alignment and default gates must precede crate tables.
   func testPrerequisiteFailureForbidsBinaryReads() throws {
     let crate = try binary("root.usdc", "baseline/containers.usdc")
