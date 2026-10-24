@@ -184,6 +184,13 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(generator.sourceLicense, "MIT")
       }
     }
+    let measurements = manifest.entries.compactMap(\.measurementGenerator)
+    XCTAssertEqual(measurements.count, 1)
+    for generator in measurements {
+      let contents = try Data(contentsOf: project.appendingPathComponent(generator.path))
+      let hash = SHA256.hash(data: contents).map { String(format: "%02x", $0) }.joined()
+      XCTAssertEqual(generator.sha256, hash, generator.path)
+    }
     let license = try String(contentsOf: project.appendingPathComponent("LICENSE"), encoding: .utf8)
     XCTAssertTrue(license.contains("Copyright (c) 2026 USDZ Validation Kit contributors"))
   }
@@ -214,6 +221,11 @@ final class FixtureTests: XCTestCase {
       let history: [String]
       let conformance: String?
       let generator: Generator?
+      let measurementGenerator: MeasurementGenerator?
+    }
+    struct MeasurementGenerator: Decodable {
+      let path: String
+      let sha256: String
     }
     struct Generator: Decodable {
       let name: String

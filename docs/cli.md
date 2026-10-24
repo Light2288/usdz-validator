@@ -31,7 +31,7 @@ The committed [valid USDA package](../Tests/Fixtures/valid-usda.usdz) is 469 byt
 .build/release/usdz-validator validate Tests/Fixtures/valid-usda.usdz --format sarif
 ```
 
-The [Apple catalogue example](../Examples/catalogue-v1.json) contains 32 native rules; the general profile contains 30. Selecting a profile never silently runs a checker.
+The [Apple catalogue example](../Examples/catalogue-v1.json) contains 34 native rules; the general profile contains 32. Selecting a profile never silently runs a checker.
 
 <!-- verify-example:catalogue -->
 ```sh
@@ -65,7 +65,7 @@ An explicit [default budget file](../Examples/budgets.json) produces the same co
 | `totalTextureBytes` | 83886080 | All texture encoded bytes |
 | `textureMaxDimension` | 4096 | Supported width or height |
 
-Only `observed > threshold` warns; equality passes. Omitted budget keys use defaults; `null` disables only that warning check. Non-null values must be positive signed-64-bit integers. Booleans, floats (including `1.0`), zero, negatives, duplicate/unknown keys, unsupported versions and trailing non-whitespace data fail before inspecting input or executing tools. Config cannot set profiles, tools, search paths, or [hard safety ceilings](inspection-boundary.md#fixed-safety-envelope-v1). Effective budgets appear in reports.
+Only `observed > threshold` warns; equality passes. Omitted budget keys use defaults; `null` disables only that warning check. Non-null values must be positive signed-64-bit integers. Booleans, floats (including `1.0`), zero, negatives, duplicate/unknown keys, unsupported versions and trailing non-whitespace data fail before inspecting input or executing tools. Config cannot set profiles, tools, search paths, or [hard safety ceilings](inspection-boundary.md#fixed-safety-envelope-v2). Effective budgets appear in reports.
 
 ## Streams and report destinations
 
@@ -88,7 +88,9 @@ Evaluate this table from top to bottom; the first applicable condition wins.
 
 `--fail-on warning` blocks warnings and errors; notes never block by severity. Coverage gaps affect completeness independently. `--allow-incomplete` accepts native gaps only: it does not change coverage or suppress findings, override selected warnings/hard safety errors, or accept an unsuccessful requested checker. A USDC reference gap can therefore have `validationStatus: incomplete`, `gateDecision: pass`, and `acceptedIncomplete: true`. Higher-priority failures retain all known coverage gaps.
 
-An otherwise correct binary-USDC package can return `2` under the default policy. In [five local Apple sample tests](verification/apple-assets.md), all originals had that native reference gap; the optional checker reported no failure on four and a material-subset failure on one. Explicitly accepting native incompleteness allowed the four to return `0`, while the external failure retained exit `1`.
+Version 0.2.0 automatically inspects the [supported USDC subset](inspection-boundary.md#conditional-usdc-references), including unreferenced and binary `.usd` layers, without a switch or tool probe. A complete supported binary package can return `0`; an unsupported version, representation, expression or clip template can still return `2`. `UVK-USD-001` corruption and `UVK-RES-001` processing excess remain blocking even with `--allow-incomplete`.
+
+The [five local Apple sample tests](verification/apple-assets.md) are historical v0.1 results: all originals then had a blanket native binary gap, and the optional checker reported no failure on four and a material-subset failure on one. Those observations do not establish current v0.2 native results. No external success upgrades native coverage.
 
 ## Optional installed checker
 

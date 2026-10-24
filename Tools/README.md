@@ -1,10 +1,10 @@
 # Offline compatibility tools
 
-The Swift products have no Python runtime dependency. These tools validate the checked-in report, catalogue and budget schemas, examples and independent golden expectations. They use no network during tests. All project-authored tools, recipes, expectations and examples are MIT; preserve the copyright and permission notice in `../LICENSE`. Third-party schema/dependency notices are in `../NOTICE`.
+The Swift products and native fixture tests have no Python, writer, oracle, installed USD-tool or host-LZ4 runtime dependency. The library privately compiles pinned LZ4 1.10.0 for bounded crate metadata decoding, with source hashes/license in [the source manifest](../Sources/CUSDCCompression/source-manifest.json). ZIP remains stored-only. These tools validate the checked-in report, catalogue and budget schemas, examples and independent golden expectations. They use no network during tests. All project-authored tools, recipes, expectations and examples are MIT; preserve the copyright and permission notice in `../LICENSE`. Third-party schema/dependency notices are in `../NOTICE`.
 
 ## Setup and verification
 
-**CPython 3.14.7 on macOS arm64** is the verified development-tool environment. **CPython 3.12 on macOS arm64** remains an intended, unverified target; it was **not available or tested**. Under the user-approved 2026-10-21 policy amendment, its absent matrix row stays UNVERIFIED and verification is deferred follow-up, not a v0.1 acceptance blocker. The Swift 6.0 / Xcode 16.0 / macOS 15 arm64 product target is likewise intended and unverified; only the exact tested combination in [the release matrix](../docs/verification/release-matrix.md) is verified/supported. No Xcode-bundled Python version or automatic minimum/future support is assumed.
+**CPython 3.14.7 on macOS arm64** is the verified development-tool environment. **CPython 3.12 on macOS arm64** remains an intended, unverified target; it was **not available or tested**. Under the user-approved 2026-10-21 policy amendment, its absent matrix row stays UNVERIFIED and verification is deferred follow-up, not a current-host acceptance blocker. The Swift 6.0 / Xcode 16.0 / macOS 15 arm64 product target is likewise intended and unverified; only the exact tested combination in [the release matrix](../docs/verification/release-matrix.md) is verified/supported. No Xcode-bundled Python version or automatic minimum/future support is assumed.
 
 From the repository root:
 
@@ -26,6 +26,8 @@ UVK_COMPAT_EXPORT_DIR="$PWD/.verification/compat" swift test --filter GoldenComp
 ```
 
 The export environment variable is read only in the test target. Without it the test writes no exports. The directory option adds validation to the checked-in corpus; it accepts immediate files named `report*.json`, `external*.json`, or `state*.json` as native report v1; `catalogue*.json` or `rule-catalogue*.json` as catalogue v1; `budget*.json` or `config*.json` as budget config v1; and `*.sarif` as SARIF 2.1.0. Unsupported names and empty/missing directories fail. Use a dedicated export directory. The release runner also uses `--expected-export-count 81` to reject a missing portion of the fixed corpus. The 81 actual Swift exports are validated alongside 21 reviewed checked-in documents (102 bound files). The immutable manifest includes every product Swift/C/header source, the vendored dependency license/source manifest and NOTICE. Reviewed vendored input bytes and missing/extra C/header or export files must fail validation. See [the release procedure](../docs/releasing.md) for immutable evidence manifests and exact cross-host byte/native-ID comparison; none of these commands regenerate independent golden expectations.
+
+Native offline corpus checks include `swift test --filter 'USDCFixtureTests|USDCReferenceTests|USDCValueTypeTests'`. They compare committed independent values and semantic sites; synthetic mutation frames are hostile-input evidence, not writer compatibility. The fixture binding test checks the nested resource-measurement generator hash as well as top-level fixture/helper entries. [The v0.2 acceptance record](../docs/verification/usdc-v0-2.md) separates native results, historical oracle omissions, denied-access controls and deferred platforms.
 
 ## Contract boundaries
 

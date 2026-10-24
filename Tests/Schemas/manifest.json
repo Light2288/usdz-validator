@@ -253,7 +253,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "report"
     },
     {
@@ -266,7 +266,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "sarif"
     },
     {
@@ -279,7 +279,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "report"
     },
     {
@@ -292,7 +292,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "sarif"
     },
     {
@@ -305,7 +305,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "sarif"
     },
     {
@@ -318,7 +318,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "report"
     },
     {
@@ -331,7 +331,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "report"
     },
     {
@@ -344,7 +344,7 @@
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "independent-expected-document",
       "recipeSource": "Tools/README.md#durable-independent-golden-provenance",
-      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 32 descriptor texts, order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
+      "recipe": "Run the complete literal JSON/SARIF author recipe from Tools/README.md in a temporary staging directory, compare bytes, review every mismatch. Never capture or regenerate from product output. Catalogue is the retained independent literal descriptor source: preserve all 34 Apple-profile descriptor texts (32 general plus two Apple warnings), order, nullable family and envelope; serialize sorted compact UTF-8 JSON plus LF.",
       "format": "report"
     },
     {
@@ -492,7 +492,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "6905e62bd8294823b1c735e6391f7fdbec3e22b5e01f4d0bf4d1bd55d1830ead",
+      "sha256": "395097d0a501ba9eafccd7575fc44e63e7affaa7891e233fdd53e0b66fe7e14d",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",

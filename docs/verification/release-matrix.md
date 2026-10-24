@@ -1,5 +1,13 @@
 # Manual release verification matrix
 
+## Current v0.2 evidence
+
+**2026-10-24 current-host test acceptance PASS:** the fresh `usdc-v0-2-current` run exited 0 with 19/19 required gates. Each debug/release/ASAN suite passed 325 cases with nine expected opt-in skips; dedicated CLI 22 and real-size resource nine tests had no skips. All 26 standalone resource rows passed (maximum 208,666,624 bytes RSS / 1.849 seconds); 81 exports plus 21 reviewed files bind 155 final inputs. The [v0.2 acceptance record](usdc-v0-2.md) records exact hashes, environment and source/dependency bindings. Final branch review remains separate. Current-host verification does not promote macOS 15 / Xcode 16 / Swift 6.0, cross-host byte equality or CPython 3.12: all remain **UNVERIFIED**. Installed-checker smoke is not part of the v0.2 native gate unless explicitly requested. The `v0.1.0` tag remains available.
+
+## Historical v0.1 evidence
+
+The observations below retain their original v0.1 counts, hashes and conditional coverage conclusions. Use the named preserved evidence copies for historical resource results; the current `resource-results.md` is refreshed by the latest release runner.
+
 **User-approved verification-policy amendment — 2026-10-21:** Required current-environment v0.1 verification is **PASS**. The latest release-candidate run passed all 19 required gates plus the requested installed-checker smoke, **20/20 gates** in total; see the fresh evidence below and the [release summary](release-summary.md). Verified/supported scope is only macOS 27.0.1 build 26A434 / Xcode 27.1 build 27A9275 / Swift 6.4 (`swiftlang-6.4.0.34.1`) on arm64, with CPython 3.14.7 schema tooling. macOS 15+ / Xcode 16.0 / Swift 6.0 arm64 and CPython 3.12 remain intended, unverified targets, without automatic minimum/future support. Their absent rows and genuine cross-host comparison are deferred follow-up, not v0.1 acceptance blockers. A successful current-host run does not verify the minimum baseline. Publication remains for the maintainer after documentation review; no tag, publication, push or merge was performed by this verification.
 
 | Evidence scope | Designated combination | Status | Observed evidence |

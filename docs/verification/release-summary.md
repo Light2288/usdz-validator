@@ -1,6 +1,14 @@
-# USDZ Validation Kit 0.1.0 release summary
+# USDZ Validation Kit release summary
 
-**Release documentation prepared on 2026-10-22; the v0.1.0 tag and GitHub release publication are pending.** The maintainer reviewed and approved the documentation on 2026-10-22 under the approved current-host verification policy. The final release-candidate command exited 0 with **20/20 gates PASS**: 19 required current-host gates and the requested installed-checker smoke. No product behavior changed in this follow-up.
+Version **0.2.0** is local and unpublished. It adds automatic conditional authored-reference inspection for exact USDC 0.8.0, 0.9.0 and 0.10.0, envelope 2 and private pinned LZ4 metadata decoding. [The v0.2 acceptance record](usdc-v0-2.md) contains current-host verification, AC-01…AC-17 evidence and remaining limits; [the inspection boundary](../inspection-boundary.md) defines the supported subset. Final whole-branch review is recorded separately by the controller.
+
+The fresh 2026-10-24 v0.2 native gate exited 0: **19/19 required gates PASS**, 325 cases each in debug/release/ASAN, 22 isolated CLI cases, nine real-size tests and 26 measured release invocations. Peak standalone RSS was **208,666,624 bytes**, maximum elapsed **1.849 seconds**. The runner records `currentHostStatus: PASS`, `releaseStatus: UNVERIFIED` and installed-checker smoke SKIPPED (unrequested). This receipt does not approve the separate final whole-branch review.
+
+The `v0.1.0` tag remains available. The following v0.1 account is preserved as historical evidence; its counts, hashes, checker results and coverage conclusions describe that product and those runs. Current [resource results](resource-results.md) are generated anew; original reports remain in each named historical evidence directory.
+
+## Historical 0.1.0 release summary
+
+**Historical release documentation prepared on 2026-10-22.** The maintainer reviewed and approved the documentation on 2026-10-22 under the approved current-host verification policy. The final release-candidate command exited 0 with **20/20 gates PASS**: 19 required current-host gates and the requested installed-checker smoke. No product behavior changed in this follow-up.
 
 ## What v0.1 provides
 
@@ -45,4 +53,4 @@ Exit 0 means the configured gate accepted the observed result; `--allow-incomple
 
 Implementation branch: `feat/usdz-validation-kit-v0-1`. Reviewed product commit: `5729bad6b6832934751c179696248bea969c4ba9`, with 38 conventional commits. The original `main` was unborn and the remote empty; implementation was bootstrapped with `git switch --orphan feat/usdz-validation-kit-v0-1` before the approved documents and implementation were committed. No base/main history was invented, and no worktree was created.
 
-All AC-01 through AC-30 and final product specification/quality reviews were previously recorded as PASS on that exact product commit. The verification follow-up changed Markdown documentation and generated resource observations only; source, tests, scripts, schemas, dependency lock, specification and plan are unchanged. The maintainer approved the documentation on 2026-10-22; implementation and verification documentation were subsequently merged into `main` in [PR #1](https://github.com/Light2288/usdz-validator/pull/1), merge commit `c6e98baaaa8524f669a6807eb5bb3340bb92ed33`. This release-preparation change dates the changelog and updates status wording only. Creating the v0.1.0 tag and publishing the GitHub release remain separate maintainer actions.
+All AC-01 through AC-30 and final product specification/quality reviews were previously recorded as PASS on that exact product commit. The verification follow-up changed Markdown documentation and generated resource observations only; source, tests, scripts, schemas, dependency lock, specification and plan are unchanged. The maintainer approved the documentation on 2026-10-22; implementation and verification documentation were subsequently merged into `main` in [PR #1](https://github.com/Light2288/usdz-validator/pull/1), merge commit `c6e98baaaa8524f669a6807eb5bb3340bb92ed33`. This release-preparation change dates the changelog and updates status wording only. Those historical publication actions were outside the verification run; the `v0.1.0` tag is now retained as the baseline.
