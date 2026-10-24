@@ -207,7 +207,7 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "3bec3959637497d5efcc293c3e0f815d25d159b84e4730b8209061f39773e10d",
+      "sha256": "fbaf36cf56700287592108eac257e2565235912e8cc5d11780e3a807c2f0a74b",
       "recipe": "Compile committed Swift 6 source with Foundation. ResourceRecipes.write(entries:to:archiveBytes:) writes a classic stored ZIP to a caller-owned temporary URL, fixed DOS 1980-01-01, 64-byte payload alignment, CRC-32/ISO-HDLC table, at most 65536-byte stream chunks and O(entry count) bounded metadata. Segment bytes/repeated/fill retain no full archive or large member. Entry.declaredSize explicitly creates metadata-only 256MiB and aggregate512MiB declaration boundaries whose physically stored payload plus ZIP overhead cannot fit the archive ceiling. Entry.commentBytes fills central comments for exact/one-above16MiB directory sizes. archiveBytes fills only the bounded EOCD comment to reach exactly512MiB. nearArchiveLimit writes root.usda, a.wav=268435456 B bytes and b.wav=268434432 B bytes. text(tokens:tokenBytes:totalBytes:) emits #usda 1.0 LF, raw a asset tokens and space padding for lexical limits. jpegHeader(paddingBytes:) streams SOI, APP1 segments and SOF0 so the frame ends at/one byte above1048576; header-only JPEG is not a valid complete image/scene oracle. ResourceBoundaryTests opt into expensive sizes with UVK_RUN_RESOURCE_TESTS=1; small counter/metadata/token/config/report proofs always run. Every temporary file is deleted after its test.",
       "history": [
         "2026-10-21: Original MIT streamed temporary resource recipes and independently timed release CLI corpus added for Task24."
@@ -1115,7 +1115,7 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "fc4278a8a117c265bac572df362656cac2899d90335aa8e8b45f0cf8e1864658",
+      "sha256": "0fc861d20574ebef4370e5d06d7421540dfe6ca658344abe05d93a0d004171bc",
       "recipe": "Compile committed Swift 6 TestSupport source with Foundation only; no product decoder import. See docs/fixtures.md.",
       "history": [
         "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."

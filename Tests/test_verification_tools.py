@@ -260,5 +260,70 @@ class VerificationToolTests(unittest.TestCase):
             self.assertEqual(normal_release.stderr, hooked.stderr, scenario)
 
 
+class ResourceVerificationTests(unittest.TestCase):
+    def resource_tool(self):
+        spec = importlib.util.spec_from_file_location('resources', ROOT / 'Scripts/verify-resources.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    # Dropping a costly binary row must fail acceptance, even when the remaining rows pass.
+    def testRequiredBinaryResourceRowsCannotDisappear(self):
+        module = self.resource_tool()
+        names = {case[0] for case in module.recipes()}
+        required = {'usdc-metadata-16-mib', 'usdc-metadata-over-block',
+                    'usdc-dense-250000', 'usdc-items-250001', 'usdc-utf8-4096',
+                    'usdc-utf8-4097', 'usdc-shared-deep', 'usdc-depth-33',
+                    'usdc-aggregate-near', 'usdc-aggregate-over', 'usdc-work-over',
+                    'usdc-large-layer-small-metadata', 'usdc-mixed-occurrences',
+                    'usdc-near-report-json', 'usdc-near-report-sarif',
+                    'usdc-report-cap-json', 'usdc-report-cap-sarif'}
+        self.assertTrue(required <= names, sorted(required - names))
+        self.assertEqual(len(names), len(list(module.recipes())))
+
+    def testMissingSkippedMisclassifiedOrOverBudgetRowsCannotPass(self):
+        module = self.resource_tool()
+        self.assertTrue(hasattr(module, 'validate_rows'), 'required-row acceptance validator missing')
+        if not hasattr(module, 'validate_rows'):
+            return
+        rows = [dict(case=case[0], status='PASS', peak_rss_bytes=1, elapsed_seconds=1,
+                     exit=case[3], expectation_checked=True) for case in module.recipes()]
+        self.assertEqual(module.validate_rows(rows), [])
+        for edit in ('missing', 'skipped', 'rss', 'elapsed', 'classification', 'exit'):
+            changed = copy.deepcopy(rows)
+            if edit == 'missing':
+                changed.pop()
+            elif edit == 'skipped':
+                changed[-1]['status'] = 'SKIPPED'
+            elif edit == 'rss':
+                changed[-1]['peak_rss_bytes'] = 268_435_457
+            elif edit == 'elapsed':
+                changed[-1]['elapsed_seconds'] = 60.001
+            elif edit == 'classification':
+                changed[-1]['expectation_checked'] = False
+            else:
+                changed[-1]['exit'] = 99
+            with self.subTest(edit=edit):
+                self.assertTrue(module.validate_rows(changed))
+
+    # A syntactically valid report with the wrong resource reason cannot certify a quota row.
+    def testResourceFindingAndReasonAreMandatory(self):
+        module = self.resource_tool()
+        self.assertTrue(hasattr(module, 'check_expected_findings'), 'typed resource proof missing')
+        if not hasattr(module, 'check_expected_findings'):
+            return
+        findings = [{'ruleID': 'UVK-RES-001', 'evidence': {'resource': 'usdcDecodeBytes'}}]
+        self.assertEqual(module.check_expected_findings('usdc-aggregate-over', findings), [])
+        self.assertTrue(module.check_expected_findings('usdc-aggregate-over', []))
+        findings[0]['evidence']['resource'] = 'tokenCount'
+        self.assertTrue(module.check_expected_findings('usdc-aggregate-over', findings))
+
+    def testArbitraryRecipeUnitsAreWrittenInAtMost64KiBChunks(self):
+        module = self.resource_tool()
+        parts = list(module.chunks([(b'x' * 70_000, 2)]))
+        self.assertEqual(b''.join(parts), b'x' * 140_000)
+        self.assertLessEqual(max(map(len, parts)), 65_536)
+
+
 if __name__ == '__main__':
     unittest.main()

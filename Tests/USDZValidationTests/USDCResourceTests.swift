@@ -1,4 +1,5 @@
 import Foundation
+import TestSupport
 import XCTest
 
 @testable import USDZValidation
@@ -147,6 +148,166 @@ final class USDCResourceTests: XCTestCase {
       XCTAssertEqual(coverage.areas[.references]?.state, .partial)
       XCTAssertEqual(coverage.areas[.containerStructure]?.state, .complete)
       XCTAssertEqual(coverage.areas[.entrySafety]?.state, .complete)
+    }
+  }
+}
+
+extension USDCResourceTests {
+  // Resetting an invocation counter between layers, charging UTF-8 scalars instead of bytes,
+  // or retaining scanner storage after a success/error must break this integration boundary.
+  func testCrossLayerAndUTF8Boundaries() throws {
+    let ledger = ResourceLedger()
+    let retained = try ledger.reserveUSDCStorage(17)
+    defer { retained.release() }
+    let baselineLiveBytes: UInt64 = 17
+    var forbiddenAllocations = 0
+    for length in [4_096, 4_097] {
+      let value = String(repeating: "é", count: length / 2) + (length % 2 == 1 ? "a" : "")
+      let crate = try USDCMutationRecipe.valueCrate(
+        reps: [0x400c_0000_0000_0002], tokens: ["/", "default", value, ""])
+      let input = USDCReferenceTests.input(crate, ledger: ledger)
+      var emitted = 0
+      do {
+        _ = try USDCReader.scan(
+          entry: input.entry, reader: input.reader,
+          onReference: {
+            emitted += 1
+            if $0.valueBytes.count > 4_096 { forbiddenAllocations += 1 }
+          }, onIssue: { _ in XCTFail("valid structure") })
+        XCTAssertEqual(length, 4_096)
+      } catch {
+        XCTAssertEqual(error as? InspectionFailure, .resourceLimit(.tokenBytes))
+        XCTAssertEqual(length, 4_097)
+      }
+      XCTAssertEqual(emitted, length == 4_096 ? 1 : 0)
+      XCTAssertEqual(forbiddenAllocations, 0)
+      XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes)
+    }
+    XCTAssertGreaterThan(ledger.usdcDecodeBytes, 0)
+    XCTAssertGreaterThan(ledger.usdcWorkUnits, 0)
+
+    // The first text token and the following binary token share exactly 100,000 slots.
+    let mixed = ResourceLedger()
+    try mixed.consumeTokens(99_998)
+    let text = USDCReferenceTests.input(Data("@a.png@".utf8), ledger: mixed)
+    let diagnostics = NativeDiagnostics()
+    var textCount = 0
+    try USDALexer.scan(entry: text.entry, reader: text.reader, diagnostics: diagnostics) { _ in
+      textCount += 1
+    }
+    XCTAssertEqual(textCount, 1)
+    let binary = try USDCMutationRecipe.valueCrate(reps: [0x400c_0000_0000_0002])
+    XCTAssertEqual(try USDCReferenceTests.scan(binary, ledger: mixed).references.count, 1)
+    XCTAssertThrowsError(try USDCReferenceTests.scan(binary, ledger: mixed)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.tokenCount))
+    }
+    XCTAssertEqual(mixed.usdcLiveBytes, 0)
+
+    // Highly compressed token metadata is accepted per block but accumulates across layers.
+    let expanded = try USDCMutationRecipe.expandedTokenCrate(capacity: 16_777_216)
+    let aggregate = ResourceLedger()
+    XCTAssertEqual(try USDCReferenceTests.scan(expanded, ledger: aggregate).state, .complete)
+    XCTAssertEqual(aggregate.usdcLiveBytes, 0)
+    XCTAssertThrowsError(try USDCReferenceTests.scan(expanded, ledger: aggregate)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcDecodeBytes))
+    }
+    XCTAssertEqual(aggregate.usdcLiveBytes, 0)
+    XCTAssertLessThanOrEqual(aggregate.usdcDecodeBytes, 33_554_432)
+    let excessive = try USDCMutationRecipe.expandedTokenCrate(capacity: 16_777_217)
+    XCTAssertThrowsError(try USDCReferenceTests.scan(excessive)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcMetadataBlockBytes))
+    }
+
+    // Every repeated numeric array edge counts, even when the body is shared and skipped.
+    let fanout = try USDCMutationRecipe.valueCrate(
+      reps: Array(repeating: 0x8003_0000_0000_0058, count: 8),
+      body: USDCReferenceTests.word(250_000))
+    let work = ResourceLedger()
+    XCTAssertThrowsError(try USDCReferenceTests.scan(fanout, ledger: work)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+    }
+    XCTAssertEqual(work.usdcLiveBytes, 0)
+    for count in [250_000, 250_001] {
+      let bytes = try USDCMutationRecipe.valueCrate(
+        reps: [0x8003_0000_0000_0058], body: USDCReferenceTests.word(UInt64(count)))
+      if count == 250_000 {
+        XCTAssertEqual(try USDCReferenceTests.scan(bytes).state, .complete)
+      } else {
+        XCTAssertThrowsError(try USDCReferenceTests.scan(bytes)) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcItems))
+        }
+      }
+    }
+    // Keep both 32/33-depth and shared-body identity checks in the focused resource suite.
+    for depth in [32, 33] {
+      let bytes = try USDCMutationRecipe.deepAssetCrate(depth: depth, sharedFields: 2)
+      if depth == 32 {
+        let result = try USDCReferenceTests.scan(bytes)
+        XCTAssertEqual(result.references.count, 2)
+        XCTAssertNotEqual(result.references[0].site, result.references[1].site)
+      } else {
+        XCTAssertThrowsError(try USDCReferenceTests.scan(bytes)) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcDepth))
+        }
+      }
+    }
+  }
+
+  // A failed copy reservation or source read must return to an existing owner's baseline.
+  func testFailurePathCopiesReleaseAndRejectBeforeAllocation() throws {
+    let ledger = ResourceLedger()
+    let retained = try ledger.reserveUSDCStorage(67_108_864)
+    defer { retained.release() }
+    let baselineLiveBytes = ledger.usdcLiveBytes
+    var forbiddenAllocations = 0
+    XCTAssertThrowsError(
+      try USDCStorage.allocate(byteCount: 1, ledger: ledger) { count in
+        forbiddenAllocations += 1
+        return UnsafeMutableRawPointer.allocate(byteCount: count, alignment: 16)
+      }
+    ) { XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWorkingBytes)) }
+    let bytes = try USDCMutationRecipe.valueCrate(reps: [0x400c_0000_0000_0002])
+    XCTAssertThrowsError(try USDCReferenceTests.scan(bytes, ledger: ledger)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWorkingBytes))
+    }
+    XCTAssertEqual(forbiddenAllocations, 0)
+    XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes)
+    XCTAssertEqual(ledger.totalReadBytes, 0)
+    XCTAssertEqual(ledger.usdcDecodeBytes, 0)
+  }
+}
+
+extension USDCResourceTests {
+  // Checking only decoded size would allow an over-limit compressed staging allocation.
+  // Literal-frame lengths are independently hand-calculated: n+3+floor((n-15)/255).
+  func testCompressedBlockAtLimitAndOneByteBeyondPreflight() throws {
+    for literalBytes in [16_711_678, 16_711_679] {
+      let frame = try USDCMutationRecipe.literalFrame([Data(repeating: 0x61, count: literalBytes)])
+      let expectedFrameBytes = literalBytes == 16_711_678 ? 16_777_216 : 16_777_217
+      XCTAssertEqual(frame.count, expectedFrameBytes)
+      let ledger = ResourceLedger()
+      let source = USDCReferenceTests.input(frame, ledger: ledger)
+      if expectedFrameBytes == 16_777_216 {
+        do {
+          let decoded = try USDCCompression.decode(
+            input: source, range: 0..<UInt64(frame.count), decodedCapacity: UInt64(literalBytes))
+          XCTAssertEqual(decoded.count, 16_711_678)
+          XCTAssertTrue(decoded.withUnsafeBytes { $0.allSatisfy { $0 == 0x61 } })
+          XCTAssertEqual(ledger.usdcLiveBytes, 16_711_678)
+        }
+        XCTAssertEqual(ledger.usdcDecodeBytes, 16_711_678)
+        XCTAssertEqual(ledger.totalReadBytes, 16_777_216)
+      } else {
+        XCTAssertThrowsError(
+          try USDCCompression.decode(
+            input: source, range: 0..<UInt64(frame.count), decodedCapacity: UInt64(literalBytes))
+        ) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcMetadataBlockBytes))
+        }
+        XCTAssertEqual(ledger.usdcDecodeBytes, 0)
+        XCTAssertEqual(ledger.totalReadBytes, 0)
+      }
+      XCTAssertEqual(ledger.usdcLiveBytes, 0)
     }
   }
 }

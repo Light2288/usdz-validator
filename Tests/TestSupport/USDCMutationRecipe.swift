@@ -45,7 +45,8 @@ public enum USDCMutationRecipe {
   /// Deliberately small independent hostile-value crate; never used as positive writer evidence.
   public static func valueCrate(
     reps: [UInt64], body: Data = Data(), tokens: [String] = ["/", "default", "a.png", ""],
-    strings: [UInt32] = [2, 3], names: [UInt32]? = nil, version: [UInt8] = [0, 8, 0]
+    strings: [UInt32] = [2, 3], names: [UInt32]? = nil, version: [UInt8] = [0, 8, 0],
+    tokenEncoding: Data? = nil, tokenCapacity: UInt64? = nil
   ) throws -> Data {
     func word(_ n: UInt64, _ width: Int = 8) -> Data {
       Data((0..<width).map { UInt8(truncatingIfNeeded: n >> ($0 * 8)) })
@@ -74,7 +75,8 @@ public enum USDCMutationRecipe {
     let sections: [(String, Data)] = [
       (
         "TOKENS",
-        word(UInt64(tokens.count)) + word(UInt64(tokenData.count)) + (try frame(tokenData))
+        word(UInt64(tokens.count)) + word(tokenCapacity ?? UInt64(tokenData.count))
+          + (try tokenEncoding.map { word(UInt64($0.count)) + $0 } ?? frame(tokenData))
       ),
       (
         "STRINGS",
@@ -103,4 +105,51 @@ public enum USDCMutationRecipe {
     return data + word(UInt64(sections.count)) + records
   }
 
+}
+
+extension USDCMutationRecipe {
+  /// One literal prefix, a distance-one match, and six final literals. No shipping compressor.
+  public static func repeatedByteFrame(prefix: Data, count: Int) -> Data {
+    precondition(count >= 32)
+    let literals = prefix + Data([0x61])
+    let matchCount = count - 7
+    var result = Data([0, UInt8(min(15, literals.count) << 4) | 15])
+    func length(_ value: Int, into result: inout Data) {
+      var remaining = value
+      while remaining >= 255 {
+        result.append(255)
+        remaining -= 255
+      }
+      result.append(UInt8(remaining))
+    }
+    if literals.count >= 15 { length(literals.count - 15, into: &result) }
+    result += literals
+    result += Data([1, 0])
+    length(matchCount - 19, into: &result)
+    result += Data([0x60, 0x61, 0x61, 0x61, 0x61, 0x61, 0])
+    return result
+  }
+
+  public static func expandedTokenCrate(capacity: Int) throws -> Data {
+    let prefix = Data("/\0default\0a.png\0\0".utf8)
+    return try valueCrate(
+      reps: [], tokens: ["/", "default", "a.png", "", "padding"],
+      tokenEncoding: repeatedByteFrame(prefix: prefix, count: capacity - prefix.count),
+      tokenCapacity: UInt64(capacity))
+  }
+
+  public static func deepAssetCrate(depth: Int, sharedFields: Int = 1) throws -> Data {
+    precondition(depth >= 2)
+    func word(_ n: UInt64) -> Data {
+      Data((0..<8).map { UInt8(truncatingIfNeeded: n >> ($0 * 8)) })
+    }
+    var body = Data()
+    for i in 0..<(depth - 1) {
+      body += word(8)
+      body += word(
+        i == depth - 2 ? 0x400c_0000_0000_0002 : 0x0034_0000_0000_0000 | UInt64(88 + (i + 1) * 16))
+    }
+    return try valueCrate(
+      reps: Array(repeating: 0x0034_0000_0000_0058, count: sharedFields), body: body)
+  }
 }

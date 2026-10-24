@@ -88,6 +88,31 @@ public enum ResourceRecipes {
     return [.bytes(header), .repeated(literal, tokens), .fill(0x20, (totalBytes ?? used) - used)]
   }
 
+  /// Move metadata beyond a streamed opaque body without retaining the large layer.
+  /// This accepts an independent empty-value recipe, never arbitrary live value offsets.
+  public static func binaryWithOpaqueBody(metadata: Data, paddingBytes: Int) throws -> [Segment] {
+    precondition(metadata.count >= 88 && paddingBytes >= 0)
+    func readWord(_ offset: Int) -> UInt64 {
+      (0..<8).reduce(0) { $0 | (UInt64(metadata[offset + $1]) << ($1 * 8)) }
+    }
+    func word(_ value: UInt64) -> Data {
+      Data((0..<8).map { UInt8(truncatingIfNeeded: value >> ($0 * 8)) })
+    }
+    let toc = Int(readWord(16))
+    var relocated = try USDCMutationRecipe.patch(
+      metadata, at: 16, bytes: word(UInt64(toc + paddingBytes)))
+    let count = Int(readWord(toc))
+    for row in 0..<count {
+      let position = toc + 8 + row * 32 + 16
+      relocated = try USDCMutationRecipe.patch(
+        relocated, at: position, bytes: word(readWord(position) + UInt64(paddingBytes)))
+    }
+    return [
+      .bytes(Data(relocated.prefix(88))), .fill(0x42, paddingBytes),
+      .bytes(Data(relocated.dropFirst(88))),
+    ]
+  }
+
   /// Original JPEG header-only vector; establishes scan behavior, not image validity.
   public static func jpegHeader(paddingBytes: Int) -> [Segment] {
     var segments: [Segment] = [.bytes(Data([0xff, 0xd8]))]
