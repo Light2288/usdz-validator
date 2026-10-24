@@ -14,6 +14,9 @@ final class ResourceLedgerTests: XCTestCase {
       (.totalReadBytes, 1_207_959_552), (.findings, 10_000),
       (.messageBytes, 1_024), (.evidenceStringBytes, 4_096),
       (.configurationBytes, 65_536), (.reportBytes, 33_554_432),
+      (.usdcMetadataBlockBytes, 16_777_216), (.usdcDecodeBytes, 33_554_432),
+      (.usdcWorkingBytes, 67_108_864), (.usdcItems, 250_000),
+      (.usdcWork, 2_000_000), (.usdcDepth, 32),
     ]
     let ledger = ResourceLedger()
     XCTAssertEqual(boundaries.count, SafetyResource.allCases.count)
