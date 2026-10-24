@@ -84,13 +84,19 @@
       "source": "Tools/README.md",
       "marker": "uvk-json-recipe",
       "license": "MIT",
-      "sha256": "37b829f581c42cb42d3e9c08c5e6c2db3ae2d0278e7d130d5338af8a5939802b"
+      "sha256": "22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14"
     },
     "sarif": {
       "source": "Tools/README.md",
       "marker": "uvk-sarif-recipe",
       "license": "MIT",
-      "sha256": "67c7e3307e2b8ac83bdaa89e6d554051bae8d3bd251979d75c61e3952c3edc30"
+      "sha256": "5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333"
+    },
+    "usdc": {
+      "source": "Tools/README.md",
+      "marker": "uvk-usdc-recipe",
+      "license": "MIT",
+      "sha256": "3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4"
     }
   },
   "entries": [
@@ -108,7 +114,7 @@
     },
     {
       "path": "Examples/catalogue-v1.json",
-      "sha256": "8ec4d6adf8e01222bb7a54043526440b94c8d3614b697d03e3268031232b6f41",
+      "sha256": "f62ec7af344cc8c0c90cf8a445a6a4a9a050406a5bd772da7c1e8a0a487870b0",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -120,7 +126,7 @@
     },
     {
       "path": "Examples/report-v1.json",
-      "sha256": "14aabbe083be68def1a0b590cc62b06513b54e1a8ef501cfc9160a20e0057407",
+      "sha256": "ab881c5fe946fb731a846018f914513a8936d79304478ad6b296af01f21e8f33",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -132,7 +138,7 @@
     },
     {
       "path": "Examples/report.sarif",
-      "sha256": "03c7d17a28e608b6583200e7677d4892408a992fb24ff528b217996d78c2ece2",
+      "sha256": "b9f216b010fdbf53333d7a7b9199e54adc2539258c98ec363329b6939c026467",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -144,14 +150,14 @@
     },
     {
       "path": "NOTICE",
-      "sha256": "732f86f07f9bf8de6fa7482233e0bbb70598c72dbb3eadfd2c9f8ac351bb71f9",
+      "sha256": "828cc4e4f4750f7fab73df8c9fea0f2709ec69c6a19b74ee48f7e01a12de771c",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
-      "license": "MIT AND Apache-2.0 WITH Swift-exception AND LicenseRef-OASIS-SARIF-Document AND PSF-2.0",
+      "license": "MIT AND Apache-2.0 WITH Swift-exception AND LicenseRef-OASIS-SARIF-Document AND PSF-2.0 AND BSD-2-Clause",
       "licenseText": "NOTICE",
       "obligations": "Preserve copyright and MIT permission notice.",
       "kind": "development-tool-or-notice",
-      "recipe": "Retain complete OASIS published Notices and verbatim license texts extracted from all six pinned Python distributions; source URLs/artifact hashes are in this manifest. Also retain verbatim LICENSE.txt from apple/swift-argument-parser 1.5.0 resolved revision 41982a3656a71c768319979febd796c6fd111d5c (https://github.com/apple/swift-argument-parser/blob/41982a3656a71c768319979febd796c6fd111d5c/LICENSE.txt), Apache License 2.0 with Swift Runtime Library Exception; source copyright from its ArgumentParser sources. Preserve original project-contributor MIT attribution."
+      "recipe": "Retain complete OASIS published Notices and verbatim license texts extracted from all six pinned Python distributions; source URLs/artifact hashes are in this manifest. Also retain verbatim LICENSE.txt from apple/swift-argument-parser 1.5.0 resolved revision 41982a3656a71c768319979febd796c6fd111d5c (https://github.com/apple/swift-argument-parser/blob/41982a3656a71c768319979febd796c6fd111d5c/LICENSE.txt), Apache License 2.0 with Swift Runtime Library Exception; source copyright from its ArgumentParser sources. Preserve original project-contributor MIT attribution. Retain verbatim LZ4 1.10.0 BSD-2-Clause license; vendored source provenance is in Sources/CUSDCCompression/source-manifest.json."
     },
     {
       "path": "Schemas/budget-config-v1.schema.json",
@@ -177,7 +183,7 @@
     },
     {
       "path": "Schemas/report-v1.schema.json",
-      "sha256": "c43fa27fea0870c2d3b988da73545704370461cf1c943d60af02e857e189d1bd",
+      "sha256": "2ae4cc26fb0080363812dc7ade28d12bf2ad69b3f774db6e52e9189b766773b9",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -198,8 +204,48 @@
       "recipe": "Retain committed MIT tool/source or full third-party notice text; usage, literal authoring sources and dependency lock reproduction are recorded in Tools/README.md."
     },
     {
+      "path": "Sources/CUSDCCompression/LICENSE",
+      "sha256": "8b58c446121a109ccf32edc094bba3010a3d85e4ee3702950db55e4d3e87736c",
+      "source": "LZ4 v1.10.0",
+      "license": "BSD-2-Clause",
+      "licenseText": "Sources/CUSDCCompression/LICENSE",
+      "obligations": "Retain upstream copyright and BSD-2-Clause license; preserve reviewed source provenance.",
+      "kind": "vendored-dependency-input",
+      "recipe": "Reviewed LZ4 1.10.0 source bytes and immutable source/license provenance; see Sources/CUSDCCompression/source-manifest.json."
+    },
+    {
+      "path": "Sources/CUSDCCompression/include/lz4.h",
+      "sha256": "26b82efc53d1570f3b54eef02e9c4764c1ad374ff03cac04e2ced5ea4d4c552f",
+      "source": "LZ4 v1.10.0",
+      "license": "BSD-2-Clause",
+      "licenseText": "Sources/CUSDCCompression/LICENSE",
+      "obligations": "Retain upstream copyright and BSD-2-Clause license; preserve reviewed source provenance.",
+      "kind": "vendored-dependency-input",
+      "recipe": "Reviewed LZ4 1.10.0 source bytes and immutable source/license provenance; see Sources/CUSDCCompression/source-manifest.json."
+    },
+    {
+      "path": "Sources/CUSDCCompression/lz4.c",
+      "sha256": "9396f7de527bc8435de9c7569fb7998e56545a84b4f3c2d808c0235c01774539",
+      "source": "LZ4 v1.10.0",
+      "license": "BSD-2-Clause",
+      "licenseText": "Sources/CUSDCCompression/LICENSE",
+      "obligations": "Retain upstream copyright and BSD-2-Clause license; preserve reviewed source provenance.",
+      "kind": "vendored-dependency-input",
+      "recipe": "Reviewed LZ4 1.10.0 source bytes and immutable source/license provenance; see Sources/CUSDCCompression/source-manifest.json."
+    },
+    {
+      "path": "Sources/CUSDCCompression/source-manifest.json",
+      "sha256": "13a022fcc4882cf1d25e71d167c3e0715661b0af53de109ab31c4aebab5e0070",
+      "source": "project-authored",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Retain upstream copyright and BSD-2-Clause license; preserve reviewed source provenance.",
+      "kind": "vendored-dependency-input",
+      "recipe": "Reviewed LZ4 1.10.0 source bytes and immutable source/license provenance; see Sources/CUSDCCompression/source-manifest.json."
+    },
+    {
       "path": "Tests/Goldens/external-failure-v1.json",
-      "sha256": "7006665d66e862cd6002597947ceb0299b15d44bb3dd959bbfff9bf0dfef0ec0",
+      "sha256": "dfe43b71f9a9e760402da74b777cde81e9d2361fd99e0272e0b897c951b7dad9",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -212,7 +258,7 @@
     },
     {
       "path": "Tests/Goldens/external-failure-v1.sarif",
-      "sha256": "e2f4d107d18fb52f236b2ca55097d7463398f96d94adf89e0f0b60f211bcd5cd",
+      "sha256": "d3c4af4919fda57861fb8f635d49d64283ff0fca9614c6a47b5a6dc2531dbb7f",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -225,7 +271,7 @@
     },
     {
       "path": "Tests/Goldens/external-success-v1.json",
-      "sha256": "8204edcbc5da01e89d908a49d6defcebc6fbdd2a400530e07c766015172a4e0d",
+      "sha256": "97a317fca659fe16c28eef94713bcacef384785c632df25bd942b890e4467fc9",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -238,7 +284,7 @@
     },
     {
       "path": "Tests/Goldens/external-unavailable-v1.sarif",
-      "sha256": "a4c274252d89c6606c0102660cbc5d35db5c8333878d8f934108d2c5eb25fb31",
+      "sha256": "15c0c551535d23ed915d189a97f1e0f187802f61fd1225a0187442e5a9f38517",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -251,7 +297,7 @@
     },
     {
       "path": "Tests/Goldens/native-v1.sarif",
-      "sha256": "c9946e94246dfc32b5ffeaa57812c07c8513b081db22402c161d47663def52cb",
+      "sha256": "d5533f033f901a82d69efde97606c0346baef00893de267dc3a3448d10b652ca",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -264,7 +310,7 @@
     },
     {
       "path": "Tests/Goldens/report-complete-v1.json",
-      "sha256": "bf5871ec579d025a00db0e63b15b4b3c304406c2397f72fe6d44efa6e1e3e9e0",
+      "sha256": "2f8868edefad97833ac6d294c76569977d46fe27dc38d4e89f8b6e49edfce5d0",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -277,7 +323,7 @@
     },
     {
       "path": "Tests/Goldens/report-incomplete-v1.json",
-      "sha256": "afdfc9ee2539d69d57d8a76c749f0cd2938faf25d2c8aaa85f16af21df8f9bdf",
+      "sha256": "897642fdbb1862c2cf1d57ecb15240308370076d6f881ce514d23a0a61fea724",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -290,7 +336,7 @@
     },
     {
       "path": "Tests/Goldens/report-operational-v1.json",
-      "sha256": "10d0ca37f516545250b6d32990228cb5032819121bf6f07cac2effe23bba1833",
+      "sha256": "378e9711159a22470a46c5af1f8a12a931c71a774d218a3da141084f7bc88dbf",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -302,8 +348,104 @@
       "format": "report"
     },
     {
+      "path": "Tests/Goldens/report-usdc-complete-v1.json",
+      "sha256": "2f8868edefad97833ac6d294c76569977d46fe27dc38d4e89f8b6e49edfce5d0",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-complete-v1.sarif",
+      "sha256": "8f1ece6a799a36ddff28523f679606132eea530ca746d673597f302d3e328a30",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-duplicates-v1.json",
+      "sha256": "7f5981ebd8db5abf91cc4ffe9b06211ad1628503cdf33ee2d07e1b97c7e6d8f7",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-duplicates-v1.sarif",
+      "sha256": "557849008862082bbe18df9a555fdfdfbb43b9a1fea808147c2ed92f597edece",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-malformed-v1.json",
+      "sha256": "73b8d8f68a0926486b1d807b7656ff647fb0d7ecff48e19a1702f5c31c6a4105",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-malformed-v1.sarif",
+      "sha256": "184008ad94617e11d0d62beee16065ecd5d27559f7fe55945ea3fc2a9a36358b",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "sarif"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-partial-v1.json",
+      "sha256": "613f145e8aaa8a8eb6aa26873c393147213eb2ff3c4c9c53b37fc4dbef663930",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "report"
+    },
+    {
+      "path": "Tests/Goldens/report-usdc-partial-v1.sarif",
+      "sha256": "60cbf737494280bfea9714469e47be358e0aa15865bc435e16705bfba8e12512",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Preserve copyright and MIT permission notice.",
+      "kind": "independent-expectation",
+      "recipe": "Execute Tools/README.md uvk-usdc-recipe in an empty staging directory with the reviewed literal catalogue; no product invocation or imports.",
+      "format": "sarif"
+    },
+    {
       "path": "Tests/Goldens/rule-catalogue-v1.json",
-      "sha256": "0096b14cc2642b71bbaceeb1c596084e2201a0e34573a6455ff271ba442dcb9c",
+      "sha256": "f62ec7af344cc8c0c90cf8a445a6a4a9a050406a5bd772da7c1e8a0a487870b0",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -328,7 +470,7 @@
     },
     {
       "path": "Tests/USDZValidationTests/GoldenCompatibilityTests.swift",
-      "sha256": "5ca5a6d844abdec556a9df5b27b99b9950f51aad051e3434baf142e8ba6aa844",
+      "sha256": "675aa7ee2f082da7d6ddbe3913f7bb6c83d4ec8c0ec68322ecf51ba447ff55d5",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -339,7 +481,7 @@
     },
     {
       "path": "Tests/test_schema_contracts.py",
-      "sha256": "152a067f2ebbce07bdad03feab34b75f21a8aa08ac92043acd56357d1da69660",
+      "sha256": "ac564a962e36f2d746781ee21995d6442c4c3cfa7725e22ffa8050f44d237163",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -350,7 +492,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "f59e929d1ee553ce61ec7c8aa72673ce4e20b275c4e2b9cb35a9cf76ebbd0fe8",
+      "sha256": "6905e62bd8294823b1c735e6391f7fdbec3e22b5e01f4d0bf4d1bd55d1830ead",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",

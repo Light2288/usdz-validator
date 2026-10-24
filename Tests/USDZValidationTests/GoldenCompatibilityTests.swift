@@ -60,6 +60,16 @@ final class GoldenCompatibilityTests: XCTestCase {
     try assertRelocationAndIdentity()
   }
 
+  func testUSDCV1Compatibility() throws {
+    for kind in ["complete", "partial", "malformed", "duplicates"] {
+      let report = try USDCReportTests.fixedReport(kind)
+      for (format, suffix): (ReportFormat, String) in [(.json, "json"), (.sarif, "sarif")] {
+        try compare(report, format: format, filename: "report-usdc-\(kind)-v1.\(suffix)")
+      }
+      try assertTextMeaning(report)
+    }
+  }
+
   private func assertExternalStates() throws {
     let cases: [(String, ExternalCheck)] = [
       ("not-requested", .notRequested),
@@ -353,7 +363,7 @@ final class GoldenCompatibilityTests: XCTestCase {
             "binary": .boolean(true), "bytes": .integer(8), "reason": .string("binaryReferences"),
             "unknown": .null,
           ],
-          location: location, provenance: .native(validatorVersion: "0.1.0"))
+          location: location, provenance: .native(validatorVersion: "0.2.0"))
       ]
     }
     return ValidationReport(

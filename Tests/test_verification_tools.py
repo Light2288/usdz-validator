@@ -19,6 +19,22 @@ def tool():
     return module
 
 
+def module_fixed_exports():
+    names = {f'report-{kind}-v1.{suffix}' for kind in ('complete', 'incomplete', 'operational')
+             for suffix in ('json', 'sarif')}
+    names.update(f'{kind}-v1.sarif' for kind in ('native', 'external-unavailable', 'external-failure'))
+    names.update(f'external-{kind}-v1.json' for kind in ('success', 'failure'))
+    names.update(f'catalogue-{profile}-v1.json' for profile in ('apple', 'general'))
+    names.update(f'report-usdc-{kind}-v1.{suffix}' for kind in ('complete', 'partial', 'malformed', 'duplicates')
+                 for suffix in ('json', 'sarif'))
+    for state in ('not-requested', 'unavailable', 'unsupported', 'unsafe', 'success', 'failure',
+                  'missing-outcome', 'launch', 'invalid-request', 'capture', 'reap', 'signal',
+                  'timeout', 'output-cap', 'failure-unknown-version'):
+        names.update(f'state-{state}{sensitive}.{suffix}' for sensitive in ('', '-sensitive')
+                     for suffix in ('json', 'sarif'))
+    return sorted(names)
+
+
 class VerificationToolTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -92,7 +108,7 @@ class VerificationToolTests(unittest.TestCase):
         (directory / 'exports').mkdir()
         (directory / 'exports/report.json').write_text('{"nativeFindings":[]}\n')
         manifest = {'schemaVersion': 1, 'inputs': {'fixture': 'sha256'},
-                    'configurations': [{'profile': 'general-v1'}], 'validatorVersions': ['0.1.0'],
+                    'configurations': [{'profile': 'general-v1'}], 'validatorVersions': ['0.2.0'],
                     'files': {'exports/report.json': {'sha256': tool().sha256(directory / 'exports/report.json'),
                         'nativeIDs': []}}}
         (directory / 'compatibility-manifest.json').write_text(json.dumps(manifest))
@@ -131,6 +147,81 @@ class VerificationToolTests(unittest.TestCase):
         (current / 'exports/extra.json').unlink()
         (current / 'exports/report.json').unlink()
         self.assertNotEqual(self.compare(baseline, current).returncode, 0)
+
+    def reviewed_root(self):
+        root = self.folder / 'root'
+        root.mkdir()
+        names = {'.swift-format', 'Package.swift', 'Package.resolved',
+                 'Tools/requirements-schema.lock', 'Tests/Fixtures/manifest.json',
+                 'Tests/Schemas/manifest.json',
+                 'Tests/USDZValidationTests/GoldenCompatibilityTests.swift',
+                 'Tests/USDZValidationTests/USDCReportTests.swift'}
+        for manifest_path in ('Tests/Fixtures/manifest.json', 'Tests/Schemas/manifest.json'):
+            names.update(row['path'] for row in json.loads((ROOT / manifest_path).read_text())['entries'])
+        names.update(path.relative_to(ROOT).as_posix()
+                     for path in (ROOT / 'Sources').rglob('*') if path.is_file())
+        for name in names:
+            destination = root / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes((ROOT / name).read_bytes())
+        directory = self.folder / 'bound'
+        (directory / 'exports').mkdir(parents=True)
+        for name in module_fixed_exports():
+            (directory / 'exports' / name).write_bytes(
+                (ROOT / 'Tests/Goldens/report-complete-v1.json').read_bytes())
+        return root, directory
+
+    def testV02BindsEveryProductInputAndExactly102Documents(self):
+        module = tool()
+        root, directory = self.reviewed_root()
+        manifest = module.write_manifest(root, directory)
+        self.assertEqual(len(manifest['files']), 102)
+        self.assertEqual(manifest['validatorVersions'], ['0.2.0'])
+        for path in (root / 'Sources').rglob('*'):
+            if path.is_file() and path.suffix in ('.swift', '.c', '.h'):
+                self.assertEqual(manifest['inputs'][path.relative_to(root).as_posix()], module.sha256(path))
+        for name in ('Sources/CUSDCCompression/LICENSE', 'Sources/CUSDCCompression/source-manifest.json', 'NOTICE'):
+            self.assertEqual(manifest['inputs'][name], module.sha256(root / name))
+        for name in ('Sources/CUSDCCompression/lz4.c', 'Sources/CUSDCCompression/include/lz4.h',
+                     'Sources/CUSDCCompression/LICENSE', 'Sources/CUSDCCompression/source-manifest.json', 'NOTICE'):
+            path = root / name
+            original = path.read_bytes()
+            path.write_bytes(original + b'\n')
+            with self.subTest(changed=name), self.assertRaises(ValueError):
+                module.write_manifest(root, directory)
+            path.write_bytes(original)
+            path.unlink()
+            with self.subTest(missing=name), self.assertRaises((ValueError, OSError)):
+                module.write_manifest(root, directory)
+            path.write_bytes(original)
+        extra = root / 'Sources/CUSDCCompression/unreviewed.c'
+        extra.write_text('int unreviewed;\n')
+        with self.assertRaises(ValueError):
+            module.write_manifest(root, directory)
+
+    def testFixedExportCountsRejectAddedRemovedAndHistoricalProduct(self):
+        module = tool()
+        root, directory = self.reviewed_root()
+        module.write_manifest(root, directory)
+        extra = directory / 'exports/report-extra.json'
+        extra.write_text('{}\n')
+        with self.assertRaises(ValueError):
+            module.write_manifest(root, directory)
+        extra.unlink()
+        first = directory / 'exports/report-complete-v1.json'
+        original = first.read_bytes()
+        first.unlink()
+        with self.assertRaises(ValueError):
+            module.write_manifest(root, directory)
+        historical = json.loads(original)
+        historical['tool']['version'] = '0.1.0'
+        first.write_text(json.dumps(historical))
+        with self.assertRaises(ValueError):
+            module.write_manifest(root, directory)
+        first.write_bytes(original)
+        first.rename(extra)
+        with self.assertRaises(ValueError):
+            module.write_manifest(root, directory)
 
     def testRunnerRecordsEarlyFailure(self):
         shim = self.folder / 'bin'

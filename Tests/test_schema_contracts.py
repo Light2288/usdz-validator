@@ -88,6 +88,16 @@ class SchemaContractTests(unittest.TestCase):
         merged['externalCheck']['findings'] = valid['nativeFindings']
         self.assertFalse(check.is_valid(merged))
 
+    def testHistoricalAndCurrentSafetyEnvelopesKeepSchemaMajorOne(self):
+        check = verify.validator('report')
+        document = golden('report-complete-v1.json')
+        for version in (1, 2):
+            document['configuration']['safetyEnvelopeVersion'] = version
+            self.assertTrue(check.is_valid(document), version)
+        for version in (0, 3, True, '2'):
+            document['configuration']['safetyEnvelopeVersion'] = version
+            self.assertFalse(check.is_valid(document), version)
+
     def testCatalogueContract(self):
         check = verify.validator('catalogue')
         valid = golden('rule-catalogue-v1.json')
@@ -198,15 +208,18 @@ class SchemaContractTests(unittest.TestCase):
         self.assertTrue((ROOT / 'Examples/budgets.json').is_file())
         self.assertTrue((ROOT / 'Tests/Goldens/external-success-v1.json').is_file())
         self.assertTrue((ROOT / 'Tests/Goldens/external-failure-v1.json').is_file())
-        self.assertEqual(verify.verify_corpus(), 13)
+        self.assertEqual(verify.verify_corpus(), 21)
 
     def testDurableIndependentRecipes(self):
         readme = (ROOT / 'Tools/README.md').read_text()
         expected = {
-            'json': ('37b829f581c42cb42d3e9c08c5e6c2db3ae2d0278e7d130d5338af8a5939802b',
+            'json': ('22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14',
                      ['report-complete-v1.json', 'report-incomplete-v1.json', 'report-operational-v1.json',
                       'external-success-v1.json', 'external-failure-v1.json']),
-            'sarif': ('67c7e3307e2b8ac83bdaa89e6d554051bae8d3bd251979d75c61e3952c3edc30',
+            'usdc': ('3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4',
+                      [f'report-usdc-{kind}-v1.{suffix}' for kind in
+                       ('complete', 'partial', 'malformed', 'duplicates') for suffix in ('json', 'sarif')]),
+            'sarif': ('5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333',
                       ['native-v1.sarif', 'external-unavailable-v1.sarif', 'external-failure-v1.sarif']),
         }
         for name, (digest, filenames) in expected.items():

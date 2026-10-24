@@ -16,6 +16,24 @@ REQUIRED_STEPS = ('environment', 'format-check', 'resolve', 'resolved-lock', 'bu
                   'resource-measurements')
 
 
+# These are fixed test scenarios, not a directory-size heuristic: replacing a
+# required file with an unrelated export must fail even when the count is 81.
+FIXED_EXPORT_NAMES = {
+    *(f'report-{kind}-v1.{suffix}' for kind in ('complete', 'incomplete', 'operational')
+      for suffix in ('json', 'sarif')),
+    *(f'{kind}-v1.sarif' for kind in ('native', 'external-unavailable', 'external-failure')),
+    *(f'external-{kind}-v1.json' for kind in ('success', 'failure')),
+    *(f'catalogue-{profile}-v1.json' for profile in ('apple', 'general')),
+    *(f'report-usdc-{kind}-v1.{suffix}' for kind in ('complete', 'partial', 'malformed', 'duplicates')
+      for suffix in ('json', 'sarif')),
+    *(f'state-{state}{sensitive}.{suffix}'
+      for state in ('not-requested', 'unavailable', 'unsupported', 'unsafe', 'success', 'failure',
+                    'missing-outcome', 'launch', 'invalid-request', 'capture', 'reap', 'signal',
+                    'timeout', 'output-cap', 'failure-unknown-version')
+      for sensitive in ('', '-sensitive') for suffix in ('json', 'sarif')),
+}
+
+
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -83,12 +101,13 @@ def evaluate_evidence(result, folder):
 
 def write_manifest(root, directory):
     exports = sorted((directory / 'exports').glob('*'))
-    if len(exports) != 73 or any(not path.is_file() for path in exports):
-        raise ValueError(f'expected exactly 73 fixed golden exports, observed {len(exports)}')
+    if ({path.name for path in exports} != FIXED_EXPORT_NAMES
+            or len(exports) != 81 or any(not path.is_file() for path in exports)):
+        raise ValueError(f'expected exactly 81 fixed golden exports with reviewed names, observed {len(exports)}')
     inventory = json.loads((root / 'Tests/Schemas/manifest.json').read_text())
     documents = [entry for entry in inventory['entries'] if 'format' in entry]
-    if len(documents) != 13:
-        raise ValueError('expected 13 reviewed checked-in schema documents')
+    if len(documents) != 21:
+        raise ValueError('expected 21 reviewed checked-in schema documents')
     inputs = {}
     for manifest_path in ('Tests/Fixtures/manifest.json', 'Tests/Schemas/manifest.json'):
         manifest = json.loads((root / manifest_path).read_text())
@@ -100,10 +119,20 @@ def write_manifest(root, directory):
             inputs[entry['path']] = digest
     for name in ('.swift-format', 'Package.swift', 'Package.resolved', 'Tools/requirements-schema.lock',
                  'Tests/Fixtures/manifest.json', 'Tests/Schemas/manifest.json',
-                 'Tests/USDZValidationTests/GoldenCompatibilityTests.swift'):
+                 'Tests/USDZValidationTests/GoldenCompatibilityTests.swift',
+                 'Tests/USDZValidationTests/USDCReportTests.swift'):
         inputs[name] = sha256(root / name)
-    for path in sorted((root / 'Sources').rglob('*.swift')):
-        inputs[path.relative_to(root).as_posix()] = sha256(path)
+    # Bind the reviewed dependency inventory as well as every compiled product source.
+    # Discovery must not quietly admit new vendored code outside the reviewed manifest.
+    reviewed_c = {entry['path'] for entry in inventory['entries']
+                  if entry['path'].startswith('Sources/') and Path(entry['path']).suffix in ('.c', '.h')}
+    actual_c = {path.relative_to(root).as_posix() for path in (root / 'Sources').rglob('*')
+                if path.is_file() and path.suffix in ('.c', '.h')}
+    if actual_c != reviewed_c:
+        raise ValueError('missing or unreviewed vendored C/header input')
+    for path in sorted((root / 'Sources').rglob('*')):
+        if path.is_file() and path.suffix in ('.swift', '.c', '.h'):
+            inputs[path.relative_to(root).as_posix()] = sha256(path)
     for entry in documents:
         target = directory / 'checked-in' / entry['path']
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -115,6 +144,8 @@ def write_manifest(root, directory):
             continue
         document = json.loads(path.read_bytes())
         files[path.relative_to(directory).as_posix()] = {'sha256': sha256(path), 'nativeIDs': native_ids(document)}
+        if document.get('tool', {}).get('name') == 'usdz-validator':
+            versions.add(document['tool']['version'])
         if 'configuration' in document:
             config = document['configuration']
             configurations[json.dumps(config, sort_keys=True)] = config
@@ -125,8 +156,8 @@ def write_manifest(root, directory):
                 configurations[json.dumps(config, sort_keys=True)] = config
         if 'validatorVersion' in document:
             versions.add(document['validatorVersion'])
-    if len(files) != 86 or versions != {'0.1.0'} or not configurations:
-        raise ValueError('missing corpus, configuration or v0.1 validator version evidence')
+    if len(files) != 102 or versions != {'0.2.0'} or not configurations:
+        raise ValueError('missing corpus, configuration or v0.2 validator version evidence')
     manifest = {'schemaVersion': 1, 'inputs': inputs,
                 'configurations': [configurations[key] for key in sorted(configurations)],
                 'validatorVersions': sorted(versions), 'files': files}
@@ -139,6 +170,8 @@ def checked_manifest(directory):
     if manifest.get('schemaVersion') != 1 or not all(manifest.get(key) for key in
             ('inputs', 'configurations', 'validatorVersions', 'files')):
         raise ValueError(f'{directory}: incomplete compatibility manifest')
+    if manifest['validatorVersions'] != ['0.2.0']:
+        raise ValueError(f'{directory}: expected only v0.2.0 validator evidence')
     expected = set(manifest['files'])
     actual = {path.relative_to(directory).as_posix() for sub in ('exports', 'checked-in')
               for path in (directory / sub).rglob('*') if path.is_file()}

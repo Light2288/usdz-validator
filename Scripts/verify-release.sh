@@ -154,7 +154,7 @@ try:
     exports.mkdir()
     run('golden-export', ['swift', 'test', '--filter', 'GoldenCompatibilityTests'],
         extra={'UVK_COMPAT_EXPORT_DIR': str(exports)}, check=no_skipped_tests)
-    run('export-schemas', ['.venv/bin/python', 'Scripts/verify-schemas.py', '--directory', str(exports), '--expected-export-count', '73'])
+    run('export-schemas', ['.venv/bin/python', 'Scripts/verify-schemas.py', '--directory', str(exports), '--expected-export-count', '81'])
     run('export-manifest', ['python3', '-c',
         'import importlib.util; from pathlib import Path; import sys; s=importlib.util.spec_from_file_location("c", "Scripts/compare-compatibility.py"); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); manifest=m.write_manifest(Path.cwd(), Path(sys.argv[1])); print("Bound",len(manifest["files"]),"documents to reviewed fixture/configuration/validator inputs and native IDs")', str(folder)])
     run('resource-tests', ['swift', 'test', '-c', 'release', '--filter', 'ResourceBoundaryTests'],

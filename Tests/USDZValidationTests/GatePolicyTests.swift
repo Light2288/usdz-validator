@@ -156,7 +156,7 @@ final class GatePolicyTests: XCTestCase {
     )
     XCTAssertEqual(report.schemaVersion, 1)
     XCTAssertEqual(report.tool.name, "usdz-validator")
-    XCTAssertEqual(report.tool.version, "0.1.0")
+    XCTAssertEqual(report.tool.version, "0.2.0")
     XCTAssertEqual(report.coverage, gap)
     XCTAssertEqual(report.validationStatus, .failed)
     XCTAssertEqual(report.gateDecision, .fail)

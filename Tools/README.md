@@ -25,7 +25,7 @@ UVK_COMPAT_EXPORT_DIR="$PWD/.verification/compat" swift test --filter GoldenComp
 .venv/bin/python Scripts/verify-schemas.py --directory .verification/compat
 ```
 
-The export environment variable is read only in the test target. Without it the test writes no exports. The directory option adds validation to the checked-in corpus; it accepts immediate files named `report*.json`, `external*.json`, or `state*.json` as native report v1; `catalogue*.json` or `rule-catalogue*.json` as catalogue v1; `budget*.json` or `config*.json` as budget config v1; and `*.sarif` as SARIF 2.1.0. Unsupported names and empty/missing directories fail. Use a dedicated export directory. The release runner also uses `--expected-export-count 73` to reject a missing portion of the fixed corpus. The 73 actual Swift exports are validated alongside 13 reviewed checked-in documents. See [the release procedure](../docs/releasing.md) for immutable evidence manifests and exact cross-host byte/native-ID comparison; none of these commands regenerate independent golden expectations.
+The export environment variable is read only in the test target. Without it the test writes no exports. The directory option adds validation to the checked-in corpus; it accepts immediate files named `report*.json`, `external*.json`, or `state*.json` as native report v1; `catalogue*.json` or `rule-catalogue*.json` as catalogue v1; `budget*.json` or `config*.json` as budget config v1; and `*.sarif` as SARIF 2.1.0. Unsupported names and empty/missing directories fail. Use a dedicated export directory. The release runner also uses `--expected-export-count 81` to reject a missing portion of the fixed corpus. The 81 actual Swift exports are validated alongside 21 reviewed checked-in documents (102 bound files). The immutable manifest includes every product Swift/C/header source, the vendored dependency license/source manifest and NOTICE. Reviewed vendored input bytes and missing/extra C/header or export files must fail validation. See [the release procedure](../docs/releasing.md) for immutable evidence manifests and exact cross-host byte/native-ID comparison; none of these commands regenerate independent golden expectations.
 
 ## Contract boundaries
 
@@ -60,7 +60,7 @@ On the current macOS arm64 CPython 3.14 host the first command selects the cp314
 
 Golden files are expected documents authored from literal scenario/model contracts, not captures of the product encoder. No tool here regenerates goldens during tests. Review mismatches against the specification and independent recipe before any intentional update. `Tests/Schemas/manifest.json` pins every golden/example's SHA-256. Existing seven goldens were unchanged in Task 22. The catalogue example is an exact copy of the Apple-profile catalogue golden; JSON/SARIF examples independently project the literal contracts onto the complete committed USDA fixture as recorded in Tests/Schemas/manifest.json; the budget example independently declares the six default values. Synthetic USDC locations illustrate a limitation report and are not a valid-scene oracle.
 
-Task 16 originally authored complete/incomplete/operational JSON with Python's sorted compact serializer before implementing JSON output, preserving all 32 independently authored literal catalogue descriptors. The catalogue's checked-in literal document is its canonical source: retain all descriptor fields/order, `schemaVersion:1`, tool `usdz-validator`/`0.1.0`, profile `apple-portable-v1`, serialize with the same canonical recipe below. It selects 32 rules (30 general plus two Apple warnings); descriptor text is never copied from product output. The incomplete example's identity independently encodes big-endian UInt64 lengths, presence bytes, raw UTF-8 name and numeric offsets; the complete reproducible recipe below asserts its fixed SHA-256 vector.
+Task 16 originally authored complete/incomplete/operational JSON with Python's sorted compact serializer before implementing JSON output, preserving all 32 independently authored literal catalogue descriptors. The catalogue's checked-in literal document is its canonical source: retain all descriptor fields/order, `schemaVersion:1`, current tool `usdz-validator`/`0.2.0`, profile `apple-portable-v1`, serialize with the same canonical recipe below. The v0.2 literal selects 34 rules (32 general plus two Apple warnings); descriptor text is never copied from product output. The incomplete example's identity independently encodes big-endian UInt64 lengths, presence bytes, raw UTF-8 name and numeric offsets; the complete reproducible recipe below asserts its fixed SHA-256 vector.
 
 Task 19's only reviewed JSON golden change was the additive `terminationReason:null` field in canonical key order, with all three prior documents otherwise identical. It requires no schema-major or identity change. SARIF omitted nil, so those goldens did not change. The literal recipe below includes this exact addition and adds representative external success/failure envelopes for Task 22. Their external failure identity is independently SHA-256 encoded; the earlier SARIF fixture deliberately retains its literal `external-occurrence` fixture ID. The recipes never import the product.
 
@@ -68,7 +68,7 @@ Task 19's only reviewed JSON golden change was the additive `terminationReason:n
 
 Copyright (c) 2026 USDZ Validation Kit contributors. MIT; see `LICENSE`.
 
-Extract the following Python block verbatim to a temporary file and run it from an empty temporary staging directory. Compare its generated `Tests/Goldens/*.json` to the corresponding checked-in documents; do not overwrite checked-in expectations on mismatch. Catalogue descriptors remain the retained independent literal source described above. Recipe SHA-256: `37b829f581c42cb42d3e9c08c5e6c2db3ae2d0278e7d130d5338af8a5939802b` (UTF-8 bytes inside the fence, including the final LF).
+Extract the following Python block verbatim to a temporary file and run it from an empty temporary staging directory. Compare its generated `Tests/Goldens/*.json` to the corresponding checked-in documents; do not overwrite checked-in expectations on mismatch. Catalogue descriptors remain the retained independent literal source described above. Recipe SHA-256: `22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14` (UTF-8 bytes inside the fence, including the final LF).
 
 <!-- uvk-json-recipe -->
 ```python
@@ -97,7 +97,7 @@ counts = {'byCategory': {v: 0 for v in ['archiveSpecification', 'appleCompatibil
           'bySeverity': {v: 0 for v in ['error', 'warning', 'note']}}
 budgets = {'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
            'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096}
-configuration = {'profile': 'general-v1', 'budgets': budgets, 'safetyEnvelopeVersion': 1,
+configuration = {'profile': 'general-v1', 'budgets': budgets, 'safetyEnvelopeVersion': 2,
     'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
     'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
 not_requested = {'requested': False, 'phase': None, 'availability': 'unknown', 'version': None,
@@ -107,7 +107,7 @@ location = {'entryName': 'root.usdc', 'archiveByteOffset': 64, 'layerByteOffset'
 native = {'ruleID': 'UVK-LIM-002', 'occurrenceID': native_id, 'category': 'validatorLimitation',
     'severity': 'warning', 'message': 'Native reference inspection is unavailable for binary USD.',
     'evidence': {'binary': True, 'bytes': 8, 'reason': 'binaryReferences', 'unknown': None},
-    'location': location, 'provenance': {'kind': 'native', 'validatorVersion': '0.1.0'}}
+    'location': location, 'provenance': {'kind': 'native', 'validatorVersion': '0.2.0'}}
 external = {'ruleID': 'USDCK-001', 'occurrenceID': external_id, 'category': 'appleCompatibility',
     'severity': 'error', 'message': 'Checker reported failure.', 'evidence': {}, 'location': None,
     'provenance': {'kind': 'usdchecker', 'tool': 'usdchecker', 'version': version}}
@@ -126,7 +126,7 @@ for kind in ['complete', 'incomplete', 'operational', 'external-success', 'exter
     areas = {v: {'requested': v != 'appleAdvice',
                   'state': 'notRun' if v == 'appleAdvice' or kind == 'operational' else 'complete', 'reasons': []}
              for v in ['containerStructure', 'entrySafety', 'references', 'byteBudgets', 'textureDimensions', 'appleAdvice']}
-    document = {'schemaVersion': 1, 'tool': {'name': 'usdz-validator', 'version': '0.1.0'},
+    document = {'schemaVersion': 1, 'tool': {'name': 'usdz-validator', 'version': '0.2.0'},
         'input': {'displayName': 'input.usdz', 'byteSize': None if kind == 'operational' else 123},
         'configuration': copy.deepcopy(configuration), 'coverage': {'areas': areas, 'isComplete': kind not in ['incomplete', 'operational']},
         'nativeFindings': [], 'externalCheck': copy.deepcopy(not_requested),
@@ -155,7 +155,7 @@ for kind in ['complete', 'incomplete', 'operational', 'external-success', 'exter
 
 Copyright (c) 2026 USDZ Validation Kit contributors. MIT; see `LICENSE`.
 
-The complete original independent Task 17 source follows verbatim, including its historical “scratch evidence only” docstring. This durable copy supersedes that storage comment: it must remain available after workflow scratch cleanup. Original source SHA-256: `67c7e3307e2b8ac83bdaa89e6d554051bae8d3bd251979d75c61e3952c3edc30` (UTF-8 bytes inside the fence, including the final LF).
+The independent Task 17 recipe follows with current v0.2 tool/provenance and envelope metadata, retaining its historical “scratch evidence only” docstring. This durable copy supersedes that storage comment: it must remain available after workflow scratch cleanup. Current recipe SHA-256: `5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333` (UTF-8 bytes inside the fence, including the final LF).
 
 To reproduce, extract the block to a temporary `.py` file, create a fresh temporary staging directory containing `Tests/Goldens/rule-catalogue-v1.json` copied from the pinned independent literal catalogue, and run the script with that staging directory as cwd. It writes the three expected SARIF documents there. Compare all resulting bytes with the committed SARIF goldens. The script imports only the Python standard library and derives descriptors from the retained independent catalogue, not the product. Its literal null evidence must remain null; unavailable location fields are omitted.
 
@@ -193,7 +193,7 @@ coverage = {'areas': {
 configuration = {'profile': 'general-v1', 'budgets': {
     'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
     'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096},
-    'safetyEnvelopeVersion': 1, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
+    'safetyEnvelopeVersion': 2, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
     'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
 counts_native = {'bySeverity': {'error': 0, 'warning': 1, 'note': 0},
                  'byCategory': {'archiveSpecification': 0, 'appleCompatibility': 0, 'policy': 0, 'validatorLimitation': 1}}
@@ -207,7 +207,7 @@ native_result = {'ruleId': 'UVK-LIM-002', 'level': 'warning',
     'partialFingerprints': {'uvkOccurrence/v1': 'c9dce5d1e8d7ef85ae24d92062192f27535322e1aca4d933944d3115222579b4'},
     'properties': {'category': 'validatorLimitation',
         'evidence': {'binary': True, 'bytes': 8, 'reason': 'binaryReferences', 'unknown': None},
-        'provenance': {'kind': 'native', 'validatorVersion': '0.1.0'}},
+        'provenance': {'kind': 'native', 'validatorVersion': '0.2.0'}},
     'locations': [{'physicalLocation': {'artifactLocation': {'uri': 'input.usdz'}, 'region': {'byteOffset': 64}},
         'logicalLocations': [{'fullyQualifiedName': 'root.usdc', 'properties': {'layerByteOffset': 0}}]}]}
 external_rule = {'id': 'USDCK-001', 'shortDescription': {'text': 'External checker reported failure'},
@@ -225,8 +225,8 @@ for kind in ['native', 'external-unavailable', 'external-failure']:
             'gateDecision': 'fail', 'acceptedIncomplete': False, 'exitCode': 1 if kind == 'external-failure' else 2}
     props = {'input': {'displayName': 'input.usdz', 'byteSize': 123}, 'configuration': config,
              'coverage': coverage, 'counts': counts_native, 'operationalErrors': [],
-             'provenance': {'kind': 'native', 'validatorVersion': '0.1.0'}, **gate}
-    runs = [{'tool': {'driver': {'name': 'usdz-validator', 'version': '0.1.0', 'rules': rules}},
+             'provenance': {'kind': 'native', 'validatorVersion': '0.2.0'}, **gate}
+    runs = [{'tool': {'driver': {'name': 'usdz-validator', 'version': '0.2.0', 'rules': rules}},
              'artifacts': [artifact], 'invocations': [{'executionSuccessful': True}],
              'results': [native_result], 'properties': props}]
     if kind != 'native':
@@ -250,4 +250,140 @@ for kind in ['native', 'external-unavailable', 'external-failure']:
     document = {'$schema': 'https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/schemas/sarif-schema-2.1.0.json',
                 'version': '2.1.0', 'runs': runs}
     (fixtures / (kind + '-v1.sarif')).write_bytes((json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode())
+```
+
+### Literal v0.2 binary JSON/SARIF authoring recipe
+
+The four fixed models cover complete inventory, a live unsupported value plus the layer's partial-inventory reason, conclusive whole-layer malformed header plus unavailable inventory, and two numeric sites sharing one missing target. Duplicate visits to the first site collapse. Findings sort by policy before limitation, rule ID, and independently hashed occurrence ID; coverage reasons retain discovery order and merge identical member/reason records. The recipe's SHA-256 is `3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4`, bound below and in Tests/Schemas/manifest.json. It reads only the independently retained catalogue and writes exactly eight documents in an empty staging directory. Run it before comparing product encoders; it never captures encoder bytes. Historical USDA identity vectors and schema major 1 remain unchanged.
+
+<!-- uvk-usdc-recipe -->
+```python
+"""Independent v0.2 binary report expectations; standard library only (MIT).
+The fixed member has raw UTF-8 name root.usdc and local-header offset zero.
+Structural paths use spec 7, field 3, with optional array indices 0 and 1.
+No product invocation, import, encoder output, or scene/parser oracle is used.
+"""
+import copy
+import hashlib
+import json
+import struct
+from pathlib import Path
+
+out = Path('Tests/Goldens')
+cat = json.loads((out / 'rule-catalogue-v1.json').read_text())
+
+def field(text):
+    value = text.encode('utf-8')
+    return struct.pack('>Q', len(value)) + value
+
+def identity(rule, reason, coordinates=''):
+    # The optional content offset is absent; local-header identity is not a displayed region.
+    return hashlib.sha256(field('uvk-occurrence-v1') + field(rule)
+        + b'\x01' + field('root.usdc') + b'\x01' + struct.pack('>Q', 0)
+        + b'\x00' + field(reason + '|usdc-v1' + coordinates)).hexdigest()
+
+location = {'entryName': 'root.usdc', 'archiveByteOffset': None,
+            'layerByteOffset': None, 'line': None, 'column': None}
+provenance = {'kind': 'native', 'validatorVersion': '0.2.0'}
+configuration = {'profile': 'general-v1', 'budgets': {
+    'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
+    'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096},
+    'safetyEnvelopeVersion': 2, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
+    'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
+empty_counts = {'byCategory': dict.fromkeys(
+    ['archiveSpecification', 'appleCompatibility', 'policy', 'validatorLimitation'], 0),
+    'bySeverity': dict.fromkeys(['error', 'warning', 'note'], 0)}
+external = {'requested': False, 'phase': None, 'availability': 'unknown', 'version': None,
+    'policy': None, 'status': 'notRequested', 'outcome': None, 'exitCode': None, 'signal': None,
+    'terminationReason': None, 'stdoutBytes': 0, 'stderrBytes': 0,
+    'hasStdout': False, 'hasStderr': False, 'findings': []}
+
+# These tuples are the independently selected scenario contract, in discovery order.
+scenarios = {
+    'complete': [],
+    'partial': [
+        ('UVK-LIM-007', 'unsupportedValue', '|s:7|f:3',
+         'Binary USD reference inspection encountered an unsupported representation.'),
+        ('UVK-LIM-007', 'partialBinaryReferences', '',
+         'Native reference inspection is incomplete for this binary USD layer.')],
+    'malformed': [
+        ('UVK-USD-001', 'invalidHeader', '', 'The inspected binary USD structure is malformed.'),
+        ('UVK-LIM-002', 'binaryReferences', '',
+         'Native reference inspection is unavailable for this binary USD layer.')],
+    'duplicates': [
+        ('UVK-PATH-006', 'missingTarget', '|s:7|f:3|0:0',
+         'The asset reference has no regular package target.'),
+        ('UVK-PATH-006', 'missingTarget', '|s:7|f:3|0:1',
+         'The asset reference has no regular package target.')],
+}
+assert identity('UVK-PATH-006', 'missingTarget', '|s:7|f:3|0:0') == '5398f4182331ac6b1a6c0989e4c2b1a890b101524c4fe3c24fd5720c4bb4a352'
+assert identity('UVK-PATH-006', 'missingTarget', '|s:7|f:3|0:1') == 'b55784978fdd8273a72795e54dc6ff45f49fe6fb88ff49dbce096b08ffb14b44'
+
+rules = []
+for rule in cat['rules']:
+    if rule['category'] == 'appleCompatibility':
+        continue
+    props = {key: rule[key] for key in ['category', 'applicability', 'rationale']}
+    if rule['family'] is not None:
+        props['family'] = rule['family']
+    rules.append({'id': rule['ruleID'], 'shortDescription': {'text': rule['title']},
+                  'fullDescription': {'text': rule['description']},
+                  'defaultConfiguration': {'level': rule['defaultSeverity']}, 'properties': props})
+
+def omit_nulls(value):
+    if isinstance(value, dict):
+        return {key: omit_nulls(item) for key, item in value.items() if item is not None}
+    if isinstance(value, list):
+        return [omit_nulls(item) for item in value]
+    return value
+
+def write(name, value):
+    (out / name).write_bytes((json.dumps(value, ensure_ascii=False, sort_keys=True,
+        separators=(',', ':')) + '\n').encode('utf-8'))
+
+for kind, tuples in scenarios.items():
+    areas = {area: {'requested': area != 'appleAdvice',
+        'state': 'notRun' if area == 'appleAdvice' else 'complete', 'reasons': []}
+        for area in ['containerStructure', 'entrySafety', 'references', 'byteBudgets',
+                     'textureDimensions', 'appleAdvice']}
+    findings, reasons = [], []
+    counts = copy.deepcopy(empty_counts)
+    for rule, reason, coordinates, message in tuples:
+        limitation = rule.startswith('UVK-LIM-')
+        category, severity = ('validatorLimitation', 'warning') if limitation else ('policy', 'error')
+        findings.append({'ruleID': rule, 'occurrenceID': identity(rule, reason, coordinates),
+            'category': category, 'severity': severity, 'message': message,
+            'evidence': {'reason': reason}, 'location': location, 'provenance': provenance})
+        counts['byCategory'][category] += 1
+        counts['bySeverity'][severity] += 1
+        coverage_reason = {'ruleID': rule, 'reasonID': reason, 'location': location}
+        if coverage_reason not in reasons:
+            reasons.append(coverage_reason)
+    if tuples:
+        areas['references'].update(state='partial', reasons=reasons)
+    # Policy findings precede limitations, then fixed rule and occurrence identity byte order.
+    findings.sort(key=lambda f: (f['category'] == 'validatorLimitation', f['ruleID'], f['occurrenceID']))
+    gate = {'validationStatus': 'passed' if kind == 'complete' else 'incomplete' if kind == 'partial' else 'failed',
+            'gateDecision': 'pass' if kind == 'complete' else 'fail',
+            'acceptedIncomplete': False, 'exitCode': 0 if kind == 'complete' else 2 if kind == 'partial' else 1}
+    coverage = {'areas': areas, 'isComplete': kind == 'complete'}
+    doc = {'schemaVersion': 1, 'tool': {'name': 'usdz-validator', 'version': '0.2.0'},
+        'input': {'displayName': 'input.usdz', 'byteSize': 123}, 'configuration': configuration,
+        'coverage': coverage, 'nativeFindings': findings, 'externalCheck': external,
+        'operationalErrors': [], 'summary': {'native': counts, 'external': empty_counts,
+        'externalOutcome': None}, **gate}
+    write('report-usdc-' + kind + '-v1.json', doc)
+    results = [{'ruleId': f['ruleID'], 'level': f['severity'], 'message': {'text': f['message']},
+        'partialFingerprints': {'uvkOccurrence/v1': f['occurrenceID']},
+        'properties': {key: f[key] for key in ['category', 'evidence', 'provenance']},
+        'locations': [{'physicalLocation': {'artifactLocation': {'uri': 'input.usdz'}},
+                       'logicalLocations': [{'fullyQualifiedName': 'root.usdc'}]}]} for f in findings]
+    write('report-usdc-' + kind + '-v1.sarif', {
+        '$schema': 'https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/schemas/sarif-schema-2.1.0.json',
+        'version': '2.1.0', 'runs': [{'tool': {'driver': {'name': 'usdz-validator', 'version': '0.2.0', 'rules': rules}},
+            'artifacts': [{'location': {'uri': 'input.usdz'}, 'length': 123}],
+            'invocations': [{'executionSuccessful': True}], 'results': results,
+            'properties': {'input': doc['input'], 'configuration': configuration,
+                'coverage': omit_nulls(coverage), 'counts': counts, 'operationalErrors': [],
+                'provenance': provenance, **gate}}]})
 ```

@@ -40,7 +40,7 @@ public struct WarningBudgets: Equatable, Sendable {
 public struct ValidationConfiguration: Equatable, Sendable {
   public let profile: Profile
   public let budgets: WarningBudgets
-  public let safetyEnvelopeVersion: Int = 1
+  public let safetyEnvelopeVersion: Int = 2
   public let gatePolicy: GatePolicy
   public let includeSensitiveDetails: Bool
   public let externalCheck: ExternalRequest

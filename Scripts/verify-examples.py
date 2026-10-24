@@ -124,7 +124,7 @@ def main():
             assert apple["profile"] == "apple-portable-v1" and general["profile"] == "general-v1"
             apple_ids = {rule["ruleID"] for rule in apple["rules"]}
             general_ids = {rule["ruleID"] for rule in general["rules"]}
-            assert len(apple_ids) == 32 and len(general_ids) == 30
+            assert len(apple_ids) == 34 and len(general_ids) == 32
             assert apple_ids - general_ids == {"UVK-APL-001", "UVK-APL-002"}
             assert general_ids < apple_ids, "profile catalogue IDs differ"
     except (AssertionError, KeyError, ValueError) as error:

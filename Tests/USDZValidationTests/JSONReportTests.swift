@@ -37,6 +37,9 @@ final class JSONReportTests: XCTestCase {
         "acceptedIncomplete", "exitCode",
       ])
     XCTAssertEqual(document["schemaVersion"] as? Int, 1)
+    XCTAssertEqual((document["tool"] as? [String: String])?["version"], "0.2.0")
+    XCTAssertEqual(
+      (document["configuration"] as? [String: Any])?["safetyEnvelopeVersion"] as? Int, 2)
     XCTAssertEqual(document["exitCode"] as? Int, 0)
     XCTAssertEqual(document["validationStatus"] as? String, "passed")
     XCTAssertEqual((document["nativeFindings"] as? [Any])?.count, 0)
@@ -86,7 +89,7 @@ final class JSONReportTests: XCTestCase {
     let finding = Finding(
       ruleID: "UVK-PATH-004", occurrenceID: "stable-id", category: .policy, severity: .error,
       message: prose, evidence: ["unsafe": .string(path), "safe": .string(safe)],
-      location: FindingLocation(entryName: path), provenance: .native(validatorVersion: "0.1.0"))
+      location: FindingLocation(entryName: path), provenance: .native(validatorVersion: "0.2.0"))
     func report(_ path: String, sensitive: Bool = false) throws -> ValidationReport {
       ValidationReport(
         input: ReportInput(
@@ -201,11 +204,12 @@ final class JSONReportTests: XCTestCase {
     let document = try object(output)
     XCTAssertEqual(Set(document.keys), ["schemaVersion", "tool", "profile", "rules"])
     let rules = try XCTUnwrap(document["rules"] as? [[String: Any]])
-    XCTAssertEqual(rules.count, 32)
-    XCTAssertTrue(try XCTUnwrap(rules.last)["family"] is NSNull)
+    XCTAssertEqual(rules.count, 34)
+    XCTAssertTrue(
+      try XCTUnwrap(rules.first { $0["ruleID"] as? String == "UVK-RES-001" })["family"] is NSNull)
     let general = try object(ReportEncoder.encodeCatalogue(profile: .generalV1, format: .json))
     let generalRules = try XCTUnwrap(general["rules"] as? [[String: Any]])
-    XCTAssertEqual(generalRules.count, 30)
+    XCTAssertEqual(generalRules.count, 32)
     XCTAssertFalse(generalRules.contains { $0["category"] as? String == "appleCompatibility" })
     let text = String(
       decoding: try ReportEncoder.encodeCatalogue(profile: .generalV1, format: .text), as: UTF8.self
@@ -275,7 +279,7 @@ final class JSONReportTests: XCTestCase {
     let finding = Finding(
       ruleID: "UVK-PATH-004", occurrenceID: "id", category: .policy, severity: .error,
       message: "Unsafe paths.", evidence: ["/private/a": .integer(1), "/private/b": .integer(2)],
-      location: nil, provenance: .native(validatorVersion: "0.1.0"))
+      location: nil, provenance: .native(validatorVersion: "0.2.0"))
     let report = ValidationReport(
       input: ReportInput(displayName: "input.usdz", byteSize: 1),
       configuration: try ValidationConfiguration(), coverage: Coverage(areas: [:]),
@@ -290,7 +294,7 @@ final class JSONReportTests: XCTestCase {
       ruleID: "UVK-PATH-006", occurrenceID: "id", category: .policy, severity: .error,
       message: String(repeating: "é", count: 1024),
       evidence: ["detail": .string(String(repeating: "\"", count: 4096))], location: nil,
-      provenance: .native(validatorVersion: "0.1.0"))
+      provenance: .native(validatorVersion: "0.2.0"))
     func report(count: Int) throws -> ValidationReport {
       ValidationReport(
         input: ReportInput(displayName: "input.usdz", byteSize: 1),
@@ -337,7 +341,7 @@ final class JSONReportTests: XCTestCase {
             "binary": .boolean(true), "bytes": .integer(8), "reason": .string("binaryReferences"),
             "unknown": .null,
           ],
-          location: location, provenance: .native(validatorVersion: "0.1.0"))
+          location: location, provenance: .native(validatorVersion: "0.2.0"))
       ]
     }
     return ValidationReport(

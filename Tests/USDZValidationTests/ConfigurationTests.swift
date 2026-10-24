@@ -5,6 +5,7 @@ import XCTest
 final class ConfigurationTests: XCTestCase {
   func testDefaultsAndInvalidBudgets() throws {
     let configuration = try ValidationConfiguration()
+    XCTAssertEqual(ValidatorVersion.current, "0.2.0")
     XCTAssertEqual(configuration.profile, .generalV1)
     XCTAssertEqual(Profile.generalV1.rawValue, "general-v1")
     XCTAssertEqual(Profile.applePortableV1.rawValue, "apple-portable-v1")
@@ -15,7 +16,7 @@ final class ConfigurationTests: XCTestCase {
     XCTAssertEqual(configuration.budgets.totalTextureBytes, 83_886_080)
     XCTAssertEqual(WarningBudgets.defaults.textureMaxDimension, 4096)
     XCTAssertEqual(configuration.gatePolicy, GatePolicy(failOn: .error, allowIncomplete: false))
-    XCTAssertEqual(configuration.safetyEnvelopeVersion, 1)
+    XCTAssertEqual(configuration.safetyEnvelopeVersion, 2)
     XCTAssertFalse(configuration.includeSensitiveDetails)
     XCTAssertEqual(configuration.externalCheck, .disabled)
 

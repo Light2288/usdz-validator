@@ -30,6 +30,7 @@ final class SARIFReportTests: XCTestCase {
     let native = try XCTUnwrap(nativeOnlyRuns.first)
     let driver = try XCTUnwrap((native["tool"] as? [String: Any])?["driver"] as? [String: Any])
     XCTAssertEqual(driver["name"] as? String, "usdz-validator")
+    XCTAssertEqual(driver["version"] as? String, "0.2.0")
     let rules = try XCTUnwrap(driver["rules"] as? [[String: Any]])
     XCTAssertEqual(rules.count, 32)
     XCTAssertEqual(rules.first?["id"] as? String, "UVK-ARC-001")
@@ -275,7 +276,7 @@ final class SARIFReportTests: XCTestCase {
       message: prose,
       evidence: ["unsafe": .string(path), "safe": .string("Textures/a\u{0345}/b.png")],
       location: FindingLocation(entryName: path, line: 2, column: 1),
-      provenance: .native(validatorVersion: "0.1.0"))
+      provenance: .native(validatorVersion: "0.2.0"))
     func report(sensitive: Bool) throws -> ValidationReport {
       try customReport(
         findings: [finding],
@@ -338,7 +339,7 @@ final class SARIFReportTests: XCTestCase {
     let collision = Finding(
       ruleID: "UVK-PATH-004", occurrenceID: "id", category: .policy, severity: .error,
       message: "Unsafe paths.", evidence: ["/private/a": .integer(1), "/private/b": .integer(2)],
-      location: nil, provenance: .native(validatorVersion: "0.1.0"))
+      location: nil, provenance: .native(validatorVersion: "0.2.0"))
     XCTAssertThrowsError(
       try ReportEncoder.encode(customReport(findings: [collision]), format: .sarif)
     ) {
@@ -348,7 +349,7 @@ final class SARIFReportTests: XCTestCase {
       ruleID: "UVK-PATH-004", occurrenceID: "id", category: .policy, severity: .error,
       message: String(repeating: "é", count: 1024),
       evidence: ["detail": .string(String(repeating: "\"", count: 4096))], location: nil,
-      provenance: .native(validatorVersion: "0.1.0"))
+      provenance: .native(validatorVersion: "0.2.0"))
     let result = try XCTUnwrap(
       (runs(customReport(findings: [large]))[0]["results"] as? [[String: Any]])?.first)
     let message = try XCTUnwrap((result["message"] as? [String: String])?["text"])
@@ -432,7 +433,7 @@ final class SARIFReportTests: XCTestCase {
     let finding = Finding(
       ruleID: "UVK-LIM-002", occurrenceID: "note-id", category: .validatorLimitation,
       severity: .note, message: "Limited inspection.", evidence: [:], location: nil,
-      provenance: .native(validatorVersion: "0.1.0"))
+      provenance: .native(validatorVersion: "0.2.0"))
     let coverage = Coverage(areas: [
       .references: CoverageAreaResult(requested: true, state: .partial, reasons: [])
     ])
@@ -477,7 +478,7 @@ final class SARIFReportTests: XCTestCase {
       evidence: [
         "binary": .boolean(true), "bytes": .integer(8), "reason": .string("binaryReferences"),
         "unknown": .null,
-      ], location: location, provenance: .native(validatorVersion: "0.1.0"))
+      ], location: location, provenance: .native(validatorVersion: "0.2.0"))
     let externalFinding = Finding(
       ruleID: "USDCK-001", occurrenceID: "external-occurrence", category: .appleCompatibility,
       severity: .error, message: "Checker reported failure.", evidence: [:], location: nil,
