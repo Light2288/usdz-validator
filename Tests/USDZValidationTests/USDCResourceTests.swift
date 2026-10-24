@@ -311,3 +311,50 @@ extension USDCResourceTests {
     }
   }
 }
+
+extension USDCResourceTests {
+  // Refunding work or starting a new work ledger at scanner entry must lose these
+  // literal invocation totals even though every individual layer fits its allowance.
+  func testCrossLayerWorkReachesExactLimitWithoutRefunding() throws {
+    // Hand-counted one-field numeric-array recipe: TOC 33, tokens 9, strings 4,
+    // fields 5, fieldsets 7, paths 45, specs 10, live traversal/scratch 134 = 247.
+    // Array elements add their declared count. No expected total comes from a scan.
+    let layers: [(items: UInt64, cumulativeWork: UInt64)] = [
+      (250_000, 250_247), (250_000, 500_494), (250_000, 750_741),
+      (250_000, 1_000_988), (250_000, 1_251_235), (250_000, 1_501_482),
+      (250_000, 1_751_729), (248_024, 2_000_000),
+    ]
+    let ledger = ResourceLedger()
+    let retained = try ledger.reserveUSDCStorage(17)
+    defer { retained.release() }
+    let baselineLiveBytes: UInt64 = 17
+    for (index, layer) in layers.enumerated() {
+      let bytes = try USDCMutationRecipe.valueCrate(
+        reps: [0x8003_0000_0000_0058], body: USDCReferenceTests.word(layer.items))
+      let input = USDCReferenceTests.input(bytes, ledger: ledger)
+      let state = try USDCReader.scan(
+        entry: input.entry, reader: input.reader,
+        onReference: { _ in XCTFail("Numeric arrays contain no asset values") },
+        onIssue: { _ in XCTFail("Supported numeric-array structure") })
+      XCTAssertEqual(state, .complete)
+      XCTAssertEqual(ledger.usdcWorkUnits, layer.cumulativeWork, "layer \(index)")
+      XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes, "layer \(index)")
+    }
+    XCTAssertThrowsError(try ledger.consumeUSDCWork(1)) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+    }
+    XCTAssertEqual(ledger.usdcWorkUnits, 2_000_000)
+    let nextBytes = try USDCMutationRecipe.valueCrate(reps: [])
+    let next = USDCReferenceTests.input(nextBytes, ledger: ledger)
+    XCTAssertThrowsError(
+      try USDCReader.scan(
+        entry: next.entry, reader: next.reader,
+        onReference: { _ in XCTFail("Exhausted invocation must not emit") },
+        onIssue: { _ in XCTFail("Work stops must propagate as typed resource failures") })
+    ) {
+      XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+    }
+    XCTAssertEqual(ledger.usdcWorkUnits, 2_000_000)
+    XCTAssertEqual(ledger.usdcLiveBytes, baselineLiveBytes)
+  }
+}
