@@ -12,7 +12,10 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.5.0")
   ],
   targets: [
-    .target(name: "USDZValidation"),
+    .target(
+      name: "CUSDCCompression", exclude: ["LICENSE", "source-manifest.json", "README.md"],
+      sources: ["lz4.c"], publicHeadersPath: "include"),
+    .target(name: "USDZValidation", dependencies: ["CUSDCCompression"]),
     .executableTarget(
       name: "USDZValidatorCLI",
       dependencies: [
