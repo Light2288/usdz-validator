@@ -33,6 +33,8 @@ Native offline corpus checks include `swift test --filter 'USDCFixtureTests|USDC
 
 Project schemas use Draft 2020-12 and stable IDs `urn:usdz-validation-kit:report:1`, `urn:usdz-validation-kit:catalogue:1`, `urn:usdz-validation-kit:budget-config:1`. Report/catalogue objects allow additive optional fields and unknown rule IDs within v1. Declared required fields, types, versions and enum meanings remain checked. The budget configuration rejects unknown top-level and budget keys. Omitted budgets default; null disables only that warning. JSON Schema cannot distinguish lexical `1.0` from `1`, detect duplicate keys after parsing, or enforce raw byte ceilings. `BudgetConfigurationTests` covers those decoder requirements, including trailing data; the verification reader also rejects duplicate keys and trailing data.
 
+Current product 0.2.0 reports identify safety envelope 3: admitted numeric arrays retain bounded count-header checks without charging untouched declared elements. Numerical ceilings and schema major 1 remain unchanged. The report schema accepts historical envelope identities 1 and 2 alongside 3. Strict consumers with the earlier `[1, 2]` enum must update their schema before accepting envelope 3 reports.
+
 The published OASIS schema remains byte-for-byte unchanged and uses Draft 7. Both its own `$id` and the emitted OASIS `$schema` URL are registered explicitly from the local file. All unregistered references, including remote/file URIs, fail; no fallback retrieval exists. OASIS permits an unknown-byte sentinel of -1. UVK's additional semantic checks require actual nonnegative archive offsets and keep layer coordinates out of physical ZIP line regions. OASIS property bags cannot express UVK's custom invariants, so separate checks preserve native-first ordering, one requested checker run, independent provenance/counts, fingerprints, coverage and invocation success/notification/process metadata. Unavailable SARIF fields omit; JSON fields use null. Typed evidence nulls and disabled budget nulls remain meaningful in both formats.
 
 ## Schema source and license review
@@ -70,7 +72,7 @@ Task 19's only reviewed JSON golden change was the additive `terminationReason:n
 
 Copyright (c) 2026 USDZ Validation Kit contributors. MIT; see `LICENSE`.
 
-Extract the following Python block verbatim to a temporary file and run it from an empty temporary staging directory. Compare its generated `Tests/Goldens/*.json` to the corresponding checked-in documents; do not overwrite checked-in expectations on mismatch. Catalogue descriptors remain the retained independent literal source described above. Recipe SHA-256: `22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14` (UTF-8 bytes inside the fence, including the final LF).
+Extract the following Python block verbatim to a temporary file and run it from an empty temporary staging directory. Compare its generated `Tests/Goldens/*.json` to the corresponding checked-in documents; do not overwrite checked-in expectations on mismatch. Catalogue descriptors remain the retained independent literal source described above. Recipe SHA-256: `37212792d037abf0efe9503be2165bcfb503a21833e7e6e167d6ecea016779c9` (UTF-8 bytes inside the fence, including the final LF).
 
 <!-- uvk-json-recipe -->
 ```python
@@ -99,7 +101,7 @@ counts = {'byCategory': {v: 0 for v in ['archiveSpecification', 'appleCompatibil
           'bySeverity': {v: 0 for v in ['error', 'warning', 'note']}}
 budgets = {'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
            'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096}
-configuration = {'profile': 'general-v1', 'budgets': budgets, 'safetyEnvelopeVersion': 2,
+configuration = {'profile': 'general-v1', 'budgets': budgets, 'safetyEnvelopeVersion': 3,
     'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
     'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
 not_requested = {'requested': False, 'phase': None, 'availability': 'unknown', 'version': None,
@@ -157,7 +159,7 @@ for kind in ['complete', 'incomplete', 'operational', 'external-success', 'exter
 
 Copyright (c) 2026 USDZ Validation Kit contributors. MIT; see `LICENSE`.
 
-The independent Task 17 recipe follows with current v0.2 tool/provenance and envelope metadata, retaining its historical “scratch evidence only” docstring. This durable copy supersedes that storage comment: it must remain available after workflow scratch cleanup. Current recipe SHA-256: `5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333` (UTF-8 bytes inside the fence, including the final LF).
+The independent Task 17 recipe follows with current v0.2 tool/provenance and envelope metadata, retaining its historical “scratch evidence only” docstring. This durable copy supersedes that storage comment: it must remain available after workflow scratch cleanup. Current recipe SHA-256: `af02d095ebac9ffa3686ec818cc054e5cca890460735278a86ca755d0ac4f4a8` (UTF-8 bytes inside the fence, including the final LF).
 
 To reproduce, extract the block to a temporary `.py` file, create a fresh temporary staging directory containing `Tests/Goldens/rule-catalogue-v1.json` copied from the pinned independent literal catalogue, and run the script with that staging directory as cwd. It writes the three expected SARIF documents there. Compare all resulting bytes with the committed SARIF goldens. The script imports only the Python standard library and derives descriptors from the retained independent catalogue, not the product. Its literal null evidence must remain null; unavailable location fields are omitted.
 
@@ -195,7 +197,7 @@ coverage = {'areas': {
 configuration = {'profile': 'general-v1', 'budgets': {
     'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
     'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096},
-    'safetyEnvelopeVersion': 2, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
+    'safetyEnvelopeVersion': 3, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
     'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
 counts_native = {'bySeverity': {'error': 0, 'warning': 1, 'note': 0},
                  'byCategory': {'archiveSpecification': 0, 'appleCompatibility': 0, 'policy': 0, 'validatorLimitation': 1}}
@@ -256,7 +258,7 @@ for kind in ['native', 'external-unavailable', 'external-failure']:
 
 ### Literal v0.2 binary JSON/SARIF authoring recipe
 
-The four fixed models cover complete inventory, a live unsupported value plus the layer's partial-inventory reason, conclusive whole-layer malformed header plus unavailable inventory, and two numeric sites sharing one missing target. Duplicate visits to the first site collapse. Findings sort by policy before limitation, rule ID, and independently hashed occurrence ID; coverage reasons retain discovery order and merge identical member/reason records. The recipe's SHA-256 is `3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4`, bound below and in Tests/Schemas/manifest.json. It reads only the independently retained catalogue and writes exactly eight documents in an empty staging directory. Run it before comparing product encoders; it never captures encoder bytes. Historical USDA identity vectors and schema major 1 remain unchanged.
+The four fixed models cover complete inventory, a live unsupported value plus the layer's partial-inventory reason, conclusive whole-layer malformed header plus unavailable inventory, and two numeric sites sharing one missing target. Duplicate visits to the first site collapse. Findings sort by policy before limitation, rule ID, and independently hashed occurrence ID; coverage reasons retain discovery order and merge identical member/reason records. The recipe's SHA-256 is `889876273096111527c4b5e4e116653af7378000e3abe3ced1fa09e9ad8aa8c6`, bound below and in Tests/Schemas/manifest.json. It reads only the independently retained catalogue and writes exactly eight documents in an empty staging directory. Run it before comparing product encoders; it never captures encoder bytes. Historical USDA identity vectors and schema major 1 remain unchanged.
 
 <!-- uvk-usdc-recipe -->
 ```python
@@ -290,7 +292,7 @@ provenance = {'kind': 'native', 'validatorVersion': '0.2.0'}
 configuration = {'profile': 'general-v1', 'budgets': {
     'archiveBytes': 104857600, 'fileBytes': 26214400, 'fileCount': 1000,
     'textureBytes': 20971520, 'totalTextureBytes': 83886080, 'textureMaxDimension': 4096},
-    'safetyEnvelopeVersion': 2, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
+    'safetyEnvelopeVersion': 3, 'gatePolicy': {'failOn': 'error', 'allowIncomplete': False},
     'includeSensitiveDetails': False, 'externalCheck': 'disabled'}
 empty_counts = {'byCategory': dict.fromkeys(
     ['archiveSpecification', 'appleCompatibility', 'policy', 'validatorLimitation'], 0),

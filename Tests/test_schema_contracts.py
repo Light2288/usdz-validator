@@ -90,13 +90,25 @@ class SchemaContractTests(unittest.TestCase):
 
     def testHistoricalAndCurrentSafetyEnvelopesKeepSchemaMajorOne(self):
         check = verify.validator('report')
+        # Frozen literal report contracts stay independent of current golden metadata.
+        historical = [
+            json.loads('{"acceptedIncomplete":false,"configuration":{"budgets":{"archiveBytes":104857600,"fileBytes":26214400,"fileCount":1000,"textureBytes":20971520,"textureMaxDimension":4096,"totalTextureBytes":83886080},"externalCheck":"disabled","gatePolicy":{"allowIncomplete":false,"failOn":"error"},"includeSensitiveDetails":false,"profile":"general-v1","safetyEnvelopeVersion":1},"coverage":{"areas":{"appleAdvice":{"reasons":[],"requested":false,"state":"notRun"},"byteBudgets":{"reasons":[],"requested":true,"state":"complete"},"containerStructure":{"reasons":[],"requested":true,"state":"complete"},"entrySafety":{"reasons":[],"requested":true,"state":"complete"},"references":{"reasons":[],"requested":true,"state":"complete"},"textureDimensions":{"reasons":[],"requested":true,"state":"complete"}},"isComplete":true},"exitCode":0,"externalCheck":{"availability":"unknown","exitCode":null,"findings":[],"hasStderr":false,"hasStdout":false,"outcome":null,"phase":null,"policy":null,"requested":false,"signal":null,"status":"notRequested","stderrBytes":0,"stdoutBytes":0,"terminationReason":null,"version":null},"gateDecision":"pass","input":{"byteSize":123,"displayName":"input.usdz"},"nativeFindings":[],"operationalErrors":[],"schemaVersion":1,"summary":{"external":{"byCategory":{"appleCompatibility":0,"archiveSpecification":0,"policy":0,"validatorLimitation":0},"bySeverity":{"error":0,"note":0,"warning":0}},"externalOutcome":null,"native":{"byCategory":{"appleCompatibility":0,"archiveSpecification":0,"policy":0,"validatorLimitation":0},"bySeverity":{"error":0,"note":0,"warning":0}}},"tool":{"name":"usdz-validator","version":"0.1.0"},"validationStatus":"passed"}'),
+            json.loads('{"acceptedIncomplete":false,"configuration":{"budgets":{"archiveBytes":104857600,"fileBytes":26214400,"fileCount":1000,"textureBytes":20971520,"textureMaxDimension":4096,"totalTextureBytes":83886080},"externalCheck":"disabled","gatePolicy":{"allowIncomplete":false,"failOn":"error"},"includeSensitiveDetails":false,"profile":"general-v1","safetyEnvelopeVersion":2},"coverage":{"areas":{"appleAdvice":{"reasons":[],"requested":false,"state":"notRun"},"byteBudgets":{"reasons":[],"requested":true,"state":"complete"},"containerStructure":{"reasons":[],"requested":true,"state":"complete"},"entrySafety":{"reasons":[],"requested":true,"state":"complete"},"references":{"reasons":[],"requested":true,"state":"complete"},"textureDimensions":{"reasons":[],"requested":true,"state":"complete"}},"isComplete":true},"exitCode":0,"externalCheck":{"availability":"unknown","exitCode":null,"findings":[],"hasStderr":false,"hasStdout":false,"outcome":null,"phase":null,"policy":null,"requested":false,"signal":null,"status":"notRequested","stderrBytes":0,"stdoutBytes":0,"terminationReason":null,"version":null},"gateDecision":"pass","input":{"byteSize":123,"displayName":"input.usdz"},"nativeFindings":[],"operationalErrors":[],"schemaVersion":1,"summary":{"external":{"byCategory":{"appleCompatibility":0,"archiveSpecification":0,"policy":0,"validatorLimitation":0},"bySeverity":{"error":0,"note":0,"warning":0}},"externalOutcome":null,"native":{"byCategory":{"appleCompatibility":0,"archiveSpecification":0,"policy":0,"validatorLimitation":0},"bySeverity":{"error":0,"note":0,"warning":0}}},"tool":{"name":"usdz-validator","version":"0.2.0"},"validationStatus":"passed"}'),
+        ]
+        self.assertEqual([doc['configuration']['safetyEnvelopeVersion'] for doc in historical], [1, 2])
+        for document in historical:
+            self.assertEqual(document['schemaVersion'], 1)
+            self.assertTrue(check.is_valid(document))
         document = golden('report-complete-v1.json')
-        for version in (1, 2):
+        self.assertEqual(document['schemaVersion'], 1)
+        for version in (1, 2, 3):
             document['configuration']['safetyEnvelopeVersion'] = version
-            self.assertTrue(check.is_valid(document), version)
-        for version in (0, 3, True, '2'):
+            with self.subTest(accepted=version):
+                self.assertTrue(check.is_valid(document), version)
+        for version in (0, 4, True, '3'):
             document['configuration']['safetyEnvelopeVersion'] = version
-            self.assertFalse(check.is_valid(document), version)
+            with self.subTest(rejected=version):
+                self.assertFalse(check.is_valid(document), version)
 
     def testCatalogueContract(self):
         check = verify.validator('catalogue')
@@ -213,13 +225,13 @@ class SchemaContractTests(unittest.TestCase):
     def testDurableIndependentRecipes(self):
         readme = (ROOT / 'Tools/README.md').read_text()
         expected = {
-            'json': ('22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14',
+            'json': ('37212792d037abf0efe9503be2165bcfb503a21833e7e6e167d6ecea016779c9',
                      ['report-complete-v1.json', 'report-incomplete-v1.json', 'report-operational-v1.json',
                       'external-success-v1.json', 'external-failure-v1.json']),
-            'usdc': ('3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4',
+            'usdc': ('889876273096111527c4b5e4e116653af7378000e3abe3ced1fa09e9ad8aa8c6',
                       [f'report-usdc-{kind}-v1.{suffix}' for kind in
                        ('complete', 'partial', 'malformed', 'duplicates') for suffix in ('json', 'sarif')]),
-            'sarif': ('5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333',
+            'sarif': ('af02d095ebac9ffa3686ec818cc054e5cca890460735278a86ca755d0ac4f4a8',
                       ['native-v1.sarif', 'external-unavailable-v1.sarif', 'external-failure-v1.sarif']),
         }
         for name, (digest, filenames) in expected.items():

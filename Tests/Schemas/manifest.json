@@ -84,19 +84,19 @@
       "source": "Tools/README.md",
       "marker": "uvk-json-recipe",
       "license": "MIT",
-      "sha256": "22932be5987a425712610f24e31bb7acbf0c181d37639a6ac146bb86c7fd8f14"
+      "sha256": "37212792d037abf0efe9503be2165bcfb503a21833e7e6e167d6ecea016779c9"
     },
     "sarif": {
       "source": "Tools/README.md",
       "marker": "uvk-sarif-recipe",
       "license": "MIT",
-      "sha256": "5655995eeff54fdce9ebfe2fe5b416d00031cdb2d9302995dcdffc668ce3c333"
+      "sha256": "af02d095ebac9ffa3686ec818cc054e5cca890460735278a86ca755d0ac4f4a8"
     },
     "usdc": {
       "source": "Tools/README.md",
       "marker": "uvk-usdc-recipe",
       "license": "MIT",
-      "sha256": "3a7be43b2b94e68826d7670117f6d5680d5dd0505223710b3424a23407b14af4"
+      "sha256": "889876273096111527c4b5e4e116653af7378000e3abe3ced1fa09e9ad8aa8c6"
     }
   },
   "entries": [
@@ -126,7 +126,7 @@
     },
     {
       "path": "Examples/report-v1.json",
-      "sha256": "ab881c5fe946fb731a846018f914513a8936d79304478ad6b296af01f21e8f33",
+      "sha256": "e9afd9dd8c883a231fa2e586013fe3f72d4b70722951eb6568139dc57af498eb",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -138,7 +138,7 @@
     },
     {
       "path": "Examples/report.sarif",
-      "sha256": "b9f216b010fdbf53333d7a7b9199e54adc2539258c98ec363329b6939c026467",
+      "sha256": "75cd4584061049359f986166288d0ef70efbd339e6da1c7a842db36559232290",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -183,7 +183,7 @@
     },
     {
       "path": "Schemas/report-v1.schema.json",
-      "sha256": "2ae4cc26fb0080363812dc7ade28d12bf2ad69b3f774db6e52e9189b766773b9",
+      "sha256": "fa2b55424d6363e4f4f5fb38c2ab91100fe3bf005659d0f95ae3033e3daea1ae",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -245,7 +245,7 @@
     },
     {
       "path": "Tests/Goldens/external-failure-v1.json",
-      "sha256": "dfe43b71f9a9e760402da74b777cde81e9d2361fd99e0272e0b897c951b7dad9",
+      "sha256": "2c4c8b939900c04071fc22579cf91c5b69f0487a7c24864ad22b870ba818a4bf",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -258,7 +258,7 @@
     },
     {
       "path": "Tests/Goldens/external-failure-v1.sarif",
-      "sha256": "d3c4af4919fda57861fb8f635d49d64283ff0fca9614c6a47b5a6dc2531dbb7f",
+      "sha256": "e02bca06a626ebee06500b3b8924afaa9b1a79c6aaa929693bd0545bb9a3ca53",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -271,7 +271,7 @@
     },
     {
       "path": "Tests/Goldens/external-success-v1.json",
-      "sha256": "97a317fca659fe16c28eef94713bcacef384785c632df25bd942b890e4467fc9",
+      "sha256": "38a1adfb2bd69a159fe9439222516601f7f7a6813eb8ed61c126370e8e7574ef",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -284,7 +284,7 @@
     },
     {
       "path": "Tests/Goldens/external-unavailable-v1.sarif",
-      "sha256": "15c0c551535d23ed915d189a97f1e0f187802f61fd1225a0187442e5a9f38517",
+      "sha256": "3c6a596ff6933b6aed1993f745cce4f4f391d9892fa7ffb5bc40919db9ef7144",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -297,7 +297,7 @@
     },
     {
       "path": "Tests/Goldens/native-v1.sarif",
-      "sha256": "d5533f033f901a82d69efde97606c0346baef00893de267dc3a3448d10b652ca",
+      "sha256": "e2ba6acdf576ca50e5f18a702c48801ddbea1cf0b2fe9302cd49828adeacc2b5",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -310,7 +310,7 @@
     },
     {
       "path": "Tests/Goldens/report-complete-v1.json",
-      "sha256": "2f8868edefad97833ac6d294c76569977d46fe27dc38d4e89f8b6e49edfce5d0",
+      "sha256": "8a80409b6dcaa969282d98993cda199098fb3971ac79171e584d1726ee6298c7",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -323,7 +323,7 @@
     },
     {
       "path": "Tests/Goldens/report-incomplete-v1.json",
-      "sha256": "897642fdbb1862c2cf1d57ecb15240308370076d6f881ce514d23a0a61fea724",
+      "sha256": "feb3bf21f247471296045be3b63109d451a1b656b68ccc34e239991992c57645",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -336,7 +336,7 @@
     },
     {
       "path": "Tests/Goldens/report-operational-v1.json",
-      "sha256": "378e9711159a22470a46c5af1f8a12a931c71a774d218a3da141084f7bc88dbf",
+      "sha256": "0b2ea7edd3528a7dd8fc19ecf81b5da710146a3c834941f5b2f0a73378159ad8",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -349,7 +349,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-complete-v1.json",
-      "sha256": "2f8868edefad97833ac6d294c76569977d46fe27dc38d4e89f8b6e49edfce5d0",
+      "sha256": "8a80409b6dcaa969282d98993cda199098fb3971ac79171e584d1726ee6298c7",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -361,7 +361,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-complete-v1.sarif",
-      "sha256": "8f1ece6a799a36ddff28523f679606132eea530ca746d673597f302d3e328a30",
+      "sha256": "1eab425287f4153e18d9b45c4b9c45d7120218d070c998a3a88cfd57736d5ac3",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -373,7 +373,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-duplicates-v1.json",
-      "sha256": "7f5981ebd8db5abf91cc4ffe9b06211ad1628503cdf33ee2d07e1b97c7e6d8f7",
+      "sha256": "a29d4483b3a0a69cb408dcf745342580387fd46417a9aaa5d38d491ccf21c1a9",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -385,7 +385,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-duplicates-v1.sarif",
-      "sha256": "557849008862082bbe18df9a555fdfdfbb43b9a1fea808147c2ed92f597edece",
+      "sha256": "694e0e626c151bd0e65ba1128eeda0744554f028382729206d51af7763a9efb3",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -397,7 +397,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-malformed-v1.json",
-      "sha256": "73b8d8f68a0926486b1d807b7656ff647fb0d7ecff48e19a1702f5c31c6a4105",
+      "sha256": "a901fa22f55b7e0bf3f37c48cc1ac76ab2b53a4ce3b4fe4650453e176357eaf4",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -409,7 +409,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-malformed-v1.sarif",
-      "sha256": "184008ad94617e11d0d62beee16065ecd5d27559f7fe55945ea3fc2a9a36358b",
+      "sha256": "aab2c90c7848fccf108a140b37cbd00ff847619352eb19737bcbe4bced527b03",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -421,7 +421,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-partial-v1.json",
-      "sha256": "613f145e8aaa8a8eb6aa26873c393147213eb2ff3c4c9c53b37fc4dbef663930",
+      "sha256": "f52478669523ed8422b20a396f7786c2428755637cbe576a56688085f36c6fed",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -433,7 +433,7 @@
     },
     {
       "path": "Tests/Goldens/report-usdc-partial-v1.sarif",
-      "sha256": "60cbf737494280bfea9714469e47be358e0aa15865bc435e16705bfba8e12512",
+      "sha256": "b7efe3859f6cc6988734de3b3fde61f5f67d8132aa9833ecbafc01237caf0285",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -481,7 +481,7 @@
     },
     {
       "path": "Tests/test_schema_contracts.py",
-      "sha256": "ac564a962e36f2d746781ee21995d6442c4c3cfa7725e22ffa8050f44d237163",
+      "sha256": "c2c641e736102806fa886797896e918d2752b553d8979090116c01ccacad289e",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",
@@ -492,7 +492,7 @@
     },
     {
       "path": "Tools/README.md",
-      "sha256": "395097d0a501ba9eafccd7575fc44e63e7affaa7891e233fdd53e0b66fe7e14d",
+      "sha256": "195f825bd78cd466d4adfae05aadeb82be79c4ef2b55c9470ba61d960e2fc42b",
       "source": "project-authored",
       "author": "USDZ Validation Kit contributors",
       "license": "MIT",

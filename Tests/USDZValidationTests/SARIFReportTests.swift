@@ -73,6 +73,8 @@ final class SARIFReportTests: XCTestCase {
     XCTAssertEqual(
       (properties["configuration"] as? [String: Any])?["profile"] as? String, "general-v1")
     XCTAssertEqual(
+      (properties["configuration"] as? [String: Any])?["safetyEnvelopeVersion"] as? Int, 3)
+    XCTAssertEqual(
       ((properties["counts"] as? [String: Any])?["bySeverity"] as? [String: Int])?["warning"], 1)
     let requestedUnavailableRuns = try runs(makeReport(.unavailable))
     XCTAssertEqual(requestedUnavailableRuns.count, 2)

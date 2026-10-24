@@ -39,7 +39,7 @@ final class JSONReportTests: XCTestCase {
     XCTAssertEqual(document["schemaVersion"] as? Int, 1)
     XCTAssertEqual((document["tool"] as? [String: String])?["version"], "0.2.0")
     XCTAssertEqual(
-      (document["configuration"] as? [String: Any])?["safetyEnvelopeVersion"] as? Int, 2)
+      (document["configuration"] as? [String: Any])?["safetyEnvelopeVersion"] as? Int, 3)
     XCTAssertEqual(document["exitCode"] as? Int, 0)
     XCTAssertEqual(document["validationStatus"] as? String, "passed")
     XCTAssertEqual((document["nativeFindings"] as? [Any])?.count, 0)

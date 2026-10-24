@@ -16,7 +16,7 @@ final class ConfigurationTests: XCTestCase {
     XCTAssertEqual(configuration.budgets.totalTextureBytes, 83_886_080)
     XCTAssertEqual(WarningBudgets.defaults.textureMaxDimension, 4096)
     XCTAssertEqual(configuration.gatePolicy, GatePolicy(failOn: .error, allowIncomplete: false))
-    XCTAssertEqual(configuration.safetyEnvelopeVersion, 2)
+    XCTAssertEqual(configuration.safetyEnvelopeVersion, 3)
     XCTAssertFalse(configuration.includeSensitiveDetails)
     XCTAssertEqual(configuration.externalCheck, .disabled)
 

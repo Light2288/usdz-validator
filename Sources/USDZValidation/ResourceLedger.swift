@@ -1,6 +1,6 @@
 import Foundation
 
-/// Fixed safety envelope v2. Warning configuration never changes these ceilings.
+/// Fixed safety envelope v3. Warning configuration never changes these ceilings.
 enum SafetyResource: String, CaseIterable {
   case archiveBytes, entryCount, centralDirectoryBytes, entryBytes, aggregateEntryBytes
   case textLayerBytes, entryNameBytes, tokenBytes, tokenCount, readChunkBytes
