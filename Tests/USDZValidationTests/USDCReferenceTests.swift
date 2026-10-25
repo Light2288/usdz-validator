@@ -17,38 +17,7 @@ final class USDCReferenceTests: XCTestCase {
         result.state, fixture.expectedInspectionComplete ? .complete : .partial,
         "\(fixture.id): \(result.issues)")
       XCTAssertEqual(result.issues.isEmpty, fixture.expectedInspectionComplete, fixture.id)
-      let input = Self.input(fixture.crate, ledger: ResourceLedger())
-      let tables = try USDCTables.read(input: input)
-      var fields: [USDCLiveField] = []
-      try tables.forEachLiveField { fields.append($0) }
-      var actualSites: [String] = []
-      for occurrence in result.references {
-        guard case .usdc(let locator) = occurrence.site else {
-          return XCTFail("binary site required")
-        }
-        let field = try XCTUnwrap(
-          fields.first {
-            UInt64($0.specIndex) == locator.specIndex
-              && UInt64($0.fieldOrdinal) == locator.fieldOrdinal
-          })
-        var path: UInt32? = field.pathIndex
-        var parts: [String] = []
-        while let index = path {
-          let element = try tables.pathElement(at: index)
-          let token = try tables.withTokenBytes(at: element.tokenIndex) {
-            String(decoding: $0, as: UTF8.self)
-          }
-          parts.append(element.parentIndex == nil ? "/" : (element.isProperty ? "." : "") + token)
-          path = element.parentIndex
-        }
-        let name = try tables.withTokenBytes(at: field.nameTokenIndex) {
-          String(decoding: $0, as: UTF8.self)
-        }
-        actualSites.append(
-          parts.reversed().joined(separator: "|") + ":" + name + ":"
-            + occurrence.valueBytes.base64EncodedString() + ":"
-            + locator.steps.map { "\($0.kind.rawValue):\($0.index)" }.joined(separator: "|"))
-      }
+      let actualSites = try Self.semanticSites(result.references, crate: fixture.crate)
       let expectedSites = fixture.metadata.expectedSites.map {
         $0.pathElements.joined(separator: "|") + ":" + $0.field + ":"
           + Data($0.value.utf8).base64EncodedString() + ":"
@@ -58,6 +27,62 @@ final class USDCReferenceTests: XCTestCase {
       count += result.references.count
     }
     XCTAssertEqual(count, 71)
+  }
+
+  // The supplementary original adds one authored customData occurrence beyond the canonical 71.
+  func testSupplementaryAuthoredOccurrenceAndSite() throws {
+    var count = 0
+    for fixture in try USDCFixtures.extraCases() {
+      let result = try Self.scan(fixture.crate)
+      let expected = fixture.metadata.expectedSites.map {
+        $0.pathElements.joined(separator: "|") + ":" + $0.field + ":"
+          + Data($0.value.utf8).base64EncodedString() + ":"
+          + Self.expectedSteps($0, fixtureID: fixture.id)
+      }
+      XCTAssertEqual(
+        try Self.semanticSites(result.references, crate: fixture.crate).sorted(), expected.sorted(),
+        fixture.id)
+      count += result.references.count
+    }
+    XCTAssertEqual(count, 1)
+  }
+
+  private static func semanticSites(_ references: [ReferenceOccurrence], crate: Data) throws
+    -> [String]
+  {
+    let input = Self.input(crate, ledger: ResourceLedger())
+    let tables = try USDCTables.read(input: input)
+    var fields: [USDCLiveField] = []
+    try tables.forEachLiveField { fields.append($0) }
+    var actualSites: [String] = []
+    for occurrence in references {
+      guard case .usdc(let locator) = occurrence.site else {
+        throw USDCFailure.malformed(.invalidValue)
+      }
+      let field = try XCTUnwrap(
+        fields.first {
+          UInt64($0.specIndex) == locator.specIndex
+            && UInt64($0.fieldOrdinal) == locator.fieldOrdinal
+        })
+      var path: UInt32? = field.pathIndex
+      var parts: [String] = []
+      while let index = path {
+        let element = try tables.pathElement(at: index)
+        let token = try tables.withTokenBytes(at: element.tokenIndex) {
+          String(decoding: $0, as: UTF8.self)
+        }
+        parts.append(element.parentIndex == nil ? "/" : (element.isProperty ? "." : "") + token)
+        path = element.parentIndex
+      }
+      let name = try tables.withTokenBytes(at: field.nameTokenIndex) {
+        String(decoding: $0, as: UTF8.self)
+      }
+      actualSites.append(
+        parts.reversed().joined(separator: "|") + ":" + name + ":"
+          + occurrence.valueBytes.base64EncodedString() + ":"
+          + locator.steps.map { "\($0.kind.rawValue):\($0.index)" }.joined(separator: "|"))
+    }
+    return actualSites
   }
 
   // Reusing a body must emit both authored sites and release scratch after synchronous callbacks.
