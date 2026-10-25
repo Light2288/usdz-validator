@@ -277,7 +277,14 @@ class ResourceVerificationTests(unittest.TestCase):
                     'usdc-aggregate-near', 'usdc-aggregate-over', 'usdc-work-over',
                     'usdc-large-layer-small-metadata', 'usdc-mixed-occurrences',
                     'usdc-near-report-json', 'usdc-near-report-sarif',
-                    'usdc-report-cap-json', 'usdc-report-cap-sarif'}
+                    'usdc-report-cap-json', 'usdc-report-cap-sarif',
+                    'usdc-numeric-0', 'usdc-numeric-250000', 'usdc-numeric-250001',
+                    'usdc-numeric-max', 'usdc-compressed-numeric-0',
+                    'usdc-compressed-numeric-250000', 'usdc-compressed-numeric-250001',
+                    'usdc-compressed-numeric-max', 'usdc-shared-numeric-near',
+                    'usdc-numeric-aggregate', 'usdc-numeric-aggregate-over',
+                    'usdc-truncated-numeric-header',
+                    'usdc-unknown-numeric-flags', 'usdc-shared-asset-items-over'}
         self.assertTrue(required <= names, sorted(required - names))
         self.assertEqual(len(names), len(list(module.recipes())))
 
@@ -287,9 +294,15 @@ class ResourceVerificationTests(unittest.TestCase):
         if not hasattr(module, 'validate_rows'):
             return
         rows = [dict(case=case[0], status='PASS', peak_rss_bytes=1, elapsed_seconds=1,
-                     exit=case[3], expectation_checked=True) for case in module.recipes()]
+                     exit=case[3], expectation_checked=True,
+                     expected_rule_reason=module.BINARY_EXPECTATIONS.get(case[0]),
+                     typed_findings=([{'ruleID': module.BINARY_EXPECTATIONS[case[0]][0],
+                         'evidence': {module.BINARY_EXPECTATIONS[case[0]][1]:
+                                      module.BINARY_EXPECTATIONS[case[0]][2]}}]
+                         if case[0] in module.BINARY_EXPECTATIONS else [])) for case in module.recipes()]
         self.assertEqual(module.validate_rows(rows), [])
-        for edit in ('missing', 'skipped', 'rss', 'elapsed', 'classification', 'exit'):
+        self.assertEqual(module.validate_rows(json.loads(json.dumps(rows))), [])
+        for edit in ('missing', 'skipped', 'rss', 'elapsed', 'classification', 'exit', 'reason'):
             changed = copy.deepcopy(rows)
             if edit == 'missing':
                 changed.pop()
@@ -301,6 +314,9 @@ class ResourceVerificationTests(unittest.TestCase):
                 changed[-1]['elapsed_seconds'] = 60.001
             elif edit == 'classification':
                 changed[-1]['expectation_checked'] = False
+            elif edit == 'reason':
+                next(row for row in changed if row['case'] == 'usdc-work-over')['typed_findings'] = [
+                    {'ruleID': 'UVK-RES-001', 'evidence': {'resource': 'usdcItems'}}]
             else:
                 changed[-1]['exit'] = 99
             with self.subTest(edit=edit):
@@ -317,6 +333,22 @@ class ResourceVerificationTests(unittest.TestCase):
         self.assertTrue(module.check_expected_findings('usdc-aggregate-over', []))
         findings[0]['evidence']['resource'] = 'tokenCount'
         self.assertTrue(module.check_expected_findings('usdc-aggregate-over', findings))
+
+    def testActualWorkUsesSharedDictionaryTraversal(self):
+        module = self.resource_tool()
+        cases = {case[0]: case for case in module.binary_recipes()}
+        entries = cases['usdc-work-over'][1]
+        payload = b''.join(module.chunks(entries[0][1]))
+        # Sixteen independently bounded map entries, each with string key 0, a
+        # relative edge of 8, and a numeric leaf sharing the 416-byte count header.
+        self.assertEqual(int.from_bytes(payload[88:96], 'little'), 16)
+        for index in range(16):
+            start = 96 + 20 * index
+            self.assertEqual(payload[start:start+4], bytes(4))
+            self.assertEqual(int.from_bytes(payload[start+4:start+12], 'little'), 8)
+            self.assertEqual(int.from_bytes(payload[start+12:start+20], 'little'),
+                             0x80030000000001a0)
+        self.assertEqual(int.from_bytes(payload[416:424], 'little'), 2**64-1)
 
     def testArbitraryRecipeUnitsAreWrittenInAtMost64KiBChunks(self):
         module = self.resource_tool()

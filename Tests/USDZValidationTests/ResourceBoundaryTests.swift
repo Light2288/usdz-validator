@@ -464,3 +464,42 @@ extension ResourceBoundaryTests {
     }
   }
 }
+
+extension ResourceBoundaryTests {
+  // Sixteen bounded map entries add 16*(item + two key lookups + edge + step + visit)
+  // =96 units per field to Task1's independently proved 109+138N direct-field recipe.
+  func testActualSharedNumericDictionaryWorkBoundary() throws {
+    let w = USDCReferenceTests.word
+    var body = w(16, 8)
+    for _ in 0..<16 {
+      body += w(0, 4) + w(8, 8) + w(0x8003_0000_0000_01a0, 8)
+    }
+    body += w(.max, 8)
+    for (fields, expectedWork): (Int, UInt64) in [(8_546, 1_999_873), (8_547, 1_999_912)] {
+      let ledger = ResourceLedger()
+      let retained = try ledger.reserveUSDCStorage(17)
+      let crate = try USDCMutationRecipe.valueCrate(
+        reps: Array(repeating: 0x001f_0000_0000_0058, count: fields), body: body)
+      let input = USDCReferenceTests.input(crate, ledger: ledger)
+      func scan() throws -> USDCScanState {
+        try USDCReader.scan(
+          entry: input.entry, reader: input.reader,
+          onReference: { _ in XCTFail("Numeric leaf invented a reference") },
+          onIssue: { _ in XCTFail("Supported dictionary representation") })
+      }
+      if fields == 8_546 {
+        XCTAssertEqual(try scan(), .complete)
+      } else {
+        // Full work would be 2,000,107. The final field's 96-slot scratch reservation
+        // cannot fit after 1,999,912; no numeric count/body drives the stop.
+        XCTAssertThrowsError(try scan()) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+        }
+      }
+      XCTAssertEqual(ledger.usdcWorkUnits, expectedWork)
+      XCTAssertEqual(ledger.usdcLiveBytes, 17)
+      retained.release()
+      XCTAssertEqual(ledger.usdcLiveBytes, 0)
+    }
+  }
+}

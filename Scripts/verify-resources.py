@@ -202,6 +202,23 @@ def deep_crate(depth=32, fields=2):
     return crate_segments([0x0034000000000058] * fields, [(body, 1)])
 
 
+def shared_numeric_dictionary(fields):
+    """Sixteen map entries, normal depth, all sharing one opaque numeric header.
+
+    Fixed metadata/live setup costs 109 units. Each field costs 138 (six table,
+    two fieldset edges, 128 scratch slots, token lookup and ValueRep visit), plus
+    16 * (one item + two string/token lookups + relative edge + coordinate + visit).
+    Thus work = 109 + 234*fields: 8546 costs 1999873; 8547 needs 2000107.
+    The latter stops at 1999912 before its final 96-slot scratch reservation.
+    Neither the max numeric count nor a fabricated container size exhausts work.
+    """
+    leaves = 16
+    numeric_offset = 88 + 8 + leaves * 20
+    record = word(0, 4) + word(8) + word(0x8003000000000000 | numeric_offset)
+    body = [(word(leaves), 1), (record, leaves), (word(2**64-1), 1)]
+    return crate_segments([0x001f000000000058] * fields, body)
+
+
 def binary_recipes():
     yield 'usdc-metadata-16-mib', [entry('root.usdc', crate_segments(token_capacity=16*MIB))], 'json', 0, 0
     yield 'usdc-metadata-over-block', [entry('root.usdc', crate_segments(token_capacity=16*MIB+1))], 'json', 1, None
@@ -218,7 +235,17 @@ def binary_recipes():
     layers = [entry(f'l{i}.usdc', crate_segments(token_capacity=16*MIB-1024)) for i in range(3)]
     yield 'usdc-aggregate-near', layers[:2], 'json', 0, 0
     yield 'usdc-aggregate-over', layers, 'json', 1, None
-    yield 'usdc-work-over', [entry('root.usdc', crate_segments([0x8003000000000058]*8, [(word(250_000), 1)]))], 'json', 1, None
+    for flags, prefix in ((0x80, 'usdc-numeric'), (0xa0, 'usdc-compressed-numeric')):
+        for count, label in ((0, '0'), (250_000, '250000'), (250_001, '250001'), (2**64-1, 'max')):
+            rep = (flags << 56) | (3 << 48) | 88
+            yield f'{prefix}-{label}', [entry('root.usdc', crate_segments([rep], [(word(count), 1)]))], 'json', 0, 0
+    yield 'usdc-shared-numeric-near', [entry('root.usdc', shared_numeric_dictionary(8546))], 'json', 0, 0
+    yield 'usdc-work-over', [entry('root.usdc', shared_numeric_dictionary(8547))], 'json', 1, None
+    yield 'usdc-numeric-aggregate', [entry(f'l{i}.usdc', shared_numeric_dictionary(4273)) for i in range(2)], 'json', 0, 0
+    yield 'usdc-numeric-aggregate-over', [entry(f'l{i}.usdc', shared_numeric_dictionary(4274)) for i in range(2)], 'json', 1, None
+    yield 'usdc-truncated-numeric-header', [entry('root.usdc', crate_segments([0x8003000000000058], [(bytes(7), 1)]))], 'json', 1, None
+    yield 'usdc-unknown-numeric-flags', [entry('root.usdc', crate_segments([0xc003000000000058], [(word(2**64-1), 1)]))], 'json', 2, None
+    yield 'usdc-shared-asset-items-over', [entry('root.usdc', crate_segments([0x8003000000000058, 0x800c000000000058], [(word(250_001), 1)]))], 'json', 1, None
     yield 'usdc-large-layer-small-metadata', [entry('root.usdc', crate_segments(padding=256*MIB-4096))], 'json', 0, None
     array = [(word(50_001), 1), (word(0, 4), 50_001)]
     yield 'usdc-mixed-occurrences', [entry('root.usda', [(b'#usda 1.0\n', 1), (b'@root.usda@ ', 50_000)]),
@@ -238,6 +265,10 @@ BINARY_EXPECTATIONS = {
     'usdc-depth-33': ('UVK-RES-001', 'resource', 'usdcDepth'),
     'usdc-aggregate-over': ('UVK-RES-001', 'resource', 'usdcDecodeBytes'),
     'usdc-work-over': ('UVK-RES-001', 'resource', 'usdcWork'),
+    'usdc-numeric-aggregate-over': ('UVK-RES-001', 'resource', 'usdcWork'),
+    'usdc-truncated-numeric-header': ('UVK-USD-001', 'reason', 'invalidRange'),
+    'usdc-unknown-numeric-flags': ('UVK-LIM-007', 'reason', 'unsupportedValue'),
+    'usdc-shared-asset-items-over': ('UVK-RES-001', 'resource', 'usdcItems'),
     'usdc-mixed-occurrences': ('UVK-RES-001', 'resource', 'tokenCount'),
     'usdc-near-report-json': ('UVK-PATH-006', 'reason', 'missingTarget'),
     'usdc-near-report-sarif': ('UVK-PATH-006', 'reason', 'missingTarget'),
@@ -267,6 +298,10 @@ def validate_rows(rows):
                 or row.get('elapsed_seconds', SECONDS_LIMIT+1) > SECONDS_LIMIT
                 or row.get('exit') != expected.get(name) or row.get('expectation_checked') is not True):
             failures.append(f'{name}: incomplete, misclassified or over-budget row')
+        if tuple(row.get('expected_rule_reason') or ()) != BINARY_EXPECTATIONS.get(name, ()):
+            failures.append(f'{name}: missing or changed typed expectation')
+        failures.extend(f'{name}: {failure}' for failure in
+                        check_expected_findings(name, row.get('typed_findings', [])))
     return failures
 
 
@@ -316,6 +351,7 @@ def measure(executable, folder, case):
         failures.append("stdout must be empty with --output")
     report_bytes = output.stat().st_size
     finding_count = None
+    typed_findings = []
     if expected_exit == 3:
         if output.read_bytes() != b"KEEP\n" or "report output failed" not in diagnostic:
             failures.append("report-cap rejection must preserve destination and report its operational delivery failure")
@@ -338,7 +374,14 @@ def measure(executable, folder, case):
             normalized = findings if format_name == 'json' else [
                 {'ruleID': f.get('ruleId'), 'evidence': f.get('properties', {}).get('evidence', {})}
                 for f in findings]
-            failures.extend(check_expected_findings(name, normalized))
+            # Preserve observed typed proof without retaining thousands of duplicate
+            # findings or long report locations in the measurement summary.
+            observed = {(finding.get('ruleID'), finding.get('evidence', {}).get('resource'),
+                         finding.get('evidence', {}).get('reason')) for finding in normalized}
+            typed_findings = [dict(ruleID=rule, evidence={key: value for key, value in
+                              (('resource', resource), ('reason', reason)) if value is not None})
+                              for rule, resource, reason in sorted(observed, key=repr)]
+            failures.extend(check_expected_findings(name, typed_findings))
             if name.startswith('usdc-'):
                 expected_state = 'complete' if expected_exit == 0 else 'partial'
                 if coverage['areas']['references']['state'] != expected_state:
@@ -357,7 +400,9 @@ def measure(executable, folder, case):
                findings=finding_count, expected_exit=expected_exit, expected_findings=expected_findings,
                format=format_name, status="PASS" if not failures else "FAIL",
                failures=failures, expectation_checked=not failures,
-               expected_rule_reason=BINARY_EXPECTATIONS.get(name), command=shlex.join(measured_command))
+               expected_rule_reason=BINARY_EXPECTATIONS.get(name), typed_findings=typed_findings,
+               raw_time_stderr=diagnostic, raw_stdout=stdout.read_text(errors="replace"),
+               command=shlex.join(measured_command))
     print(json.dumps(row), flush=True)
     return row
 
@@ -394,11 +439,12 @@ def main():
             rows.append(measure(executable, folder, case))
     matrix_failures = validate_rows(rows)
     passed = not matrix_failures
-    lines = ["# Native resource acceptance", "", f"Result: {'PASS' if passed else 'FAIL'}; external checker disabled for every invocation.", "",
+    lines = ["# Native resource acceptance", "", "Product 0.2.0; safety-envelope version 3.", "", f"Result: {'PASS' if passed else 'FAIL'}; external checker disabled for every invocation.", "",
              "Target: peak RSS <=268,435,456 bytes and elapsed <=60 seconds per release native invocation.",
              "Darwin /usr/bin/time -l reports maximum resident set size in bytes. Elapsed is the greater of its real time and the parent wall measurement; a 60-second deadline kills and reaps the entire process group.", "",
              "Fixture generation, CRC construction, corpus hashing, and report parsing are outside the measured CLI process. Temporary regular files are streamed with at most 64 KiB chunks; no giant fixture is committed. Each file is <=256 MiB. Near-report cases retain 9,990 real reference findings plus coverage locations, with 1,100-byte USDA and 2,200-byte USDC safe layer names. Cap cases use 4,096-byte names, remain below upstream layer/token/count limits, and must return operational exit 3 without replacing an existing output destination or emitting partial stdout.", "",
-             "Required rows (9 archive/USDA plus 17 USDC): " + str(len(rows)) + "; matrix failures: " + repr(matrix_failures), "",
+             "Actual-work recipe: 16-entry dictionaries share one UInt64.max numeric header. Each field costs 138 base operations plus 16*(item + two key lookups + relative edge + coordinate + ValueRep) = 234; fixed cost 109. 8,546 fields complete at 1,999,873; 8,547 require 2,000,107 and reject usdcWork at 1,999,912 before a 96-slot reservation. Two layers of 4,273 fields accumulate 1,999,982. Independent native tests assert exact counters and release; process measurements below cover complete CLI/report work.", "",
+             "Required rows (9 archive/USDA plus 31 USDC): " + str(len(rows)) + "; matrix failures: " + repr(matrix_failures), "",
              "## Observed host", "", "```json", json.dumps(host, indent=2), "```", "",
              "## Measured release invocations", "",
              "| Case | Archive bytes | Elapsed s | Peak RSS bytes | Exit | Findings | Output bytes | Result |",

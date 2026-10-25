@@ -66,6 +66,10 @@ final class USDCContainmentTests: XCTestCase {
       Set(controls.keys), ["read", "stat", "enumerate", "connect", "execute", "write"])
     for (name, code) in controls { XCTAssertEqual(code, Int(EPERM), name) }
     XCTAssertEqual(receipt["fixtures"] as? Int, 27)
+    XCTAssertEqual(receipt["occurrences"] as? Int, 72)
+    XCTAssertEqual(receipt["syntheticInputs"] as? Int, 12)
+    XCTAssertEqual(receipt["syntheticOccurrences"] as? Int, 5)
+    XCTAssertEqual(receipt["failures"] as? [String], [])
     XCTAssertEqual(receipt["forbiddenInputReads"] as? Int, 0)
     XCTAssertGreaterThan(receipt["inputReadRequests"] as? Int ?? 0, 0)
     XCTAssertEqual(receipt["workingBytesAfterScans"] as? Int, 0)
@@ -111,7 +115,11 @@ final class USDCContainmentTests: XCTestCase {
   }
 
   private func runContainedChild() throws -> Never {
-    let fixtures = try USDCFixtures.cases() + USDCFixtures.extraCases()
+    let genuine = try USDCFixtures.cases() + USDCFixtures.extraCases()
+    let synthetic = try syntheticCases()
+    let fixtures =
+      genuine.map { InputCase(id: $0.id, crate: $0.crate, values: $0.expectedValues) }
+      + synthetic
     let configuration = try ValidationConfiguration()
     let packages = try fixtures.map { fixture in
       try ArchiveRecipe(entries: [
@@ -120,8 +128,19 @@ final class USDCContainmentTests: XCTestCase {
       ]).encode()
     }
     var expected: [NativeResult] = []
+    var expectedScans: [ScanReceipt] = []
     for (fixture, bytes) in zip(fixtures, packages) {
-      _ = try USDCReferenceTests.scan(fixture.crate)
+      let scanned = try scan(fixture.crate)
+      guard
+        scanned.references.map(\.valueBytes).sorted(by: USDCReferenceTests.order)
+          == fixture.values.sorted(by: USDCReferenceTests.order)
+      else { throw ChildFailure.changedResult }
+      if let outcome = fixture.outcome {
+        guard scanned.state == outcome.state, scanned.failure == outcome.failure,
+          scanned.issues.map(\.failure) == outcome.issues
+        else { throw ChildFailure.changedResult }
+      }
+      expectedScans.append(scanned)
       expected.append(
         try NativeEngine.inspect(
           size: UInt64(bytes.count), configuration: configuration, ledger: ResourceLedger()
@@ -188,6 +207,10 @@ final class USDCContainmentTests: XCTestCase {
     var requests = 0
     var forbiddenInputReads = 0
     var totalOccurrences = 0
+    var syntheticOccurrences = 0
+    var scannerRequests = 0
+    var finalLiveBytes: UInt64 = 0
+    var failures: [String] = []
     for (index, bytes) in packages.enumerated() {
       let fixture = fixtures[index]
       let ledger = ResourceLedger()
@@ -202,26 +225,125 @@ final class USDCContainmentTests: XCTestCase {
         requests += 1
         return bytes.subdata(in: Int(offset)..<Int(end))
       }
-      guard actual.findings == expected[index].findings,
-        actual.coverage == expected[index].coverage, ledger.usdcLiveBytes == 0
-      else {
-        throw ChildFailure.changedResult
+      finalLiveBytes += ledger.usdcLiveBytes
+      if actual.findings != expected[index].findings || actual.coverage != expected[index].coverage
+      {
+        failures.append(fixture.id + ": native findings/coverage changed")
       }
-      let scanned = try USDCReferenceTests.scan(fixture.crate)
-      guard
-        scanned.references.map(\.valueBytes).sorted(by: USDCReferenceTests.order)
-          == fixture.expectedValues.sorted(by: USDCReferenceTests.order)
-      else {
-        throw ChildFailure.changedResult
+      let scanLedger = ResourceLedger()
+      let scanned = try scan(fixture.crate, ledger: scanLedger) { offset, count in
+        let (end, overflow) = offset.addingReportingOverflow(UInt64(max(0, count)))
+        guard !overflow, count > 0, count <= 65_536, end <= UInt64(fixture.crate.count) else {
+          forbiddenInputReads += 1
+          throw InspectionFailure.malformedRange
+        }
+        scannerRequests += 1
+        return fixture.crate.subdata(in: Int(offset)..<Int(end))
       }
-      totalOccurrences += scanned.references.count
+      finalLiveBytes += scanLedger.usdcLiveBytes
+      if scanned != expectedScans[index] { failures.append(fixture.id + ": semantic scan changed") }
+      if index < genuine.count {
+        totalOccurrences += scanned.references.count
+      } else {
+        syntheticOccurrences += scanned.references.count
+      }
     }
     childFinish(
       [
-        "sandboxInit": result, "controls": controls, "fixtures": fixtures.count,
-        "occurrences": totalOccurrences, "inputReadRequests": requests,
-        "forbiddenInputReads": forbiddenInputReads, "workingBytesAfterScans": 0,
-      ], code: 0)
+        "sandboxInit": result, "controls": controls, "fixtures": genuine.count,
+        "occurrences": totalOccurrences, "syntheticInputs": synthetic.count,
+        "syntheticOccurrences": syntheticOccurrences,
+        "inputReadRequests": requests + scannerRequests, "packageReadRequests": requests,
+        "scannerReadRequests": scannerRequests, "failures": failures,
+        "forbiddenInputReads": forbiddenInputReads, "workingBytesAfterScans": finalLiveBytes,
+      ], code: failures.isEmpty && finalLiveBytes == 0 && forbiddenInputReads == 0 ? 0 : 1)
+  }
+
+  private struct ScanReceipt: Equatable {
+    let state: USDCScanState?
+    let references: [ReferenceOccurrence]
+    let issues: [USDCIssue]
+    let failure: InspectionFailure?
+  }
+
+  private struct Outcome {
+    let state: USDCScanState?
+    let issues: [USDCFailure]
+    let failure: InspectionFailure?
+  }
+
+  private struct InputCase {
+    let id: String
+    let crate: Data
+    let values: [Data]
+    var outcome: Outcome? = nil
+  }
+
+  // Independent expected outcomes are checked before denial; the same exact semantic
+  // sites, issues, typed hard failures and native findings/coverage must survive denial.
+  private func syntheticCases() throws -> [InputCase] {
+    let w = USDCReferenceTests.word
+    let complete = Outcome(state: .complete, issues: [], failure: nil)
+    var inputs: [InputCase] = []
+    for flags: UInt64 in [0x80, 0xa0] {
+      for count: UInt64 in [0, 250_000, 250_001, .max] {
+        inputs.append(
+          InputCase(
+            id: "synthetic/numeric-\(flags)-\(count)",
+            crate: try USDCMutationRecipe.valueCrate(
+              reps: [(flags << 56) | (3 << 48) | 88], body: w(count, 8)),
+            values: [], outcome: complete))
+      }
+    }
+    inputs.append(
+      InputCase(
+        id: "synthetic/shared-numeric-asset",
+        crate: try USDCMutationRecipe.valueCrate(
+          reps: [0x8003_0000_0000_0058, 0x800c_0000_0000_0058, 0x800c_0000_0000_0058],
+          body: w(2, 8) + w(0, 4) + w(0, 4)),
+        values: Array(repeating: Data("a.png".utf8), count: 4), outcome: complete))
+    inputs.append(
+      InputCase(
+        id: "synthetic/shared-asset-items-over",
+        crate: try USDCMutationRecipe.valueCrate(
+          reps: [0x8003_0000_0000_0058, 0x800c_0000_0000_0058], body: w(250_001, 8)),
+        values: [], outcome: Outcome(state: nil, issues: [], failure: .resourceLimit(.usdcItems))))
+    inputs.append(
+      InputCase(
+        id: "synthetic/unknown-flags",
+        crate: try USDCMutationRecipe.valueCrate(
+          reps: [0xc003_0000_0000_0058, 0x400c_0000_0000_0002], body: w(.max, 8)),
+        values: [Data("a.png".utf8)],
+        outcome: Outcome(state: .partial, issues: [.unsupported(.unsupportedValue)], failure: nil)))
+    inputs.append(
+      InputCase(
+        id: "synthetic/truncated-header",
+        crate: try USDCMutationRecipe.valueCrate(
+          reps: [0x8003_0000_0000_0058], body: Data(repeating: 0, count: 7)),
+        values: [],
+        outcome: Outcome(state: .partial, issues: [.malformed(.invalidRange)], failure: nil)))
+    return inputs
+  }
+
+  private func scan(
+    _ bytes: Data, ledger: ResourceLedger = ResourceLedger(),
+    read: ((UInt64, Int) throws -> Data)? = nil
+  ) throws -> ScanReceipt {
+    let entry = USDCReferenceTests.input(bytes, ledger: ledger).entry
+    let reader = BoundedReader(size: UInt64(bytes.count), ledger: ledger) { offset, count in
+      if let read { return try read(offset, count) }
+      return bytes.subdata(in: Int(offset)..<(Int(offset) + count))
+    }
+    var references: [ReferenceOccurrence] = []
+    var issues: [USDCIssue] = []
+    do {
+      let state = try USDCReader.scan(
+        entry: entry, reader: reader, onReference: { references.append($0) },
+        onIssue: { issues.append($0) })
+      return ScanReceipt(state: state, references: references, issues: issues, failure: nil)
+    } catch let failure as InspectionFailure {
+      return ScanReceipt(state: nil, references: references, issues: issues, failure: failure)
+    }
   }
 
   private enum ChildFailure: Error { case setup, changedResult }
