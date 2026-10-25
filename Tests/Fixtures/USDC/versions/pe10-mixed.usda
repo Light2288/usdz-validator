@@ -1,0 +1,14 @@
+#usda 1.0
+(
+ customLayerData = { pathExpression scenePaths = "/Root//"
+ asset texture = @pattern-meta.png@ }
+)
+def Scope "Root"
+{
+ pathExpression pattern = "/Root//"
+ pathExpression referenced = "%/Root:collection"
+ pathExpression[] patterns = ["/Root//", "%_", "/Root/A + /Root/B"]
+ pathExpression[] empty = []
+ timecode clock = 4.25
+ asset[] images = [@pattern-asset.png@, @pattern-asset.png@]
+}

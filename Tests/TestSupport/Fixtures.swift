@@ -17,6 +17,19 @@ public enum Fixtures {
     ]).encode()
   }
 
+  public static func validUSDC() throws -> Data {
+    var entries: [ArchiveRecipe.Entry] = [
+      .init(
+        nameBytes: Data("root.usdc".utf8),
+        payload: try Data(
+          contentsOf: USDCFixtures.root.appendingPathComponent("baseline/containers.usdc")))
+    ]
+    for name in ["same.png", "selected.png", "unselected.png", "a.png", "b.png"] {
+      entries.append(.init(nameBytes: Data(name.utf8), payload: pixelPNG()))
+    }
+    return try ArchiveRecipe(entries: entries).encode()
+  }
+
   public static func write(_ bytes: Data, basename: String, in directory: URL) throws -> URL {
     guard !basename.isEmpty, basename != ".", basename != "..",
       !basename.contains("/"), !basename.contains("\\"), !basename.contains("\0")

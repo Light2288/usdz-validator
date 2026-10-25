@@ -1,0 +1,301 @@
+{
+  "date": "2026-10-24",
+  "sourceLicense": "MIT",
+  "copyright": "2026 USDZ Validation Kit contributors",
+  "policy": "Original project-authored sources and writer outputs only; no Apple model, third-party implementation source, executable, wheel or runtime is redistributed.",
+  "verifiedOriginalFiles": [
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/minimal.usdc",
+      "preservedPath": "baseline/minimal.usdc",
+      "sha256": "870fa0b1736f023b6d287be56a6ad4d075cd3edf04abb441df6754ebec4de35e",
+      "bytes": 1396
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/minimal.usda",
+      "preservedPath": "baseline/minimal.usda",
+      "sha256": "8a1f75eba98da3e5b2befb3393e5b76506a285491f739f742bf7deff32adf45b",
+      "bytes": 593
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/empty.usdc",
+      "preservedPath": "baseline/empty.usdc",
+      "sha256": "080a368ba1882511396badedd7fb86578d334bcdb521d5713a8f42615548017b",
+      "bytes": 777
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/empty.usda",
+      "preservedPath": "baseline/empty.usda",
+      "sha256": "6cabe68cd5490dd3876ac4f08f0fd68e0d6d66b431b53a26c663357ab3a7c2ad",
+      "bytes": 105
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/listops.usdc",
+      "preservedPath": "baseline/listops.usdc",
+      "sha256": "c9385735a84847189994a3cb6a41fe8b28153fafa1686d95cab3d18975573376",
+      "bytes": 1532
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/listops.usda",
+      "preservedPath": "baseline/listops.usda",
+      "sha256": "235e2347b82345ce5f908a5a6dc295beed6e758455d47664abef0657efd6ff48",
+      "bytes": 1193
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/containers.usdc",
+      "preservedPath": "baseline/containers.usdc",
+      "sha256": "c84e4818fb04f95de4d19f42ea115148791d25b8780036301f05eeaf23559883",
+      "bytes": 1311
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/containers.usda",
+      "preservedPath": "baseline/containers.usda",
+      "sha256": "acb61c00e88c9fa7c8db43bfa21b0f9d5087ad14b0d129ad3c08b959eb1be04c",
+      "bytes": 455
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/reference-customdata.usdc",
+      "preservedPath": "baseline/reference-customdata.usdc",
+      "sha256": "c3812b092b775704def0793397c8fe5e333362d6e96284f9922357a13787955f",
+      "bytes": 712
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/reference-customdata.usda",
+      "preservedPath": "baseline/reference-customdata.usda",
+      "sha256": "358f52c7850173f85d0fb65f302097d674c05536feeba1fe76bcbbaa86d177a0",
+      "bytes": 121
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unregistered.usdc",
+      "preservedPath": "baseline/unregistered.usdc",
+      "sha256": "e473dd564c6b3cc729b97a8fda3797375c9fca1d11bec2db4ad43338e06443f0",
+      "bytes": 678
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unregistered.usda",
+      "preservedPath": "baseline/unregistered.usda",
+      "sha256": "5307f0419b4de99f9fda48cc3582fcf194d415fa2fc81deec2ee521368f01c6e",
+      "bytes": 92
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unregistered-raw.usdc",
+      "preservedPath": "baseline/unregistered-raw.usdc",
+      "sha256": "fed1bbe802413584f210a3834e1e88cf7d062d1117c351029baf1a0713b2f5c2",
+      "bytes": 654
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unregistered-raw.usda",
+      "preservedPath": "baseline/unregistered-raw.usda",
+      "sha256": "7e507245acec43a3ed0a41b557cae66c15ee280a1072e8df42697a0be7f4191f",
+      "bytes": 82
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unsafe.usdc",
+      "preservedPath": "baseline/unsafe.usdc",
+      "sha256": "3f3bcb4864084284eed75ddaddd3b4e37ae6d846d97e5f73856ec054167cb786",
+      "bytes": 829
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/unsafe.usda",
+      "preservedPath": "baseline/unsafe.usda",
+      "sha256": "3659df54342930796c96dac0d22ded68f21cc5ff006f21a3a41ead3e6914f52e",
+      "bytes": 159
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/payload-explicit-list.usdc",
+      "preservedPath": "baseline/payload-explicit-list.usdc",
+      "sha256": "8840ed05821275ca1eb090f2d2ed41e15b6e49a5c51caf4a015d5ca648fbf2b2",
+      "bytes": 700
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-2026-10-24/payload-explicit-list.usda",
+      "preservedPath": "baseline/payload-explicit-list.usda",
+      "sha256": "7bf610bc431e619f4840cb740a10db67578a055e8fd7f4e8e49f38d49f4da076",
+      "bytes": 96
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-scalars-apple.usdc",
+      "preservedPath": "versions/tc09-scalars-apple.usdc",
+      "sha256": "327990724f1105c65f5eb8f65bd181d210e2c60c80a262dfa71f6fed5da3f685",
+      "bytes": 940
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-scalars.usda",
+      "preservedPath": "versions/tc09-scalars.usda",
+      "sha256": "a67b9b5bf2f2ca923f9c7a9abf3762f49955cf9c6417661c733eea6344c6bc97",
+      "bytes": 240
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-scalars-openusd.usdc",
+      "preservedPath": "versions/tc09-scalars-openusd.usdc",
+      "sha256": "d5b270190f2bbe4097c806a9d6276dfa383ff98a3596ce556a0bf87facdca4b9",
+      "bytes": 903
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-arrays-apple.usdc",
+      "preservedPath": "versions/tc09-arrays-apple.usdc",
+      "sha256": "d9fdc48ed8b0f125d3d88f97fc7a4c34912f547ca2899316a4e3ea4942404d99",
+      "bytes": 1191
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-arrays.usda",
+      "preservedPath": "versions/tc09-arrays.usda",
+      "sha256": "68fdac1eca3fc848a469535bc0d634f455ea4e534eed4af1efedf8ae3f30128c",
+      "bytes": 337
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-arrays-openusd.usdc",
+      "preservedPath": "versions/tc09-arrays-openusd.usdc",
+      "sha256": "5454431ba75abaa7a1910bd2f127cdcb38be33f2243060289b19aa72cb4d7d76",
+      "bytes": 1145
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-empty-apple.usdc",
+      "preservedPath": "versions/tc09-empty-apple.usdc",
+      "sha256": "1d57465a6ec84e7733f71dd32b10db38339f04cb16e209cf58c6749d91afd3a6",
+      "bytes": 808
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-empty.usda",
+      "preservedPath": "versions/tc09-empty.usda",
+      "sha256": "8b359046f68f4674b108d71dff947668c039a3c1cb6b988ec1dce18ef71b163e",
+      "bytes": 117
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/tc09-empty-openusd.usdc",
+      "preservedPath": "versions/tc09-empty-openusd.usdc",
+      "sha256": "09d048316415360ff91214c93cce8c7fb8665720f3bf986cd9e7b5c8e394f07d",
+      "bytes": 777
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-mixed-apple.usdc",
+      "preservedPath": "versions/pe10-mixed-apple.usdc",
+      "sha256": "cafc452ff36d1a5c4141431414c3a2883f3f29daac90d25f3ada830773f15f6d",
+      "bytes": 1105
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-mixed.usda",
+      "preservedPath": "versions/pe10-mixed.usda",
+      "sha256": "7c54a3d4e5d8fe08e7cc42319676efe2b85aad12ea3d40c8c3ec6db19476535b",
+      "bytes": 398
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-mixed-openusd.usdc",
+      "preservedPath": "versions/pe10-mixed-openusd.usdc",
+      "sha256": "27da40813fc6041429b9d7f3dc3e6ab0e78c5b9f84cccd88d7b55fe0eea3956c",
+      "bytes": 1065
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-containers-apple.usdc",
+      "preservedPath": "versions/pe10-containers-apple.usdc",
+      "sha256": "a5ff410d2609ffca8285ed5bc78b8651ffacc0eab88cd4a8ccaf50ef412e30d7",
+      "bytes": 1459
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-containers.usda",
+      "preservedPath": "versions/pe10-containers.usda",
+      "sha256": "998a1c08e90e35fd66a0814958c4d6c0aeeea01b48b1743705fd67b1a01c04c9",
+      "bytes": 544
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-containers-openusd.usdc",
+      "preservedPath": "versions/pe10-containers-openusd.usdc",
+      "sha256": "1d362950d0acb8dca1093ef8fb902a041961bcd0501d207b2d041652c2f7bb27",
+      "bytes": 1422
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-empty-apple.usdc",
+      "preservedPath": "versions/pe10-empty-apple.usdc",
+      "sha256": "3d6592391dda87d0618ef1ab09b97a7800d04cc0336cb6fd415bf3ce7060a174",
+      "bytes": 887
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-empty.usda",
+      "preservedPath": "versions/pe10-empty.usda",
+      "sha256": "bfe053692f7131176458eaab4bb400a07fdd089a4114af034a5d72ba395d232a",
+      "bytes": 209
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-empty-openusd.usdc",
+      "preservedPath": "versions/pe10-empty-openusd.usdc",
+      "sha256": "be55ede0881a4fa4cf220df37e0436f82f0f3324305166067bf8420fd62e2161",
+      "bytes": 845
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-asset-expression-apple.usdc",
+      "preservedPath": "versions/pe10-asset-expression-apple.usdc",
+      "sha256": "d15d8d8b770ef6fb94a298c006325d9b5425402b1c9b4b6035f9adf5391b8d62",
+      "bytes": 882
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-asset-expression.usda",
+      "preservedPath": "versions/pe10-asset-expression.usda",
+      "sha256": "68c5def06ea3b0f88828f8bb047041a25ea2e5807110d4d8f5a5b9d22dcbf8fa",
+      "bytes": 203
+    },
+    {
+      "originalPath": ".verification/usdc-feasibility-09-010-2026-10-24/pe10-asset-expression-openusd.usdc",
+      "preservedPath": "versions/pe10-asset-expression-openusd.usdc",
+      "sha256": "2439c074b8617452e3bbc8451378aecdc35fad24339e513eabc8099a34848bd0",
+      "bytes": 848
+    }
+  ],
+  "originalRecords": [
+    {
+      "path": ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+      "sha256": "073dae33278ce95e62b85015fa3400a9a5c2ee3a428c726887485fd1afcdf24f",
+      "bytes": 8505
+    },
+    {
+      "path": ".verification/usdc-feasibility-2026-10-24/generate.py",
+      "sha256": "e47063af12c2487160cc0138e565ed1fd64c11bc23cfed42276a5557d5a47a53",
+      "bytes": 3354
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+      "sha256": "71bff42037de8a2001be9a2cded25a94577d44976634f74126c4855c5903a2fe",
+      "bytes": 19614
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py",
+      "sha256": "dbfd442955aee213e348b30667d0b6d315967f1a07031bb74ef0101349725701",
+      "bytes": 2876
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/oracle-final.json",
+      "sha256": "cc0ef42d9570c76818ea0f243474012635d7898b96f4049ab22351081d1ebc64",
+      "bytes": 1216589
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/oracle-comparison.json",
+      "sha256": "f3a750c70889b4cff8cc184c7c09fa7b35fa340a7f631913e3c971d831312153",
+      "bytes": 14365
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/version-fixture-results.json",
+      "sha256": "bb64d97032caae58b86103ed66c64d92711b6bce7a6248c0dd968d0fc8642b33",
+      "bytes": 23143
+    },
+    {
+      "path": ".verification/usdc-feasibility-09-010-2026-10-24/export_openusd.py",
+      "sha256": "7ef668acff84806480eb307a0edace4d8f7ebd92055858488d3a01020310f39d",
+      "bytes": 275
+    }
+  ],
+  "openUSDWriter": {
+    "filename": "usd_core-26.11-cp314-none-macosx_10_15_universal2.whl",
+    "sha256": "24d8bdedc4696cdde55b31f7dcb934dcc2deab33f6f7aaa35db221cc4787cb4b",
+    "url": "https://files.pythonhosted.org/packages/90/72/7b25d64f3e61594e1a1365720f0383942a43c755a36ff4cee722ccc96c3f/usd_core-26.11-cp314-none-macosx_10_15_universal2.whl",
+    "version": "26.11",
+    "projectUrls": {
+      "Developer Docs": "https://www.openusd.org/release/apiDocs.html",
+      "Discussion Group": "https://forum.openusd.org",
+      "Documentation": "https://openusd.org",
+      "Homepage": "https://openusd.org",
+      "Source": "https://github.com/PixarAnimationStudios/OpenUSD"
+    },
+    "license": "LicenseRef-TOST-1.0",
+    "requiresPython": "<3.15,>=3.11"
+  },
+  "portableArgumentConvention": "$RESEARCH_ROOT replaces the original absolute research directory in archived argv without changing argument order. These are historical provenance, not a test dependency; oracle-venv and writer profiles are not distributed.",
+  "openUSDExportRecipe": "Sdf.Layer.CreateAnonymous; ImportFromString(authored source); Export(output crate), without stage composition or flattening. The upstream runtime is independently packaged, not a build of the pinned source commit."
+}

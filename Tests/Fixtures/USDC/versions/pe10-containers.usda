@@ -1,0 +1,18 @@
+#usda 1.0
+def Scope "Root" (
+ customData = { dictionary nested = { pathExpression pattern = "/Root//"
+ asset texture = @nested.png@ } }
+ variantSets = "look"
+ variants = { string look = "first" }
+)
+{
+ variantSet "look" = {
+  "first" { asset image = @selected.png@
+ }
+  "other" { asset image = @unselected.png@
+ }
+ }
+ pathExpression animated.timeSamples = { 0: "/Root/A", 1: "/Root/B" }
+ pathExpression[] arrays.timeSamples = { 0: ["/Root/A", "/Root/B"], 1: ["//"] }
+ asset animatedAsset.timeSamples = { 0: @sample-a.png@, 1: @sample-b.png@ }
+}

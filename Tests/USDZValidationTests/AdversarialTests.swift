@@ -140,8 +140,19 @@ final class AdversarialTests: XCTestCase {
         let kind = MemberClassifier.kind(nameBytes: entry.nameBytes)
         switch kind {
         case .usd, .usda, .usdc, .usdz:
-          if try USDLayer.identify(entry: entry, reader: reader, diagnostics: diagnostics) == .usda
-          {
+          let layerKind = try USDLayer.identify(
+            entry: entry, reader: reader, diagnostics: diagnostics)
+          if layerKind == .usdc {
+            _ = try USDCReader.scan(
+              entry: entry, reader: reader,
+              onReference: { occurrence in
+                ReferenceResolver.check(
+                  occurrence: occurrence, author: entry, namespace: namespace,
+                  diagnostics: diagnostics)
+              },
+              onIssue: { USDCReporting.record(issue: $0, entry: entry, diagnostics: diagnostics) })
+            XCTAssertEqual(ledger.usdcLiveBytes, 0)
+          } else if layerKind == .usda {
             try USDALexer.scan(entry: entry, reader: reader, diagnostics: diagnostics) { token in
               ReferenceResolver.check(
                 token: token, author: entry, namespace: namespace, diagnostics: diagnostics)
@@ -176,6 +187,48 @@ final class AdversarialTests: XCTestCase {
         if case .string(let string) = value {
           XCTAssertLessThanOrEqual(string.utf8.count, 4_096, id)
         }
+      }
+    }
+  }
+}
+
+extension AdversarialTests {
+  // Length/index/cycle mutations must give repeatable declared failures, never a crash
+  // or a silently complete inventory. Expectations are literal wire-contract reasons.
+  func testDeterministicUSDCStructuralMutations() throws {
+    let valid = try USDCMutationRecipe.valueCrate(reps: [0x400c_0000_0000_0002])
+    let cycle = try USDCMutationRecipe.valueCrate(
+      reps: [0x0034_0000_0000_0058],
+      body: USDCReferenceTests.word(8) + USDCReferenceTests.word(0x0034_0000_0000_0058))
+    let vectors: [(String, Data, USDCScanState, USDCFailure)] = [
+      ("header-short", Data(valid.prefix(87)), .uninspected, .malformed(.invalidHeader)),
+      (
+        "future-version", try USDCMutationRecipe.patch(valid, at: 8, bytes: Data([0, 11, 0])),
+        .uninspected, .unsupported(.unsupportedVersion)
+      ),
+      (
+        "toc-outside",
+        try USDCMutationRecipe.patch(valid, at: 16, bytes: USDCReferenceTests.word(.max)),
+        .uninspected, .malformed(.invalidSection)
+      ),
+      (
+        "asset-index", try USDCMutationRecipe.valueCrate(reps: [0x400c_0000_0000_ffff]),
+        .partial, .malformed(.invalidIndex)
+      ),
+      ("active-cycle", cycle, .partial, .malformed(.invalidGraph)),
+      (
+        "unknown-type", try USDCMutationRecipe.valueCrate(reps: [0x003f_0000_0000_0058]),
+        .partial, .unsupported(.unsupportedValue)
+      ),
+    ]
+    for (name, bytes, state, failure) in vectors {
+      for _ in 0..<2 {
+        let ledger = ResourceLedger()
+        let result = try USDCReferenceTests.scan(bytes, ledger: ledger)
+        XCTAssertEqual(result.state, state, name)
+        XCTAssertEqual(result.issues.map(\.failure), [failure], name)
+        XCTAssertTrue(result.references.isEmpty, name)
+        XCTAssertEqual(ledger.usdcLiveBytes, 0, name)
       }
     }
   }

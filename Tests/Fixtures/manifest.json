@@ -19,7 +19,7 @@
       "generator": {
         "name": "TestSupport.Fixtures and ArchiveRecipe",
         "version": "1",
-        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift, Tests/TestSupport/Fixtures.swift, Tests/TestSupport/USDCFixtures.swift and Tests/TestSupport/USDCMutationRecipe.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
         "sourceLicense": "MIT"
       }
     },
@@ -57,7 +57,7 @@
       "generator": {
         "name": "TestSupport.Fixtures and ArchiveRecipe",
         "version": "1",
-        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift and Tests/TestSupport/Fixtures.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
+        "arguments": "Compile Tests/TestSupport/ArchiveRecipe.swift, Tests/TestSupport/Fixtures.swift, Tests/TestSupport/USDCFixtures.swift and Tests/TestSupport/USDCMutationRecipe.swift with a temporary main.swift; run from the repository root. Main: import Foundation; try Fixtures.pixelPNG().write(to: Fixtures.root.appendingPathComponent(\"Sources/pixel.png\")); try Fixtures.validUSDA().write(to: Fixtures.root.appendingPathComponent(\"valid-usda.usdz\"))",
         "sourceLicense": "MIT"
       }
     },
@@ -106,10 +106,11 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "78a524ee0139066cf39aa39c46a6907a0a6eb4beaa4746e2db22c2851c0e949a",
-      "recipe": "Compile the committed Swift 6 source with Foundation and ArchiveRecipe.swift only. Invoke pixelPNG() and validUSDA() as recorded by the generated assets. Fixtures.root resolves committed canonical sources from this source file; write(_:basename:in:) writes caller-provided data only to the requested basename.",
+      "sha256": "87305bdf771dcc17ebe2bd636a4885fbe7ea25c104040aed7ac3a7b0115c3c17",
+      "recipe": "Compile the committed Swift 6 source with Foundation, ArchiveRecipe.swift, USDCFixtures.swift and USDCMutationRecipe.swift. Invoke pixelPNG(), validUSDA() and validUSDC() as recorded by the generated assets. Fixtures.root resolves committed canonical sources from this source file; write(_:basename:in:) writes caller-provided data only to the requested basename.",
       "history": [
-        "2026-10-21: Original project-authored fixture/generator created for v0.1."
+        "2026-10-21: Original project-authored fixture/generator created for v0.1.",
+        "2026-10-24: Task7 adds durable binary-package generation and intact unsupported-version negative fixture helper."
       ]
     },
     {
@@ -155,7 +156,7 @@
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
       "sha256": "21f03f8292a8a066bd0e31e70834da4188dca39f59ea734f88477af687cda0d2",
-      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation and Darwin. CLIProcessTests launch only the built usdz-validator selected by the matching suite or harness-only UVK_CLI_EXECUTABLE / UVK_CLI_TEST_EXECUTABLE. Separate temporary stdout/stderr files prevent pipe backpressure; a 15-second deadline terminates and reaps a stuck child. Scripts/test-cli.sh builds a normal release binary and an isolated UVK_PROCESS_TESTING binary. The latter accepts only fixed internalFailure/checkerUnavailable/checkerSuccess/checkerFailure scenarios through a wholly compile-guarded source hook and Validator constructor; fake ProcessResult values exercise the real native engine, adapter orchestration, coverage and gate without any installed checker. Native test archives use the manifest-defined original Fixtures and ArchiveRecipe; the PXR-USDCsynthetic bytes explicitly model incomplete native coverage and are not a conforming-scene oracle. No downloads or arbitrary executable/arguments are accepted by the production CLI.",
+      "recipe": "Compile the committed Swift 6 TestSupport source with Foundation and Darwin. CLIProcessTests launch only the built usdz-validator selected by the matching suite or harness-only UVK_CLI_EXECUTABLE / UVK_CLI_TEST_EXECUTABLE. Separate temporary stdout/stderr files prevent pipe backpressure; a 15-second deadline terminates and reaps a stuck child. Scripts/test-cli.sh builds a normal release binary and an isolated UVK_PROCESS_TESTING binary. The latter accepts only fixed internalFailure/checkerUnavailable/checkerSuccess/checkerFailure scenarios through a wholly compile-guarded source hook and Validator constructor; fake ProcessResult values exercise the real native engine, adapter orchestration, coverage and gate without any installed checker. Native test archives use the manifest-defined original Fixtures and ArchiveRecipe; exit-2 binary scenarios use the intact baseline empty crate with deliberately unsupported version 0.11.0; truncated PXR-USDC bootstrap bytes independently test conclusive corruption. Native binary coverage uses the committed containers crate packaged with all five referenced PNG targets by Fixtures.validUSDC(). No downloads or arbitrary executable/arguments are accepted by the production CLI.",
       "history": [
         "2026-10-21: Original MIT helper added for Task 20 process-level stream and exit contracts."
       ]
@@ -206,7 +207,7 @@
       "license": "MIT",
       "licenseText": "LICENSE",
       "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
-      "sha256": "3bec3959637497d5efcc293c3e0f815d25d159b84e4730b8209061f39773e10d",
+      "sha256": "fbaf36cf56700287592108eac257e2565235912e8cc5d11780e3a807c2f0a74b",
       "recipe": "Compile committed Swift 6 source with Foundation. ResourceRecipes.write(entries:to:archiveBytes:) writes a classic stored ZIP to a caller-owned temporary URL, fixed DOS 1980-01-01, 64-byte payload alignment, CRC-32/ISO-HDLC table, at most 65536-byte stream chunks and O(entry count) bounded metadata. Segment bytes/repeated/fill retain no full archive or large member. Entry.declaredSize explicitly creates metadata-only 256MiB and aggregate512MiB declaration boundaries whose physically stored payload plus ZIP overhead cannot fit the archive ceiling. Entry.commentBytes fills central comments for exact/one-above16MiB directory sizes. archiveBytes fills only the bounded EOCD comment to reach exactly512MiB. nearArchiveLimit writes root.usda, a.wav=268435456 B bytes and b.wav=268434432 B bytes. text(tokens:tokenBytes:totalBytes:) emits #usda 1.0 LF, raw a asset tokens and space padding for lexical limits. jpegHeader(paddingBytes:) streams SOI, APP1 segments and SOF0 so the frame ends at/one byte above1048576; header-only JPEG is not a valid complete image/scene oracle. ResourceBoundaryTests opt into expensive sizes with UVK_RUN_RESOURCE_TESTS=1; small counter/metadata/token/config/report proofs always run. Every temporary file is deleted after its test.",
       "history": [
         "2026-10-21: Original MIT streamed temporary resource recipes and independently timed release CLI corpus added for Task24."
@@ -216,8 +217,8 @@
         "source": "project-authored",
         "license": "MIT",
         "licenseText": "LICENSE",
-        "sha256": "12d1b457a7eff3a0fb356baecefd02a17a4e0cc71a237dcd5495f31a7e0cdcf0",
-        "recipe": "Run python3 Scripts/verify-resources.py --executable .build/release/usdz-validator --output docs/verification/resource-results.md. Independent Python struct/zlib classic-ZIP writer uses the same fixed timestamp/alignment/segments with <=65536-byte payload chunks and no downloads. Corpus: near512MiB (each entry<=256MiB),10000 entries,16MiB+100000 self-reference tokens,1MiB JPEG scan,9990 real missing-reference findings with1100-byte names as JSON/SARIF,10001-token finding truncation, and9990 real findings with4096-byte names for operational JSON/SARIF output-cap rejection. Fixture generation/hash/report verification occur outside one /usr/bin/time -l native child per case. Darwin arm64/internalSSD required; kill/reap process group after60seconds. Actual archive corpus hashes/command/exit/report size/RSS/elapsed/toolchain/host are recorded in resource-results.md. No external checker requested.",
+        "sha256": "f67edc2f10d3e72f000ca9469342082314d6334eb90eb589ec50c1adeabe38a4",
+        "recipe": "Run python3 Scripts/verify-resources.py --executable .build/release/usdz-validator --output docs/verification/resource-results.md. Independent Python struct/zlib classic-ZIP writer uses the same fixed timestamp/alignment/segments with <=65536-byte payload chunks and no downloads. Corpus: near512MiB (each entry<=256MiB),10000 entries,16MiB+100000 self-reference tokens,1MiB JPEG scan,9990 real missing-reference findings with1100-byte names as JSON/SARIF,10001-token finding truncation, and9990 real findings with4096-byte names for operational JSON/SARIF output-cap rejection. Fixture generation/hash/report verification occur outside one /usr/bin/time -l native child per case. Darwin arm64/internalSSD required; kill/reap process group after60seconds. Actual archive corpus hashes/command/exit/report size/RSS/elapsed/toolchain/host are recorded in resource-results.md. No external checker requested. Envelope 3 expands the retained corpus with opaque numeric counts 0/250000/250001/UInt64.max, admitted compressed counts, a shared 16-entry dictionary with 8546/8547 live fields (109+234N actual work), numeric cross-layer near/over work, malformed count headers, unsupported flags, and nonexempt shared asset limits. Raw time stderr/stdout, observed typed rule/reason receipts, candidate executable hash and final generator hash are retained in the resource summary.",
         "corpusSHA256": {
           "near-512-mib": "5391ada98fd8ea1bb3c1e06572940d8739709a82b47c2fbef096df8e50202a90",
           "10000-entries": "0da9b5eddeb0f1472a1d1a49e50940bb0996206e91908867a5dba417f23f15da",
@@ -227,6 +228,1087 @@
           "findings-truncation": "c77c5366d856aaa83c595ac76aa4becca403aabbedee8f5be3ae4689e48affe7",
           "report-cap-json-and-sarif": "856c095bf0f2afcae13bde5d20173c5d7230759c691f244c36054699d78c2e94"
         }
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-containers-usda",
+      "path": "Tests/Fixtures/USDC/baseline/containers.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "acb61c00e88c9fa7c8db43bfa21b0f9d5087ad14b0d129ad3c08b959eb1be04c",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-containers-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/containers.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "c84e4818fb04f95de4d19f42ea115148791d25b8780036301f05eeaf23559883",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/containers.usda -o $RESEARCH_ROOT/containers.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-empty-usda",
+      "path": "Tests/Fixtures/USDC/baseline/empty.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "6cabe68cd5490dd3876ac4f08f0fd68e0d6d66b431b53a26c663357ab3a7c2ad",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-empty-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/empty.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "080a368ba1882511396badedd7fb86578d334bcdb521d5713a8f42615548017b",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/empty.usda -o $RESEARCH_ROOT/empty.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-listops-usda",
+      "path": "Tests/Fixtures/USDC/baseline/listops.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "235e2347b82345ce5f908a5a6dc295beed6e758455d47664abef0657efd6ff48",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-listops-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/listops.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "c9385735a84847189994a3cb6a41fe8b28153fafa1686d95cab3d18975573376",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/listops.usda -o $RESEARCH_ROOT/listops.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-minimal-usda",
+      "path": "Tests/Fixtures/USDC/baseline/minimal.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "8a1f75eba98da3e5b2befb3393e5b76506a285491f739f742bf7deff32adf45b",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-minimal-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/minimal.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "870fa0b1736f023b6d287be56a6ad4d075cd3edf04abb441df6754ebec4de35e",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/minimal.usda -o $RESEARCH_ROOT/minimal.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-payload-explicit-list-usda",
+      "path": "Tests/Fixtures/USDC/baseline/payload-explicit-list.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "7bf610bc431e619f4840cb740a10db67578a055e8fd7f4e8e49f38d49f4da076",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-payload-explicit-list-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/payload-explicit-list.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "8840ed05821275ca1eb090f2d2ed41e15b6e49a5c51caf4a015d5ca648fbf2b2",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/payload-explicit-list.usda -o $RESEARCH_ROOT/payload-explicit-list.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-reference-customdata-usda",
+      "path": "Tests/Fixtures/USDC/baseline/reference-customdata.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "358f52c7850173f85d0fb65f302097d674c05536feeba1fe76bcbbaa86d177a0",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-reference-customdata-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/reference-customdata.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "c3812b092b775704def0793397c8fe5e333362d6e96284f9922357a13787955f",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/reference-customdata.usda -o $RESEARCH_ROOT/reference-customdata.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unregistered-raw-usda",
+      "path": "Tests/Fixtures/USDC/baseline/unregistered-raw.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "7e507245acec43a3ed0a41b557cae66c15ee280a1072e8df42697a0be7f4191f",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unregistered-raw-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/unregistered-raw.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "fed1bbe802413584f210a3834e1e88cf7d062d1117c351029baf1a0713b2f5c2",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/unregistered-raw.usda -o $RESEARCH_ROOT/unregistered-raw.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unregistered-usda",
+      "path": "Tests/Fixtures/USDC/baseline/unregistered.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "5307f0419b4de99f9fda48cc3582fcf194d415fa2fc81deec2ee521368f01c6e",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unregistered-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/unregistered.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "e473dd564c6b3cc729b97a8fda3797375c9fca1d11bec2db4ad43338e06443f0",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/unregistered.usda -o $RESEARCH_ROOT/unregistered.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unsafe-usda",
+      "path": "Tests/Fixtures/USDC/baseline/unsafe.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "3659df54342930796c96dac0d22ded68f21cc5ff006f21a3a41ead3e6914f52e",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-baseline-unsafe-usdc",
+      "path": "Tests/Fixtures/USDC/baseline/unsafe.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "3f3bcb4864084284eed75ddaddd3b4e37ae6d846d97e5f73856ec054167cb786",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/oracle.sb /usr/bin/usdcat $RESEARCH_ROOT/unsafe.usda -o $RESEARCH_ROOT/unsafe.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-evidence-independent-oracle-json",
+      "path": "Tests/Fixtures/USDC/evidence/independent-oracle.json",
+      "kind": "evidence",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "775d6403399b46e614dd8d565f3b59265cf276a4293605d3499ef56c49170f10",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-evidence-live-type-observations-json",
+      "path": "Tests/Fixtures/USDC/evidence/live-type-observations.json",
+      "kind": "evidence",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "08d8713328c8ed10b7e7115d5a8279f7b12f621fe59bf593c523a0413f1c84d2",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-evidence-provenance-json",
+      "path": "Tests/Fixtures/USDC/evidence/provenance.json",
+      "kind": "evidence",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "4d1f76a2f17ad2eda9559319dad206066d6ba959a09851b9da837ad992dbe390",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-evidence-unregistered-raw-export-usda",
+      "path": "Tests/Fixtures/USDC/evidence/unregistered-raw.export.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "9ecb0d946a4a07ef74d8fefab8836e0de594314295fbfe18ea15afb53b13b160",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-evidence-unregistered-export-usda",
+      "path": "Tests/Fixtures/USDC/evidence/unregistered.export.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "de3842f22f35d681391a367105440470c90c5662f2babb2833c520bf69c93dbc",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-inventory-json",
+      "path": "Tests/Fixtures/USDC/inventory.json",
+      "kind": "evidence",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "99a93b6703cb2fb9714a3da13fbd644f031d59197f646790ff06223124b3f0bb",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-asset-expression-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-asset-expression-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "d15d8d8b770ef6fb94a298c006325d9b5425402b1c9b4b6035f9adf5391b8d62",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/pe10-asset-expression.usda -o $RESEARCH_ROOT/pe10-asset-expression-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-asset-expression-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-asset-expression-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "2439c074b8617452e3bbc8451378aecdc35fad24339e513eabc8099a34848bd0",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/pe10-asset-expression.usda $RESEARCH_ROOT/pe10-asset-expression-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-asset-expression-usda",
+      "path": "Tests/Fixtures/USDC/versions/pe10-asset-expression.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "68c5def06ea3b0f88828f8bb047041a25ea2e5807110d4d8f5a5b9d22dcbf8fa",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-containers-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-containers-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "a5ff410d2609ffca8285ed5bc78b8651ffacc0eab88cd4a8ccaf50ef412e30d7",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/pe10-containers.usda -o $RESEARCH_ROOT/pe10-containers-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-containers-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-containers-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "1d362950d0acb8dca1093ef8fb902a041961bcd0501d207b2d041652c2f7bb27",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/pe10-containers.usda $RESEARCH_ROOT/pe10-containers-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-containers-usda",
+      "path": "Tests/Fixtures/USDC/versions/pe10-containers.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "998a1c08e90e35fd66a0814958c4d6c0aeeea01b48b1743705fd67b1a01c04c9",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-empty-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-empty-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "3d6592391dda87d0618ef1ab09b97a7800d04cc0336cb6fd415bf3ce7060a174",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/pe10-empty.usda -o $RESEARCH_ROOT/pe10-empty-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-empty-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-empty-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "be55ede0881a4fa4cf220df37e0436f82f0f3324305166067bf8420fd62e2161",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/pe10-empty.usda $RESEARCH_ROOT/pe10-empty-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-empty-usda",
+      "path": "Tests/Fixtures/USDC/versions/pe10-empty.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "bfe053692f7131176458eaab4bb400a07fdd089a4114af034a5d72ba395d232a",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-mixed-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-mixed-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "cafc452ff36d1a5c4141431414c3a2883f3f29daac90d25f3ada830773f15f6d",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/pe10-mixed.usda -o $RESEARCH_ROOT/pe10-mixed-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-mixed-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/pe10-mixed-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "27da40813fc6041429b9d7f3dc3e6ab0e78c5b9f84cccd88d7b55fe0eea3956c",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/pe10-mixed.usda $RESEARCH_ROOT/pe10-mixed-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-pe10-mixed-usda",
+      "path": "Tests/Fixtures/USDC/versions/pe10-mixed.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "7c54a3d4e5d8fe08e7cc42319676efe2b85aad12ea3d40c8c3ec6db19476535b",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-arrays-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-arrays-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "d9fdc48ed8b0f125d3d88f97fc7a4c34912f547ca2899316a4e3ea4942404d99",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/tc09-arrays.usda -o $RESEARCH_ROOT/tc09-arrays-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-arrays-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-arrays-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "5454431ba75abaa7a1910bd2f127cdcb38be33f2243060289b19aa72cb4d7d76",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/tc09-arrays.usda $RESEARCH_ROOT/tc09-arrays-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-arrays-usda",
+      "path": "Tests/Fixtures/USDC/versions/tc09-arrays.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "68fdac1eca3fc848a469535bc0d634f455ea4e534eed4af1efedf8ae3f30128c",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-empty-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-empty-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "1d57465a6ec84e7733f71dd32b10db38339f04cb16e209cf58c6749d91afd3a6",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/tc09-empty.usda -o $RESEARCH_ROOT/tc09-empty-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-empty-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-empty-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "09d048316415360ff91214c93cce8c7fb8665720f3bf986cd9e7b5c8e394f07d",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/tc09-empty.usda $RESEARCH_ROOT/tc09-empty-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-empty-usda",
+      "path": "Tests/Fixtures/USDC/versions/tc09-empty.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "8b359046f68f4674b108d71dff947668c039a3c1cb6b988ec1dce18ef71b163e",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-scalars-apple-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-scalars-apple.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "327990724f1105c65f5eb8f65bd181d210e2c60c80a262dfa71f6fed5da3f685",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "Apple USD Tools",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb /usr/bin/usdcat $RESEARCH_ROOT/tc09-scalars.usda -o $RESEARCH_ROOT/tc09-scalars-apple.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-scalars-openusd-usdc",
+      "path": "Tests/Fixtures/USDC/versions/tc09-scalars-openusd.usdc",
+      "kind": "generated-asset",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "d5b270190f2bbe4097c806a9d6276dfa383ff98a3596ce556a0bf87facdca4b9",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ],
+      "generator": {
+        "name": "OpenUSD usd-core",
+        "version": "usd-core==26.11 (runtime 0.26.11)",
+        "arguments": "/usr/bin/sandbox-exec -f $RESEARCH_ROOT/writer.sb $RESEARCH_ROOT/oracle-venv/bin/python $RESEARCH_ROOT/export_openusd.py $RESEARCH_ROOT/tc09-scalars.usda $RESEARCH_ROOT/tc09-scalars-openusd.usdc",
+        "sourceLicense": "MIT"
+      }
+    },
+    {
+      "id": "uvk-usdc-fixtures-usdc-versions-tc09-scalars-usda",
+      "path": "Tests/Fixtures/USDC/versions/tc09-scalars.usda",
+      "kind": "source",
+      "purpose": "Preserve original authored USDC corpus bytes, independent expectations and provenance for native offline tests.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "a67b9b5bf2f2ca923f9c7a9abf3762f49955cf9c6417661c733eea6344c6bc97",
+      "recipe": "Original research bytes copied after comparison with recorded SHA-256; see Tests/Fixtures/USDC/inventory.json and evidence/provenance.json. No runtime generator/oracle dependency.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-testsupport-usdcfixtures-swift",
+      "path": "Tests/TestSupport/USDCFixtures.swift",
+      "kind": "generator",
+      "purpose": "Independent test-only USDC fixture loading and literal compression/byte mutation recipes.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "ecdb3798d2c8939838e54339443eac3e34d185dd492cf2daff2909479a1f5946",
+      "recipe": "Compile committed Swift 6 TestSupport source with Foundation and USDCMutationRecipe.swift; no product decoder import. cases()/extraCases() load committed corpus and independent expectations. unsupportedVersion() copies baseline/empty.usdc and changes only version bytes 8...10 to 0.11.0 as explicit unsupported-version negative evidence; never use it as a supported-version oracle. See docs/fixtures.md.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes.",
+        "2026-10-24: Task7 adds durable binary-package generation and intact unsupported-version negative fixture helper."
+      ]
+    },
+    {
+      "id": "uvk-usdc-testsupport-usdcmutationrecipe-swift",
+      "path": "Tests/TestSupport/USDCMutationRecipe.swift",
+      "kind": "generator",
+      "purpose": "Independent test-only USDC fixture loading and literal compression/byte mutation recipes.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "0fc861d20574ebef4370e5d06d7421540dfe6ca658344abe05d93a0d004171bc",
+      "recipe": "Compile committed Swift 6 TestSupport source with Foundation only; no product decoder import. See docs/fixtures.md.",
+      "history": [
+        "2026-10-24: Preserve original authored USDC v0.2 fixture evidence and independent native test recipes."
+      ]
+    },
+    {
+      "id": "uvk-usdc-task6-clip-empty-usda",
+      "path": "Tests/Fixtures/USDC/extra/clip-empty.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-empty",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "c4ae14b86abd6ed0a3729172b762aee441a9247ab4921a7460baa505795beec7"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-empty-usdc",
+      "path": "Tests/Fixtures/USDC/extra/clip-empty.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-empty",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/clip-empty.usda -o Tests/Fixtures/USDC/extra/clip-empty.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "60f1953518abd731c70a739e466735351a14467c60dcbcc1a99e49ddbcbf8f41"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-template-usda",
+      "path": "Tests/Fixtures/USDC/extra/clip-template.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-template",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "14fac65fd916e1df876b26b7cff8b18e5372665796a218053a1ac427ceb412f7"
+    },
+    {
+      "id": "uvk-usdc-task6-clip-template-usdc",
+      "path": "Tests/Fixtures/USDC/extra/clip-template.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: clip-template",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/clip-template.usda -o Tests/Fixtures/USDC/extra/clip-template.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "578c529c82f444fb9b0de80fa589ef18dfbdc1039641405770a77ede796a3865"
+    },
+    {
+      "id": "uvk-usdc-task6-internal-reference-customdata-usda",
+      "path": "Tests/Fixtures/USDC/extra/internal-reference-customdata.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: internal-reference-customdata",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "3035dd7b53c65022ebf8a9d587dc9d13d37cf85586135ad7b7c9ce495cb4fce8"
+    },
+    {
+      "id": "uvk-usdc-task6-internal-reference-customdata-usdc",
+      "path": "Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: internal-reference-customdata",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/internal-reference-customdata.usda -o Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "878f5c11a2c40aa8954247739e991eb6a1652b8ea468f5dbe7950938ff2608bb"
+    },
+    {
+      "id": "uvk-usdc-task6-provenance-json",
+      "path": "Tests/Fixtures/USDC/extra/provenance.json",
+      "kind": "evidence",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: provenance",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "6753ff9b9eb06dbc808541bc5807723243163ec962bdc8b649402e68fbec7883"
+    },
+    {
+      "id": "uvk-usdc-task6-unregistered-list-usda",
+      "path": "Tests/Fixtures/USDC/extra/unregistered-list.usda",
+      "kind": "source",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: unregistered-list",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "sha256": "9dd0a1ec577a5895e74ee14a1a4dab81cd6e12d778375b24ba1159804e6ba185"
+    },
+    {
+      "id": "uvk-usdc-task6-unregistered-list-usdc",
+      "path": "Tests/Fixtures/USDC/extra/unregistered-list.usdc",
+      "kind": "generated-asset",
+      "purpose": "Original supplementary authored USDC value-coverage case and provenance: unregistered-list",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "recipe": "Original project-authored source; generated once by /usr/bin/usdcat Apple USD Tools (0.25.11). Independent OpenUSD 0.26.11 Sdf API/export corroboration in Tests/Fixtures/USDC/extra/provenance.json. Native tests read committed files only.",
+      "history": [
+        "2026-10-24: Task 6 original supplementary value subset evidence."
+      ],
+      "generator": {
+        "name": "Apple usdcat",
+        "version": "Apple USD Tools (0.25.11)",
+        "arguments": "/usr/bin/usdcat Tests/Fixtures/USDC/extra/unregistered-list.usda -o Tests/Fixtures/USDC/extra/unregistered-list.usdc",
+        "sourceLicense": "MIT"
+      },
+      "sha256": "59615cedf9adfa190aa5b8b60a15964a6aec4c90a0741b2852fc33d00bb86e38"
+    },
+    {
+      "id": "uvk-original-usdc-package-v2",
+      "path": "Tests/Fixtures/valid-usdc.usdz",
+      "kind": "generated-asset",
+      "purpose": "Aligned stored CRC-correct binary package with a genuine 0.8.0 containers crate and all independently authored asset targets, including both selected and unselected variants.",
+      "source": "project-authored",
+      "author": "USDZ Validation Kit contributors",
+      "license": "MIT",
+      "licenseText": "LICENSE",
+      "obligations": "Include the copyright and MIT permission notice in copies or substantial portions.",
+      "sha256": "80327bd2aad06fda419f3c67037c2da525b58c616577db1491a45e344dde0ebe",
+      "recipe": "Call Fixtures.validUSDC(): root.usdc first from the committed USDC/baseline/containers.usdc evidence; same.png, selected.png, unselected.png, a.png and b.png each contain Fixtures.pixelPNG(). ArchiveRecipe uses 64-byte payload alignment, classic single-disk ZIP, stored method, fixed DOS date 1980-01-01 and independent CRC-32. No product decoder, writer, oracle or download runs in tests.",
+      "history": [
+        "2026-10-24: Task7 original deterministic package generated from committed versioned binary evidence and original PNG data."
+      ],
+      "generator": {
+        "name": "TestSupport.Fixtures and ArchiveRecipe",
+        "version": "2",
+        "arguments": "Compile Tests/TestSupport/{ArchiveRecipe,Fixtures,USDCFixtures,USDCMutationRecipe}.swift with temporary main.swift: import Foundation; try Fixtures.validUSDC().write(to: Fixtures.root.appendingPathComponent(\"valid-usdc.usdz\"))",
+        "sourceLicense": "MIT"
       }
     }
   ]

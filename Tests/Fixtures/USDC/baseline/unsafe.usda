@@ -1,0 +1,5 @@
+#usda 1.0
+def Scope "Root"
+{
+    asset[] values = [@/etc/hosts@, @../../outside.png@, @https://example.invalid/x@, @file:///tmp/private@, @textures/ok.png@]
+}

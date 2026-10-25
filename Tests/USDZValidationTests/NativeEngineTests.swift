@@ -155,7 +155,9 @@ final class NativeEngineTests: XCTestCase {
     XCTAssertEqual(malformed.coverage.areas[.byteBudgets]?.state, .complete)
     XCTAssertEqual(malformed.coverage.areas[.textureDimensions]?.state, .partial)
 
-    let bytes = try ArchiveRecipe(entries: [layer("root.usdc", "PXR-USDCsynthetic")]).encode()
+    let bytes = try ArchiveRecipe(entries: [
+      .init(nameBytes: Data("root.usdc".utf8), payload: USDCFixtures.unsupportedVersion())
+    ]).encode()
     let binary = try inspect(bytes)
     let accepted = try inspect(
       bytes, configuration: ValidationConfiguration(gatePolicy: GatePolicy(allowIncomplete: true)))

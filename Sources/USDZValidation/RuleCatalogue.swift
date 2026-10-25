@@ -168,7 +168,7 @@ public enum RuleCatalogue {
       title: "Binary references not inspected",
       description: "Binary USD reference inspection unavailable.",
       applicability:
-        "Recognized binary USD layers; package-local reference inspection cannot parse USDC dependencies in v0.1.",
+        "Recognized binary USD layers whose package-local reference inspection remains wholly unavailable.",
       rationale: "Recognizing a binary signature does not prove complete USD reference validation."),
     RuleDescriptor(
       ruleID: "UVK-LIM-003", family: .references,
@@ -211,6 +211,16 @@ public enum RuleCatalogue {
         "The native engine does not extract or recursively inspect nested packages, so affected coverage remains incomplete."
     ),
     RuleDescriptor(
+      ruleID: "UVK-LIM-007", family: .references,
+      category: .validatorLimitation, defaultSeverity: .warning,
+      title: "Binary reference inspection partial",
+      description: "Binary USD reference inspection is incomplete.",
+      applicability:
+        "Recognized binary USD layers with partially inspected references or an unsupported or ambiguous representation.",
+      rationale:
+        "A bounded USDC reader must disclose uninspected dependencies without treating unsupported representations as established corruption."
+    ),
+    RuleDescriptor(
       ruleID: "UVK-PATH-001", family: .references,
       category: .policy, defaultSeverity: .error,
       title: "Unsafe archive member name",
@@ -245,7 +255,7 @@ public enum RuleCatalogue {
       title: "Unsafe literal asset path",
       description: "Absolute/external/unsafe literal asset path.",
       applicability:
-        "Conclusive asset literals from supported USDA scanning; absolute and external values are redacted by default.",
+        "Conclusive asset values from supported USDA scanning or USDC inspection; absolute and external values are redacted by default.",
       rationale:
         "Standalone package references must not access external resources or unsafe host paths."),
     RuleDescriptor(
@@ -304,6 +314,16 @@ public enum RuleCatalogue {
         "Any fixed safety-envelope ceiling; reserve the final finding slot when discovery is truncated and stop affected work.",
       rationale:
         "Hard resource limits protect bounded native processing, mark affected coverage incomplete, and remain blocking even when incomplete coverage is accepted."
+    ),
+    RuleDescriptor(
+      ruleID: "UVK-USD-001", family: .references,
+      category: .policy, defaultSeverity: .error,
+      title: "Malformed binary USD structure",
+      description: "Conclusively malformed inspected binary USD structure.",
+      applicability:
+        "Supported USDC structures whose inspected bytes conclusively establish corruption; affected reference coverage remains partial.",
+      rationale:
+        "Established binary corruption is a blocking policy error; unsupported or ambiguous representations instead produce a limitation."
     ),
   ]
 }

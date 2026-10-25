@@ -4,6 +4,21 @@ import XCTest
 @testable import USDZValidation
 
 final class PrivacyTests: XCTestCase {
+  func testBinaryDefaultDisclosureOmitsAuthoredValuesAndHostPath() throws {
+    let report = try USDCReportTests.fixedReport("duplicates")
+    for format: ReportFormat in [.json, .sarif, .text] {
+      let rendered = String(
+        decoding: try ReportEncoder.encode(report, format: format), as: UTF8.self)
+      XCTAssertFalse(rendered.contains("authored-private-value"))
+      XCTAssertFalse(rendered.contains("private-owner"))
+      XCTAssertFalse(rendered.contains("sensitiveDetails"))
+      XCTAssertTrue(rendered.contains("root.usdc"))
+      for finding in report.nativeFindings {
+        XCTAssertTrue(rendered.contains(finding.occurrenceID))
+      }
+    }
+  }
+
   func testAlphabeticCombiningMarksCannotConcealAbsoluteProsePaths() {
     for value in [
       "detail=\u{0345}/Users/fixture-owner/input",

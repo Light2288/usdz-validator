@@ -1,0 +1,7 @@
+#usda 1.0
+def Scope "Root"
+{
+ timecode clock = 1.25
+ timecode[] empty = []
+ string misleading = "not-an-asset.png"
+}

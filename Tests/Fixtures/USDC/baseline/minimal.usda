@@ -1,0 +1,19 @@
+#usda 1.0
+(
+    customLayerData = { string note = "A string is not an asset reference: unused.png" }
+    subLayers = [@layers/sub.usda@]
+)
+def Scope "Root" (
+    customData = { asset nested = @nested.png@ }
+    prepend references = @layers/ref.usda@</Target>
+    prepend payload = @layers/payload.usda@</Target>
+)
+{
+    asset scalar = @textures/a.png@
+    asset[] repeated = [@textures/a.png@, @textures/a.png@, @../outside.png@]
+    asset animated.timeSamples = { 0: @first.png@, 1: @second.png@ }
+    def Scope "Inactive" (active = false)
+    {
+        asset hidden = @inactive.png@
+    }
+}

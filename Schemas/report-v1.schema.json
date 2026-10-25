@@ -705,7 +705,7 @@
         },
         "safetyEnvelopeVersion": {
           "type": "integer",
-          "const": 1
+          "enum": [1, 2, 3]
         },
         "gatePolicy": {
           "type": "object",

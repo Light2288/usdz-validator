@@ -26,6 +26,11 @@ final class ResourceBoundaryTests: XCTestCase {
     XCTAssertTrue(
       FileManager.default.fileExists(atPath: output.path),
       "The measurement workflow must record decisive evidence")
+    if let destination = ProcessInfo.processInfo.environment["UVK_RESOURCE_EVIDENCE_OUTPUT"] {
+      // Controlled release verification can preserve the completed evidence before teardown.
+      // Ordinary opt-in tests continue to write only their disposable temporary report.
+      try Data(contentsOf: output).write(to: URL(fileURLWithPath: destination), options: .atomic)
+    }
   }
 
   private func requireRealSizes() throws {
@@ -48,6 +53,9 @@ extension ResourceBoundaryTests {
       (.totalReadBytes, 1_207_959_552), (.findings, 10_000),
       (.messageBytes, 1_024), (.evidenceStringBytes, 4_096),
       (.configurationBytes, 65_536), (.reportBytes, 33_554_432),
+      (.usdcMetadataBlockBytes, 16_777_216), (.usdcDecodeBytes, 33_554_432),
+      (.usdcWorkingBytes, 67_108_864), (.usdcItems, 250_000),
+      (.usdcWork, 2_000_000), (.usdcDepth, 32),
     ]
     let ledger = ResourceLedger()
     XCTAssertEqual(boundaries.count, SafetyResource.allCases.count)
@@ -422,6 +430,76 @@ extension ResourceBoundaryTests {
       XCTAssertEqual(try Data(contentsOf: url), expected)
       XCTAssertEqual(layout.payloadRanges, [64..<73])
       XCTAssertEqual(layout.byteCount, 142)
+    }
+  }
+}
+
+extension ResourceBoundaryTests {
+  // Copying a 256 MiB binary layer, rather than range-reading small metadata,
+  // must violate the source chunk contract and/or the charged working-storage ceiling.
+  func testRealSizeBinaryLayerUsesOnlyBoundedMetadataReads() throws {
+    try requireRealSizes()
+    let metadata = try USDCMutationRecipe.valueCrate(reps: [])
+    let segments = try ResourceRecipes.binaryWithOpaqueBody(
+      metadata: metadata, paddingBytes: 268_435_456 - metadata.count)
+    try withFixture([.init("root.usdc", segments)]) { url, layout in
+      let source = try Source(url)
+      let entry = try indexedEntries(source)[0]
+      XCTAssertEqual(entry.uncompressedSize, 268_435_456)
+      let priorReads = source.reads.count
+      let state = try USDCReader.scan(
+        entry: entry, reader: source.reader,
+        onReference: { _ in XCTFail("No authored asset values") },
+        onIssue: { _ in XCTFail("Complete small metadata") })
+      XCTAssertEqual(state, .complete)
+      XCTAssertEqual(source.ledger.usdcLiveBytes, 0)
+      XCTAssertLessThan(source.ledger.usdcDecodeBytes, 1_024)
+      let payload = layout.payloadRanges[0]
+      let opaque = (payload.lowerBound + 88)..<(payload.upperBound - UInt64(metadata.count - 88))
+      XCTAssertTrue(
+        source.reads.dropFirst(priorReads).allSatisfy {
+          $0.count <= 65_536
+            && ($0.upperBound <= opaque.lowerBound || $0.lowerBound >= opaque.upperBound)
+        })
+    }
+  }
+}
+
+extension ResourceBoundaryTests {
+  // Sixteen bounded map entries add 16*(item + two key lookups + edge + step + visit)
+  // =96 units per field to Task1's independently proved 109+138N direct-field recipe.
+  func testActualSharedNumericDictionaryWorkBoundary() throws {
+    let w = USDCReferenceTests.word
+    var body = w(16, 8)
+    for _ in 0..<16 {
+      body += w(0, 4) + w(8, 8) + w(0x8003_0000_0000_01a0, 8)
+    }
+    body += w(.max, 8)
+    for (fields, expectedWork): (Int, UInt64) in [(8_546, 1_999_873), (8_547, 1_999_912)] {
+      let ledger = ResourceLedger()
+      let retained = try ledger.reserveUSDCStorage(17)
+      let crate = try USDCMutationRecipe.valueCrate(
+        reps: Array(repeating: 0x001f_0000_0000_0058, count: fields), body: body)
+      let input = USDCReferenceTests.input(crate, ledger: ledger)
+      func scan() throws -> USDCScanState {
+        try USDCReader.scan(
+          entry: input.entry, reader: input.reader,
+          onReference: { _ in XCTFail("Numeric leaf invented a reference") },
+          onIssue: { _ in XCTFail("Supported dictionary representation") })
+      }
+      if fields == 8_546 {
+        XCTAssertEqual(try scan(), .complete)
+      } else {
+        // Full work would be 2,000,107. The final field's 96-slot scratch reservation
+        // cannot fit after 1,999,912; no numeric count/body drives the stop.
+        XCTAssertThrowsError(try scan()) {
+          XCTAssertEqual($0 as? InspectionFailure, .resourceLimit(.usdcWork))
+        }
+      }
+      XCTAssertEqual(ledger.usdcWorkUnits, expectedWork)
+      XCTAssertEqual(ledger.usdcLiveBytes, 17)
+      retained.release()
+      XCTAssertEqual(ledger.usdcLiveBytes, 0)
     }
   }
 }

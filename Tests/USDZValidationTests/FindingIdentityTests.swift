@@ -4,6 +4,29 @@ import XCTest
 @testable import USDZValidation
 
 final class FindingIdentityTests: XCTestCase {
+  func testSharedValueIdentityVectors() throws {
+    // Independent Python hashlib/struct v1 tuple vectors; content offsets are absent.
+    let first = try USDCReferenceLocator(
+      specIndex: 7, fieldOrdinal: 3, steps: [.init(kind: .array, index: 0)])
+    let second = try USDCReferenceLocator(
+      specIndex: 7, fieldOrdinal: 3, steps: [.init(kind: .array, index: 1)])
+    XCTAssertEqual(
+      first.discriminator(reason: "missingTarget"), "missingTarget|usdc-v1|s:7|f:3|0:0")
+    XCTAssertEqual(
+      second.discriminator(reason: "missingTarget"), "missingTarget|usdc-v1|s:7|f:3|0:1")
+    func identity(_ locator: USDCReferenceLocator) -> String {
+      FindingIdentity.native(
+        FindingKey(
+          ruleID: "UVK-PATH-006", entryNameBytes: Data("root.usdc".utf8), entryOffset: 0,
+          contentOffset: nil, discriminator: locator.discriminator(reason: "missingTarget")))
+    }
+    let firstID = identity(first)
+    let secondID = identity(second)
+    XCTAssertNotEqual(firstID, secondID)
+    XCTAssertEqual(firstID, "5398f4182331ac6b1a6c0989e4c2b1a890b101524c4fe3c24fd5720c4bb4a352")
+    XCTAssertEqual(secondID, "b55784978fdd8273a72795e54dc6ff45f49fe6fb88ff49dbce096b08ffb14b44")
+  }
+
   func testLengthDelimitedIdentityAndExclusions() {
     // Literal vectors were independently calculated with Python hashlib/struct, not product code.
     let originalKey = FindingKey(

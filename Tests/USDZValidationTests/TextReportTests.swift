@@ -97,6 +97,9 @@ final class TextReportTests: XCTestCase {
         findings: [external]))
     let bytes = try ReportEncoder.encode(report, format: .text)
     let text = String(decoding: bytes, as: UTF8.self)
+    XCTAssertTrue(text.contains("tool: usdz-validator 0.2.0\n"))
+    XCTAssertTrue(text.contains("schemaVersion: 1\n"))
+    XCTAssertTrue(text.contains("safetyEnvelopeVersion: 3\n"))
     for visible in [
       "validatorLimitation", "warning", "native", "UVK-LIM-004", "binaryLayer", "references",
       "partial", "root.usda", "64", "stable-id", "appleCompatibility", "error", "usdchecker",

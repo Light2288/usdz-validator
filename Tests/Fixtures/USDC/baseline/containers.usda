@@ -1,0 +1,19 @@
+#usda 1.0
+(
+    customLayerData = { dictionary inner = { asset[] paths = [@same.png@, @same.png@] } }
+)
+def Scope "Root" (
+    variantSets = "look"
+    variants = { string look = "first" }
+)
+{
+    variantSet "look" = {
+        "first" { asset selected = @selected.png@
+ }
+        "other" { asset unselected = @unselected.png@
+ }
+    }
+    asset[] animated.timeSamples = { 0: [@a.png@, @b.png@], 1: [@b.png@] }
+    asset[] none = []
+    asset blank = @@
+}

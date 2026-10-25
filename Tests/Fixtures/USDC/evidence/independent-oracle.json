@@ -1,0 +1,1031 @@
+{
+  "runtimeVersion": [
+    0,
+    26,
+    11
+  ],
+  "method": "Sdf.Layer.FindOrOpen, Layer.Traverse, GetObjectAtPath, ListInfoKeys, GetInfo; authoredPath; no UsdStage/composition",
+  "limitations": [
+    "ListInfoKeys omits arbitraryMetadata",
+    "GetInfo subLayerOffsets converter TypeError",
+    "Zero versus zero on a raw unregistered wrapper cannot certify completeness",
+    "Writers and oracle share OpenUSD lineage; independent execution is not an independent format implementation"
+  ],
+  "cases": [
+    {
+      "id": "baseline/minimal",
+      "references": [
+        {
+          "value": "inactive.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "Inactive",
+            ".hidden"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".scalar"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "../outside.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            2
+          ]
+        },
+        {
+          "value": "first.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "second.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        },
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested"
+          ]
+        },
+        {
+          "value": "layers/payload.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "layers/ref.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "layers/sub.usda",
+          "pathElements": [
+            "/"
+          ],
+          "field": "subLayers",
+          "container": [
+            0
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "pathElements": [
+            "/"
+          ],
+          "field": "subLayerOffsets",
+          "reason": "SdfSpec.GetInfo cannot expose authored key",
+          "exception": "TypeError",
+          "detail": "No to_python (by-value) converter found for C++ type: std::__1::vector<pxrInternal_v0_26_11__pxrReserved__::SdfLayerOffset, std::__1::allocator<pxrInternal_v0_26_11__pxrReserved__::SdfLayerOffset>>"
+        }
+      ],
+      "specCount": 7,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/empty",
+      "references": [],
+      "gaps": [],
+      "specCount": 4,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/listops",
+      "references": [
+        {
+          "value": "references-explicit.usda",
+          "pathElements": [
+            "/",
+            "references_explicit"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "references-added.usda",
+          "pathElements": [
+            "/",
+            "references_added"
+          ],
+          "field": "references",
+          "container": [
+            "added",
+            0
+          ]
+        },
+        {
+          "value": "references-prepended.usda",
+          "pathElements": [
+            "/",
+            "references_prepended"
+          ],
+          "field": "references",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "references-appended.usda",
+          "pathElements": [
+            "/",
+            "references_appended"
+          ],
+          "field": "references",
+          "container": [
+            "appended",
+            0
+          ]
+        },
+        {
+          "value": "references-deleted.usda",
+          "pathElements": [
+            "/",
+            "references_deleted"
+          ],
+          "field": "references",
+          "container": [
+            "deleted",
+            0
+          ]
+        },
+        {
+          "value": "references-ordered.usda",
+          "pathElements": [
+            "/",
+            "references_ordered"
+          ],
+          "field": "references",
+          "container": [
+            "ordered",
+            0
+          ]
+        },
+        {
+          "value": "payload-explicit.usda",
+          "pathElements": [
+            "/",
+            "payload_explicit"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "payload-added.usda",
+          "pathElements": [
+            "/",
+            "payload_added"
+          ],
+          "field": "payload",
+          "container": [
+            "added",
+            0
+          ]
+        },
+        {
+          "value": "payload-prepended.usda",
+          "pathElements": [
+            "/",
+            "payload_prepended"
+          ],
+          "field": "payload",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "payload-appended.usda",
+          "pathElements": [
+            "/",
+            "payload_appended"
+          ],
+          "field": "payload",
+          "container": [
+            "appended",
+            0
+          ]
+        },
+        {
+          "value": "payload-deleted.usda",
+          "pathElements": [
+            "/",
+            "payload_deleted"
+          ],
+          "field": "payload",
+          "container": [
+            "deleted",
+            0
+          ]
+        },
+        {
+          "value": "payload-ordered.usda",
+          "pathElements": [
+            "/",
+            "payload_ordered"
+          ],
+          "field": "payload",
+          "container": [
+            "ordered",
+            0
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 14,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/containers",
+      "references": [
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".selected"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".unselected"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0,
+            0
+          ]
+        },
+        {
+          "value": "b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0,
+            1
+          ]
+        },
+        {
+          "value": "b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1,
+            0
+          ]
+        },
+        {
+          "value": "",
+          "pathElements": [
+            "/",
+            "Root",
+            ".blank"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "inner",
+            "paths",
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "inner",
+            "paths",
+            1
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 10,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/reference-customdata",
+      "references": [
+        {
+          "value": "ref.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "ref-meta.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0,
+            "customData",
+            "nested"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 2,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/unregistered",
+      "references": [],
+      "gaps": [],
+      "specCount": 2,
+      "exportEvidence": "#usda 1.0\n\ndef Scope \"Root\" (\n    arbitraryMetadata = {\n        asset nested = @wrapped.png@\n    }\n)\n{\n}\n\n"
+    },
+    {
+      "id": "baseline/unregistered-raw",
+      "references": [],
+      "gaps": [],
+      "specCount": 2,
+      "exportEvidence": "#usda 1.0\n\ndef Scope \"Root\" (\n    arbitraryMetadata = @raw-unregistered.png@\n)\n{\n}\n\n"
+    },
+    {
+      "id": "baseline/unsafe",
+      "references": [
+        {
+          "value": "/etc/hosts",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "../../outside.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "https://example.invalid/x",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            2
+          ]
+        },
+        {
+          "value": "file:///tmp/private",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            3
+          ]
+        },
+        {
+          "value": "textures/ok.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            4
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 3,
+      "exportEvidence": null
+    },
+    {
+      "id": "baseline/payload-explicit-list",
+      "references": [
+        {
+          "value": "explicit-a.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "explicit-b.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            1
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 2,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-scalars/apple",
+      "references": [
+        {
+          "value": "clock-texture.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "clock-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 6,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-scalars/openusd",
+      "references": [
+        {
+          "value": "clock-texture.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "clock-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 6,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-arrays/apple",
+      "references": [
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "animated-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "animated-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 8,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-arrays/openusd",
+      "references": [
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "animated-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "animated-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 8,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-empty/apple",
+      "references": [],
+      "gaps": [],
+      "specCount": 5,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/tc09-empty/openusd",
+      "references": [],
+      "gaps": [],
+      "specCount": 5,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-mixed/apple",
+      "references": [
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "pattern-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 8,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-mixed/openusd",
+      "references": [
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "pattern-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 8,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-containers/apple",
+      "references": [
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "sample-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "sample-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        },
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested",
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 10,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-containers/openusd",
+      "references": [
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "sample-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "sample-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        },
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested",
+            "texture"
+          ]
+        }
+      ],
+      "gaps": [],
+      "specCount": 10,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-empty/apple",
+      "references": [],
+      "gaps": [],
+      "specCount": 6,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-empty/openusd",
+      "references": [],
+      "gaps": [],
+      "specCount": 6,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-asset-expression/apple",
+      "references": [
+        {
+          "value": "`\"${TEXTURE}\"`",
+          "pathElements": [
+            "/",
+            "Root",
+            ".expression"
+          ],
+          "field": "default",
+          "container": []
+        }
+      ],
+      "gaps": [],
+      "specCount": 4,
+      "exportEvidence": null
+    },
+    {
+      "id": "version/pe10-asset-expression/openusd",
+      "references": [
+        {
+          "value": "`\"${TEXTURE}\"`",
+          "pathElements": [
+            "/",
+            "Root",
+            ".expression"
+          ],
+          "field": "default",
+          "container": []
+        }
+      ],
+      "gaps": [],
+      "specCount": 4,
+      "exportEvidence": null
+    }
+  ]
+}

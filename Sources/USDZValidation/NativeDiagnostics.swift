@@ -200,7 +200,10 @@ final class NativeDiagnostics {
 
   private func affectedAreas(_ resource: SafetyResource) -> [CoverageArea] {
     switch resource {
-    case .textLayerBytes, .tokenBytes, .tokenCount: [.references]
+    case .textLayerBytes, .tokenBytes, .tokenCount,
+      .usdcMetadataBlockBytes, .usdcDecodeBytes, .usdcWorkingBytes,
+      .usdcItems, .usdcWork, .usdcDepth:
+      [.references]
     case .textureHeaderBytes: [.textureDimensions]
     default: requestedAreas
     }

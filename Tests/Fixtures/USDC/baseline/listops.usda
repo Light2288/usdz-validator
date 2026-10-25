@@ -1,0 +1,66 @@
+#usda 1.0
+def Scope "references_explicit" (
+    references = @references-explicit.usda@</Target>
+)
+{
+}
+def Scope "references_added" (
+    add references = @references-added.usda@</Target>
+)
+{
+}
+def Scope "references_prepended" (
+    prepend references = @references-prepended.usda@</Target>
+)
+{
+}
+def Scope "references_appended" (
+    append references = @references-appended.usda@</Target>
+)
+{
+}
+def Scope "references_deleted" (
+    delete references = @references-deleted.usda@</Target>
+)
+{
+}
+def Scope "references_ordered" (
+    reorder references = @references-ordered.usda@</Target>
+)
+{
+}
+def Scope "payload_explicit" (
+    payload = @payload-explicit.usda@</Target>
+)
+{
+}
+def Scope "payload_added" (
+    add payload = @payload-added.usda@</Target>
+)
+{
+}
+def Scope "payload_prepended" (
+    prepend payload = @payload-prepended.usda@</Target>
+)
+{
+}
+def Scope "payload_appended" (
+    append payload = @payload-appended.usda@</Target>
+)
+{
+}
+def Scope "payload_deleted" (
+    delete payload = @payload-deleted.usda@</Target>
+)
+{
+}
+def Scope "payload_ordered" (
+    reorder payload = @payload-ordered.usda@</Target>
+)
+{
+}
+def Scope "Internal" (
+    references = </references_explicit>
+)
+{
+}

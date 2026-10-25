@@ -2,7 +2,7 @@ import Foundation
 
 struct AssetToken: Equatable {
   enum Delimiter: Equatable { case single, triple }
-  enum Classification: Equatable { case literal, unsupportedExpression }
+  typealias Classification = ReferenceClassification
 
   /// Exact authored interior, including any delimiter escape backslash. Never normalized.
   let rawValueBytes: Data
@@ -143,7 +143,7 @@ enum USDALexer {
         return AssetToken(
           rawValueBytes: raw, valueBytes: value, layerByteOffset: start.offset,
           line: start.line, column: start.column, delimiter: triple ? .triple : .single,
-          classification: classification(value))
+          classification: ReferenceClassifier.classify(value))
       } else {
         try ledger.check(resource: .tokenBytes, value: UInt64(raw.count) + 1)
         // Check before appending or advancing. Even a malformed token cannot grow past 4 KiB.
@@ -171,33 +171,6 @@ enum USDALexer {
       }
     }
     return value
-  }
-
-  private static func classification(_ value: Data) -> AssetToken.Classification {
-    // Detect unevaluated syntax only. Task 10 checks any unsafe literal prefix before
-    // reporting the gap, rather than inventing a target for a resolver/expression.
-    if value.contains(0x60) || value.contains(0x5b) || value.contains(0x5d) {
-      return .unsupportedExpression
-    }
-    for syntax in ["${", "<UDIM>", "<UVTILE>", "####"] {
-      if value.range(of: Data(syntax.utf8)) != nil { return .unsupportedExpression }
-    }
-    let bytes = Array(value)
-    for index in bytes.indices where bytes[index] == 0x25 {
-      var end = index + 1
-      while end < bytes.count, (0x30...0x39).contains(bytes[end]) { end += 1 }
-      if end < bytes.count, bytes[end] == 0x64 { return .unsupportedExpression }
-    }
-    if let colon = value.firstIndex(of: 0x3a) {
-      let prefix = value[..<colon]
-      let isDrive =
-        prefix.count == 1
-        && prefix.allSatisfy {
-          (0x41...0x5a).contains($0) || (0x61...0x7a).contains($0)
-        }
-      if !isDrive { return .unsupportedExpression }
-    }
-    return .literal
   }
 
   private struct Position {

@@ -1,0 +1,2024 @@
+{
+  "schemaVersion": 1,
+  "expectationPolicy": "Values and multiplicities retained verbatim from authored fixture definitions; logical sites manually transcribed from source and independently corroborated where Sdf APIs expose them. No production decoder output defines expectations. wrapped denotes the typed unregistered Value wrapper, not an authored dictionary key.",
+  "supportedVersions": [
+    [
+      0,
+      8,
+      0
+    ],
+    [
+      0,
+      9,
+      0
+    ],
+    [
+      0,
+      10,
+      0
+    ]
+  ],
+  "typeMappingSource": "OpenUSD 96c1989167d2aaab5bd34627f32a321a6b79866b pxr/usd/sdf/crateDataTypes.h: TimeCode=56, PathExpression=57",
+  "cases": [
+    {
+      "id": "baseline/minimal",
+      "crate": "baseline/minimal.usdc",
+      "source": "baseline/minimal.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "layers/sub.usda",
+        "nested.png",
+        "layers/ref.usda",
+        "layers/payload.usda",
+        "textures/a.png",
+        "textures/a.png",
+        "../outside.png",
+        "inactive.png",
+        "textures/a.png",
+        "first.png",
+        "second.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "layers/sub.usda",
+          "pathElements": [
+            "/"
+          ],
+          "field": "subLayers",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested"
+          ]
+        },
+        {
+          "value": "layers/ref.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "layers/payload.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".scalar"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "textures/a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "../outside.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".repeated"
+          ],
+          "field": "default",
+          "container": [
+            2
+          ]
+        },
+        {
+          "value": "inactive.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "Inactive",
+            ".hidden"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "first.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "second.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/minimal.usda",
+        "-o",
+        "$RESEARCH_ROOT/minimal.usdc"
+      ],
+      "crateSHA256": "870fa0b1736f023b6d287be56a6ad4d075cd3edf04abb441df6754ebec4de35e",
+      "sourceSHA256": "8a1f75eba98da3e5b2befb3393e5b76506a285491f739f742bf7deff32adf45b",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [
+        "GetInfo subLayerOffsets converter TypeError"
+      ],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/empty",
+      "crate": "baseline/empty.usdc",
+      "source": "baseline/empty.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/empty.usda",
+        "-o",
+        "$RESEARCH_ROOT/empty.usdc"
+      ],
+      "crateSHA256": "080a368ba1882511396badedd7fb86578d334bcdb521d5713a8f42615548017b",
+      "sourceSHA256": "6cabe68cd5490dd3876ac4f08f0fd68e0d6d66b431b53a26c663357ab3a7c2ad",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/listops",
+      "crate": "baseline/listops.usdc",
+      "source": "baseline/listops.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "references-explicit.usda",
+        "references-added.usda",
+        "references-prepended.usda",
+        "references-appended.usda",
+        "references-deleted.usda",
+        "references-ordered.usda",
+        "payload-explicit.usda",
+        "payload-added.usda",
+        "payload-prepended.usda",
+        "payload-appended.usda",
+        "payload-deleted.usda",
+        "payload-ordered.usda"
+      ],
+      "expectedSites": [
+        {
+          "value": "references-explicit.usda",
+          "pathElements": [
+            "/",
+            "references_explicit"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "references-added.usda",
+          "pathElements": [
+            "/",
+            "references_added"
+          ],
+          "field": "references",
+          "container": [
+            "added",
+            0
+          ]
+        },
+        {
+          "value": "references-prepended.usda",
+          "pathElements": [
+            "/",
+            "references_prepended"
+          ],
+          "field": "references",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "references-appended.usda",
+          "pathElements": [
+            "/",
+            "references_appended"
+          ],
+          "field": "references",
+          "container": [
+            "appended",
+            0
+          ]
+        },
+        {
+          "value": "references-deleted.usda",
+          "pathElements": [
+            "/",
+            "references_deleted"
+          ],
+          "field": "references",
+          "container": [
+            "deleted",
+            0
+          ]
+        },
+        {
+          "value": "references-ordered.usda",
+          "pathElements": [
+            "/",
+            "references_ordered"
+          ],
+          "field": "references",
+          "container": [
+            "ordered",
+            0
+          ]
+        },
+        {
+          "value": "payload-explicit.usda",
+          "pathElements": [
+            "/",
+            "payload_explicit"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "payload-added.usda",
+          "pathElements": [
+            "/",
+            "payload_added"
+          ],
+          "field": "payload",
+          "container": [
+            "added",
+            0
+          ]
+        },
+        {
+          "value": "payload-prepended.usda",
+          "pathElements": [
+            "/",
+            "payload_prepended"
+          ],
+          "field": "payload",
+          "container": [
+            "prepended",
+            0
+          ]
+        },
+        {
+          "value": "payload-appended.usda",
+          "pathElements": [
+            "/",
+            "payload_appended"
+          ],
+          "field": "payload",
+          "container": [
+            "appended",
+            0
+          ]
+        },
+        {
+          "value": "payload-deleted.usda",
+          "pathElements": [
+            "/",
+            "payload_deleted"
+          ],
+          "field": "payload",
+          "container": [
+            "deleted",
+            0
+          ]
+        },
+        {
+          "value": "payload-ordered.usda",
+          "pathElements": [
+            "/",
+            "payload_ordered"
+          ],
+          "field": "payload",
+          "container": [
+            "ordered",
+            0
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/listops.usda",
+        "-o",
+        "$RESEARCH_ROOT/listops.usdc"
+      ],
+      "crateSHA256": "c9385735a84847189994a3cb6a41fe8b28153fafa1686d95cab3d18975573376",
+      "sourceSHA256": "235e2347b82345ce5f908a5a6dc295beed6e758455d47664abef0657efd6ff48",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/containers",
+      "crate": "baseline/containers.usdc",
+      "source": "baseline/containers.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "same.png",
+        "same.png",
+        "selected.png",
+        "unselected.png",
+        "a.png",
+        "b.png",
+        "b.png",
+        ""
+      ],
+      "expectedSites": [
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "inner",
+            "paths",
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "inner",
+            "paths",
+            1
+          ]
+        },
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".selected"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".unselected"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0,
+            0
+          ]
+        },
+        {
+          "value": "b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0,
+            1
+          ]
+        },
+        {
+          "value": "b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animated"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1,
+            0
+          ]
+        },
+        {
+          "value": "",
+          "pathElements": [
+            "/",
+            "Root",
+            ".blank"
+          ],
+          "field": "default",
+          "container": []
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/containers.usda",
+        "-o",
+        "$RESEARCH_ROOT/containers.usdc"
+      ],
+      "crateSHA256": "c84e4818fb04f95de4d19f42ea115148791d25b8780036301f05eeaf23559883",
+      "sourceSHA256": "acb61c00e88c9fa7c8db43bfa21b0f9d5087ad14b0d129ad3c08b959eb1be04c",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/reference-customdata",
+      "crate": "baseline/reference-customdata.usdc",
+      "source": "baseline/reference-customdata.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "ref.usda",
+        "ref-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "ref.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "ref-meta.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0,
+            "customData",
+            "nested"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/reference-customdata.usda",
+        "-o",
+        "$RESEARCH_ROOT/reference-customdata.usdc"
+      ],
+      "crateSHA256": "c3812b092b775704def0793397c8fe5e333362d6e96284f9922357a13787955f",
+      "sourceSHA256": "358f52c7850173f85d0fb65f302097d674c05536feeba1fe76bcbbaa86d177a0",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/unregistered",
+      "crate": "baseline/unregistered.usdc",
+      "source": "baseline/unregistered.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "wrapped.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "wrapped.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "arbitraryMetadata",
+          "container": [
+            "wrapped",
+            "nested"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/unregistered.usda",
+        "-o",
+        "$RESEARCH_ROOT/unregistered.usdc"
+      ],
+      "crateSHA256": "e473dd564c6b3cc729b97a8fda3797375c9fca1d11bec2db4ad43338e06443f0",
+      "sourceSHA256": "5307f0419b4de99f9fda48cc3582fcf194d415fa2fc81deec2ee521368f01c6e",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [
+        "ListInfoKeys omits arbitraryMetadata"
+      ],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/unregistered-raw",
+      "crate": "baseline/unregistered-raw.usdc",
+      "source": "baseline/unregistered-raw.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": false,
+      "rawUnregisteredValues": [
+        "raw-unregistered.png"
+      ],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/unregistered-raw.usda",
+        "-o",
+        "$RESEARCH_ROOT/unregistered-raw.usdc"
+      ],
+      "crateSHA256": "fed1bbe802413584f210a3834e1e88cf7d062d1117c351029baf1a0713b2f5c2",
+      "sourceSHA256": "7e507245acec43a3ed0a41b557cae66c15ee280a1072e8df42697a0be7f4191f",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [
+        "ListInfoKeys omits arbitraryMetadata"
+      ],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/unsafe",
+      "crate": "baseline/unsafe.usdc",
+      "source": "baseline/unsafe.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "/etc/hosts",
+        "../../outside.png",
+        "https://example.invalid/x",
+        "file:///tmp/private",
+        "textures/ok.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "/etc/hosts",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "../../outside.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "https://example.invalid/x",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            2
+          ]
+        },
+        {
+          "value": "file:///tmp/private",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            3
+          ]
+        },
+        {
+          "value": "textures/ok.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".values"
+          ],
+          "field": "default",
+          "container": [
+            4
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/unsafe.usda",
+        "-o",
+        "$RESEARCH_ROOT/unsafe.usdc"
+      ],
+      "crateSHA256": "3f3bcb4864084284eed75ddaddd3b4e37ae6d846d97e5f73856ec054167cb786",
+      "sourceSHA256": "3659df54342930796c96dac0d22ded68f21cc5ff006f21a3a41ead3e6914f52e",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "baseline/payload-explicit-list",
+      "crate": "baseline/payload-explicit-list.usdc",
+      "source": "baseline/payload-explicit-list.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "explicit-a.usda",
+        "explicit-b.usda"
+      ],
+      "expectedSites": [
+        {
+          "value": "explicit-a.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            0
+          ]
+        },
+        {
+          "value": "explicit-b.usda",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "payload",
+          "container": [
+            "explicit",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/oracle.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/payload-explicit-list.usda",
+        "-o",
+        "$RESEARCH_ROOT/payload-explicit-list.usdc"
+      ],
+      "crateSHA256": "8840ed05821275ca1eb090f2d2ed41e15b6e49a5c51caf4a015d5ca648fbf2b2",
+      "sourceSHA256": "7bf610bc431e619f4840cb740a10db67578a055e8fd7f4e8e49f38d49f4da076",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-2026-10-24/fixtures.json",
+        ".verification/usdc-feasibility-2026-10-24/generate.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "version/tc09-scalars/apple",
+      "crate": "versions/tc09-scalars-apple.usdc",
+      "source": "versions/tc09-scalars.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [
+        "clock-texture.png",
+        "clock-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "clock-texture.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "clock-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/tc09-scalars.usda",
+        "-o",
+        "$RESEARCH_ROOT/tc09-scalars-apple.usdc"
+      ],
+      "crateSHA256": "327990724f1105c65f5eb8f65bd181d210e2c60c80a262dfa71f6fed5da3f685",
+      "sourceSHA256": "a67b9b5bf2f2ca923f9c7a9abf3762f49955cf9c6417661c733eea6344c6bc97",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode positive = 12.5",
+          "logicalSite": "/Root.positive default"
+        }
+      ]
+    },
+    {
+      "id": "version/tc09-scalars/openusd",
+      "crate": "versions/tc09-scalars-openusd.usdc",
+      "source": "versions/tc09-scalars.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [
+        "clock-texture.png",
+        "clock-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "clock-texture.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "clock-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/tc09-scalars.usda",
+        "$RESEARCH_ROOT/tc09-scalars-openusd.usdc"
+      ],
+      "crateSHA256": "d5b270190f2bbe4097c806a9d6276dfa383ff98a3596ce556a0bf87facdca4b9",
+      "sourceSHA256": "a67b9b5bf2f2ca923f9c7a9abf3762f49955cf9c6417661c733eea6344c6bc97",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode positive = 12.5",
+          "logicalSite": "/Root.positive default"
+        }
+      ]
+    },
+    {
+      "id": "version/tc09-arrays/apple",
+      "crate": "versions/tc09-arrays-apple.usdc",
+      "source": "versions/tc09-arrays.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [
+        "same.png",
+        "same.png",
+        "animated-a.png",
+        "animated-b.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "animated-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "animated-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/tc09-arrays.usda",
+        "-o",
+        "$RESEARCH_ROOT/tc09-arrays-apple.usdc"
+      ],
+      "crateSHA256": "d9fdc48ed8b0f125d3d88f97fc7a4c34912f547ca2899316a4e3ea4942404d99",
+      "sourceSHA256": "68fdac1eca3fc848a469535bc0d634f455ea4e534eed4af1efedf8ae3f30128c",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode[] clocks = [0, 1.25, -2.5, 5000000000.125]",
+          "logicalSite": "/Root.clocks default"
+        }
+      ]
+    },
+    {
+      "id": "version/tc09-arrays/openusd",
+      "crate": "versions/tc09-arrays-openusd.usdc",
+      "source": "versions/tc09-arrays.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [
+        "same.png",
+        "same.png",
+        "animated-a.png",
+        "animated-b.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "same.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "animated-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "animated-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".image"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/tc09-arrays.usda",
+        "$RESEARCH_ROOT/tc09-arrays-openusd.usdc"
+      ],
+      "crateSHA256": "5454431ba75abaa7a1910bd2f127cdcb38be33f2243060289b19aa72cb4d7d76",
+      "sourceSHA256": "68fdac1eca3fc848a469535bc0d634f455ea4e534eed4af1efedf8ae3f30128c",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode[] clocks = [0, 1.25, -2.5, 5000000000.125]",
+          "logicalSite": "/Root.clocks default"
+        }
+      ]
+    },
+    {
+      "id": "version/tc09-empty/apple",
+      "crate": "versions/tc09-empty-apple.usdc",
+      "source": "versions/tc09-empty.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/tc09-empty.usda",
+        "-o",
+        "$RESEARCH_ROOT/tc09-empty-apple.usdc"
+      ],
+      "crateSHA256": "1d57465a6ec84e7733f71dd32b10db38339f04cb16e209cf58c6749d91afd3a6",
+      "sourceSHA256": "8b359046f68f4674b108d71dff947668c039a3c1cb6b988ec1dce18ef71b163e",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode clock = 1.25",
+          "logicalSite": "/Root.clock default"
+        }
+      ]
+    },
+    {
+      "id": "version/tc09-empty/openusd",
+      "crate": "versions/tc09-empty-openusd.usdc",
+      "source": "versions/tc09-empty.usda",
+      "version": [
+        0,
+        9,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/tc09-empty.usda",
+        "$RESEARCH_ROOT/tc09-empty-openusd.usdc"
+      ],
+      "crateSHA256": "09d048316415360ff91214c93cce8c7fb8665720f3bf986cd9e7b5c8e394f07d",
+      "sourceSHA256": "8b359046f68f4674b108d71dff947668c039a3c1cb6b988ec1dce18ef71b163e",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode clock = 1.25",
+          "logicalSite": "/Root.clock default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-mixed/apple",
+      "crate": "versions/pe10-mixed-apple.usdc",
+      "source": "versions/pe10-mixed.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "pattern-asset.png",
+        "pattern-asset.png",
+        "pattern-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "pattern-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/pe10-mixed.usda",
+        "-o",
+        "$RESEARCH_ROOT/pe10-mixed-apple.usdc"
+      ],
+      "crateSHA256": "cafc452ff36d1a5c4141431414c3a2883f3f29daac90d25f3ada830773f15f6d",
+      "sourceSHA256": "7c54a3d4e5d8fe08e7cc42319676efe2b85aad12ea3d40c8c3ec6db19476535b",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression pattern = \"/Root//\"",
+          "logicalSite": "/Root.pattern default"
+        },
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode clock = 4.25",
+          "logicalSite": "/Root.clock default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-mixed/openusd",
+      "crate": "versions/pe10-mixed-openusd.usdc",
+      "source": "versions/pe10-mixed.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "pattern-asset.png",
+        "pattern-asset.png",
+        "pattern-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            0
+          ]
+        },
+        {
+          "value": "pattern-asset.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".images"
+          ],
+          "field": "default",
+          "container": [
+            1
+          ]
+        },
+        {
+          "value": "pattern-meta.png",
+          "pathElements": [
+            "/"
+          ],
+          "field": "customLayerData",
+          "container": [
+            "texture"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/pe10-mixed.usda",
+        "$RESEARCH_ROOT/pe10-mixed-openusd.usdc"
+      ],
+      "crateSHA256": "27da40813fc6041429b9d7f3dc3e6ab0e78c5b9f84cccd88d7b55fe0eea3956c",
+      "sourceSHA256": "7c54a3d4e5d8fe08e7cc42319676efe2b85aad12ea3d40c8c3ec6db19476535b",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression pattern = \"/Root//\"",
+          "logicalSite": "/Root.pattern default"
+        },
+        {
+          "tag": 56,
+          "authoredDeclaration": "timecode clock = 4.25",
+          "logicalSite": "/Root.clock default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-containers/apple",
+      "crate": "versions/pe10-containers-apple.usdc",
+      "source": "versions/pe10-containers.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "nested.png",
+        "selected.png",
+        "unselected.png",
+        "sample-a.png",
+        "sample-b.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested",
+            "texture"
+          ]
+        },
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "sample-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "sample-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/pe10-containers.usda",
+        "-o",
+        "$RESEARCH_ROOT/pe10-containers-apple.usdc"
+      ],
+      "crateSHA256": "a5ff410d2609ffca8285ed5bc78b8651ffacc0eab88cd4a8ccaf50ef412e30d7",
+      "sourceSHA256": "998a1c08e90e35fd66a0814958c4d6c0aeeea01b48b1743705fd67b1a01c04c9",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression animated.timeSamples",
+          "logicalSite": "/Root.animated timeSamples"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-containers/openusd",
+      "crate": "versions/pe10-containers-openusd.usdc",
+      "source": "versions/pe10-containers.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "nested.png",
+        "selected.png",
+        "unselected.png",
+        "sample-a.png",
+        "sample-b.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "nested.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "customData",
+          "container": [
+            "nested",
+            "texture"
+          ]
+        },
+        {
+          "value": "selected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=first}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "unselected.png",
+          "pathElements": [
+            "/",
+            "Root",
+            "{look=other}",
+            ".image"
+          ],
+          "field": "default",
+          "container": []
+        },
+        {
+          "value": "sample-a.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            0
+          ]
+        },
+        {
+          "value": "sample-b.png",
+          "pathElements": [
+            "/",
+            "Root",
+            ".animatedAsset"
+          ],
+          "field": "timeSamples",
+          "container": [
+            "sample",
+            1
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/pe10-containers.usda",
+        "$RESEARCH_ROOT/pe10-containers-openusd.usdc"
+      ],
+      "crateSHA256": "1d362950d0acb8dca1093ef8fb902a041961bcd0501d207b2d041652c2f7bb27",
+      "sourceSHA256": "998a1c08e90e35fd66a0814958c4d6c0aeeea01b48b1743705fd67b1a01c04c9",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression animated.timeSamples",
+          "logicalSite": "/Root.animated timeSamples"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-empty/apple",
+      "crate": "versions/pe10-empty-apple.usdc",
+      "source": "versions/pe10-empty.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/pe10-empty.usda",
+        "-o",
+        "$RESEARCH_ROOT/pe10-empty-apple.usdc"
+      ],
+      "crateSHA256": "3d6592391dda87d0618ef1ab09b97a7800d04cc0336cb6fd415bf3ce7060a174",
+      "sourceSHA256": "bfe053692f7131176458eaab4bb400a07fdd089a4114af034a5d72ba395d232a",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression propertyPattern",
+          "logicalSite": "/Root.propertyPattern default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-empty/openusd",
+      "crate": "versions/pe10-empty-openusd.usdc",
+      "source": "versions/pe10-empty.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/pe10-empty.usda",
+        "$RESEARCH_ROOT/pe10-empty-openusd.usdc"
+      ],
+      "crateSHA256": "be55ede0881a4fa4cf220df37e0436f82f0f3324305166067bf8420fd62e2161",
+      "sourceSHA256": "bfe053692f7131176458eaab4bb400a07fdd089a4114af034a5d72ba395d232a",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression propertyPattern",
+          "logicalSite": "/Root.propertyPattern default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-asset-expression/apple",
+      "crate": "versions/pe10-asset-expression-apple.usdc",
+      "source": "versions/pe10-asset-expression.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "`\"${TEXTURE}\"`"
+      ],
+      "expectedSites": [
+        {
+          "value": "`\"${TEXTURE}\"`",
+          "pathElements": [
+            "/",
+            "Root",
+            ".expression"
+          ],
+          "field": "default",
+          "container": []
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "/usr/bin/usdcat",
+        "$RESEARCH_ROOT/pe10-asset-expression.usda",
+        "-o",
+        "$RESEARCH_ROOT/pe10-asset-expression-apple.usdc"
+      ],
+      "crateSHA256": "d15d8d8b770ef6fb94a298c006325d9b5425402b1c9b4b6035f9adf5391b8d62",
+      "sourceSHA256": "68c5def06ea3b0f88828f8bb047041a25ea2e5807110d4d8f5a5b9d22dcbf8fa",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression pattern = \"/Root//\"",
+          "logicalSite": "/Root.pattern default"
+        }
+      ]
+    },
+    {
+      "id": "version/pe10-asset-expression/openusd",
+      "crate": "versions/pe10-asset-expression-openusd.usdc",
+      "source": "versions/pe10-asset-expression.usda",
+      "version": [
+        0,
+        10,
+        0
+      ],
+      "expectedValues": [
+        "`\"${TEXTURE}\"`"
+      ],
+      "expectedSites": [
+        {
+          "value": "`\"${TEXTURE}\"`",
+          "pathElements": [
+            "/",
+            "Root",
+            ".expression"
+          ],
+          "field": "default",
+          "container": []
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "openusd",
+      "writerVersion": "usd-core==26.11 (runtime 0.26.11)",
+      "arguments": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$RESEARCH_ROOT/writer.sb",
+        "$RESEARCH_ROOT/oracle-venv/bin/python",
+        "$RESEARCH_ROOT/export_openusd.py",
+        "$RESEARCH_ROOT/pe10-asset-expression.usda",
+        "$RESEARCH_ROOT/pe10-asset-expression-openusd.usdc"
+      ],
+      "crateSHA256": "2439c074b8617452e3bbc8451378aecdc35fad24339e513eabc8099a34848bd0",
+      "sourceSHA256": "68c5def06ea3b0f88828f8bb047041a25ea2e5807110d4d8f5a5b9d22dcbf8fa",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "authored-source",
+      "provenanceRecords": [
+        ".verification/usdc-feasibility-09-010-2026-10-24/version-fixtures.json",
+        ".verification/usdc-feasibility-09-010-2026-10-24/fixture_definitions.py"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": [
+        {
+          "tag": 57,
+          "authoredDeclaration": "pathExpression pattern = \"/Root//\"",
+          "logicalSite": "/Root.pattern default"
+        }
+      ]
+    }
+  ],
+  "extraCases": [
+    {
+      "id": "extra/clip-template",
+      "crate": "extra/clip-template.usdc",
+      "source": "extra/clip-template.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": false,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/clip-template.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/clip-template.usdc"
+      ],
+      "crateSHA256": "578c529c82f444fb9b0de80fa589ef18dfbdc1039641405770a77ede796a3865",
+      "sourceSHA256": "14fac65fd916e1df876b26b7cff8b18e5372665796a218053a1ac427ceb412f7",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/clip-empty",
+      "crate": "extra/clip-empty.usdc",
+      "source": "extra/clip-empty.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/clip-empty.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/clip-empty.usdc"
+      ],
+      "crateSHA256": "60f1953518abd731c70a739e466735351a14467c60dcbcc1a99e49ddbcbf8f41",
+      "sourceSHA256": "c4ae14b86abd6ed0a3729172b762aee441a9247ab4921a7460baa505795beec7",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/unregistered-list",
+      "crate": "extra/unregistered-list.usdc",
+      "source": "extra/unregistered-list.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [],
+      "expectedSites": [],
+      "expectedInspectionComplete": false,
+      "rawUnregisteredValues": [
+        "@raw-a.png@",
+        "@raw-b.png@"
+      ],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/unregistered-list.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/unregistered-list.usdc"
+      ],
+      "crateSHA256": "59615cedf9adfa190aa5b8b60a15964a6aec4c90a0741b2852fc33d00bb86e38",
+      "sourceSHA256": "9dd0a1ec577a5895e74ee14a1a4dab81cd6e12d778375b24ba1159804e6ba185",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [
+        "ListInfoKeys omits arbitraryMetadata; export text corroborates raw syntax only"
+      ],
+      "liveTypeEvidence": []
+    },
+    {
+      "id": "extra/internal-reference-customdata",
+      "crate": "extra/internal-reference-customdata.usdc",
+      "source": "extra/internal-reference-customdata.usda",
+      "version": [
+        0,
+        8,
+        0
+      ],
+      "expectedValues": [
+        "internal-meta.png"
+      ],
+      "expectedSites": [
+        {
+          "value": "internal-meta.png",
+          "pathElements": [
+            "/",
+            "Root"
+          ],
+          "field": "references",
+          "container": [
+            "explicit",
+            0,
+            "customData",
+            "nested"
+          ]
+        }
+      ],
+      "expectedInspectionComplete": true,
+      "rawUnregisteredValues": [],
+      "writer": "apple",
+      "writerVersion": "Apple USD Tools (0.25.11)",
+      "arguments": [
+        "/usr/bin/usdcat",
+        "Tests/Fixtures/USDC/extra/internal-reference-customdata.usda",
+        "-o",
+        "Tests/Fixtures/USDC/extra/internal-reference-customdata.usdc"
+      ],
+      "crateSHA256": "878f5c11a2c40aa8954247739e991eb6a1652b8ea468f5dbe7950938ff2608bb",
+      "sourceSHA256": "3035dd7b53c65022ebf8a9d587dc9d13d37cf85586135ad7b7c9ce495cb4fce8",
+      "sourceLicense": "MIT",
+      "expectationOrigin": "Original source authored before generation; independent OpenUSD 0.26.11 Sdf API/export corroboration in extra/provenance.json; no decoder-derived expectations.",
+      "provenanceRecords": [
+        "extra/provenance.json"
+      ],
+      "oracleOmissions": [],
+      "liveTypeEvidence": []
+    }
+  ]
+}
