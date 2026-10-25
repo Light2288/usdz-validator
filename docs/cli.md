@@ -65,7 +65,7 @@ An explicit [default budget file](../Examples/budgets.json) produces the same co
 | `totalTextureBytes` | 83886080 | All texture encoded bytes |
 | `textureMaxDimension` | 4096 | Supported width or height |
 
-Only `observed > threshold` warns; equality passes. Omitted budget keys use defaults; `null` disables only that warning check. Non-null values must be positive signed-64-bit integers. Booleans, floats (including `1.0`), zero, negatives, duplicate/unknown keys, unsupported versions and trailing non-whitespace data fail before inspecting input or executing tools. Config cannot set profiles, tools, search paths, or [hard safety ceilings](inspection-boundary.md#fixed-safety-envelope-v2). Effective budgets appear in reports.
+Only `observed > threshold` warns; equality passes. Omitted budget keys use defaults; `null` disables only that warning check. Non-null values must be positive signed-64-bit integers. Booleans, floats (including `1.0`), zero, negatives, duplicate/unknown keys, unsupported versions and trailing non-whitespace data fail before inspecting input or executing tools. Config cannot set profiles, tools, search paths, or [hard safety ceilings](inspection-boundary.md#fixed-safety-envelope-v3). Effective budgets appear in reports.
 
 ## Streams and report destinations
 

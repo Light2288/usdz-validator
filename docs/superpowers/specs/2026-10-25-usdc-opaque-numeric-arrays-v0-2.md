@@ -4,6 +4,8 @@
 **Type:** feature
 **Status:** APPROVED
 **Date:** 2026-10-25
+**Created:** 2026-10-25
+**Updated:** 2026-10-25
 **Paired artifact naming:** The specification and implementation plan use the identical basename `2026-10-25-usdc-opaque-numeric-arrays-v0-2.md` in their respective directories, per the user's standing naming preference.
 **Provenance:** The user's direction “ok, keep it in 0.2 / proceed with the verifications and tests to go on”, followed by “i approve” for the narrow numeric-array scope and design. Parent specification: `docs/superpowers/specs/2026-10-24-usdc-reference-coverage-v0-2-design.md`. Investigation: `docs/deliverables/comparisons/2026-10-25-usdc-opaque-numeric-array-investigation.md`. Unchanged-reader evidence: `.build/verification/usdc-numeric-array-baseline-2026-10-25/report.md` and `.build/verification/apple-assets-v0-2-2026-10-24/report.md`. Repository evidence is used directly under the user's existing authorization; no legacy specification is a source.
 

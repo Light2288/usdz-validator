@@ -42,7 +42,9 @@ PNG/JPEG/EXR/AVIF regular entries count once toward encoded texture budgets even
 
 `general-v1` selects structure, safety, references and enabled budgets. `apple-portable-v1` adds warning-only advice to prefer binary layers and PNG/JPEG. It is a frozen project advisory subset: current Apple support can be broader, including USDA/EXR/AVIF. It imposes no universal single-layer requirement and certifies no renderer. See [Apple's evolving guidance](https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices) and [the versioned catalogue](../Examples/catalogue-v1.json).
 
-## Fixed safety envelope v2
+<a id="fixed-safety-envelope-v2"></a>
+
+## Fixed safety envelope v3
 
 These upper bounds cannot be changed through warning config. MiB = 1,048,576 bytes; KiB = 1,024 bytes.
 
@@ -59,7 +61,7 @@ These upper bounds cannot be changed through warning config. MiB = 1,048,576 byt
 | Each compressed or decoded USDC metadata block | 16 MiB |
 | Cumulative reserved USDC decode capacity | 32 MiB per invocation |
 | Charged live USDC working storage | 64 MiB per invocation |
-| Each USDC table/container | 250,000 items |
+| Each nonexempt USDC table/container | 250,000 items |
 | USDC structural work | 2,000,000 units per invocation |
 | USDC value nesting / structural path depth | 32 |
 | Read chunk | 64 KiB |
@@ -71,7 +73,11 @@ These upper bounds cannot be changed through warning config. MiB = 1,048,576 byt
 | Config | 64 KiB |
 | Encoded report | 32 MiB, including opted-in details |
 
-All v1 ceilings are retained. Checked sizes are charged before allocation/expansion, including transient copies, C buffers, decoded tables, strings, indexes, traversal and scratch storage. Work counts processed table/container elements, graph edges, ValueReps and compression chunks. Decode capacity, work and occurrence counters accumulate across sequential layers; live reservations release on success and failure. No whole-large-crate copy is needed, and transient decoder storage releases before report rendering. Binary asset admission also reserves component arrays, backing metadata and byte buffers for both author/default resolution attempts before asset copies and the synchronous callback. This conservative reservation can stop an otherwise safe near-limit input earlier. Capacity charging is an accounting policy, not an OS/RSS guarantee.
+All numerical v1/v2 ceilings are retained. Envelope 3 changes only the declared-element charges for already admitted opaque numeric arrays in exact crates 0.8.0, 0.9.0 and 0.10.0: tags 1–9 and 13–30 with flags `0x80`, plus tags 3–9 with `0xa0`. Zero payload reads no header. A nonzero payload must point inside value data and provide a complete eight-byte count header. The reader discards that count without element allocation, iteration, stride arithmetic, body-range validation or numeric decompression. Counts through `UInt64.max` alone cannot reject this path; omitted or malformed element bodies establish no geometry validity or reference gap. Archive integrity reads still apply.
+
+String/token and asset arrays, dictionaries, wrappers, sublayers, list operations, time-sample containers and tags 56/57 are excluded. An admitted numeric leaf inside a supported container has the exemption, while its enclosing container retains all checks. Shared numeric offsets do not suppress repeated live visit charges or hide an asset occurrence at the same offset; each representation receives its own checks.
+
+Checked sizes are charged before actual allocation/expansion, including transient copies, C buffers, decoded tables, strings, indexes, traversal and scratch storage. Work counts processed nonexempt table/container elements, graph edges, every actual ValueRep visit and compression chunks, rather than untouched numeric elements. Decode capacity, work and occurrence counters accumulate across sequential layers; live reservations release on success and failure. No whole-large-crate copy is needed, and transient decoder storage releases before report rendering. Binary asset admission also reserves component arrays, backing metadata and byte buffers for both author/default resolution attempts before asset copies and the synchronous callback. This conservative reservation can stop an otherwise safe near-limit input earlier. Capacity charging is an accounting policy, not an OS/RSS guarantee. [Current acceptance](verification/usdc-numeric-v0-2.md) records the inventory, containment and complete-process evidence for this policy.
 
 A hard processing excess produces blocking `UVK-RES-001` and incomplete affected coverage. The specific texture scan-cap limitation is nonfatal; report-size overflow is operational exit `3`, with no partial document. Defaults and null behavior for all six separate warning budgets are in [CLI configuration](cli.md#warning-configuration).
 

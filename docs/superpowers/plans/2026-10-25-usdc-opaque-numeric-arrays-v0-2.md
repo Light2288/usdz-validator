@@ -13,6 +13,8 @@
 **Slug:** `usdc-opaque-numeric-arrays-v0-2`
 **Status:** APPROVED — Stage 4 implementation authorized; sequential subagent execution selected.
 **Date:** 2026-10-25
+**Created:** 2026-10-25
+**Updated:** 2026-10-25
 **Paired artifact naming:** The specification and implementation plan use the identical basename `2026-10-25-usdc-opaque-numeric-arrays-v0-2.md` in their respective directories, per the user's standing naming preference.
 **Execution tier:** full
 **Implementation model role:** full
