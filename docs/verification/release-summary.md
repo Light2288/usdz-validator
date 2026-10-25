@@ -1,8 +1,8 @@
 # USDZ Validation Kit release summary
 
-## 0.2.0 — Unreleased
+## 0.2.0 — 2026-10-25
 
-Version **0.2.0** remains local and unpublished. The following notes describe the merged implementation and its retained acceptance evidence. Publication requires a separate maintainer action under the [release policy](../releasing.md).
+Release documentation for version **0.2.0** is dated for intended publication on **2026-10-25**. [GitHub releases](https://github.com/Light2288/usdz-validator/releases) records actual publication status. The following notes describe the merged implementation and its retained acceptance evidence. Publication requires a separate maintainer action under the [release policy](../releasing.md).
 
 ### Reference coverage and safety
 

@@ -1,13 +1,13 @@
 # Changelog
 
-## 0.2.0 — Unreleased
+## 0.2.0 — 2026-10-25
 
 - Automatic native authored-reference inspection for a bounded subset of exact USDC crate versions **0.8.0, 0.9.0 and 0.10.0**, using private pinned LZ4 metadata decoding. Native inspection remains read-only and package-local, without extraction, host reference resolution, network access, subprocesses or stage composition.
 - Safety envelope **3** exempts admitted opaque numeric element counts from item/proportional work charges. Bounded count headers, actual traversal charges and every numerical ceiling remain enforced; numeric bodies and geometry validity are not inspected.
 - Report/configuration/catalogue schema major remains **1**. The updated report schema accepts safety envelopes **1/2/3**; strict consumers using the earlier `[1, 2]` enum must update their schema to accept envelope 3.
 - Retained current-host verification records **19/19 required gates PASS**, **338 cases each** in debug/release/ASAN with zero failures and 11 documented opt-in skips, and five private originals with **59 independently reconciled authored-reference occurrences**, complete requested native coverage and default acceptance. Dedicated CLI/resource/private runs have no skips. These are recorded results for the tested host and corpus; complete reference coverage does not establish full OpenUSD or geometry conformance.
 
-Version 0.2.0 remains local and unpublished. `currentHostStatus: PASS` and `releaseStatus: UNVERIFIED` retain their distinct meanings; baseline macOS, other hosts, CPython 3.12 and cross-host equality remain unverified/deferred under the existing policy. See the [release notes](docs/verification/release-summary.md#020--unreleased), [envelope 3 acceptance record](docs/verification/usdc-numeric-v0-2.md) and [support policy](docs/releasing.md). The `v0.1.0` tag remains available as the historical baseline.
+Release documentation is dated for intended publication on **2026-10-25**; see [GitHub releases](https://github.com/Light2288/usdz-validator/releases) for actual publication status. `currentHostStatus: PASS` and `releaseStatus: UNVERIFIED` retain their distinct meanings; baseline macOS, other hosts, CPython 3.12 and cross-host equality remain unverified/deferred under the existing policy. See the [release notes](docs/verification/release-summary.md#020--2026-10-25), [envelope 3 acceptance record](docs/verification/usdc-numeric-v0-2.md) and [support policy](docs/releasing.md). The `v0.1.0` tag remains available as the historical baseline.
 
 ## 0.1.0 — 2026-10-22
 
