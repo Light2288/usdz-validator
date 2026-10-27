@@ -5,7 +5,7 @@
 **Slug:** `layered-cube-usdz-model`
 **Status:** APPROVED
 **Created:** 2026-10-27
-**Updated:** 2026-10-27
+**Updated:** 2026-10-28
 **Execution tier:** full
 **Implementation model role:** full
 **Execution method:** Native, selected through the interactive control.
@@ -59,7 +59,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
 **Interfaces:** The generator consumes fixed modeling parameters and writes into a fresh candidate directory. The inspection helper consumes the resulting USDZ and produces geometry-check results and rendered previews. Neither changes validator behavior.
 
-- [ ] **Step 1: Save approved artifacts and prepare the branch.**
+- [x] **Step 1: Save approved artifacts and prepare the branch.**
 
   After plan approval and return to Default mode, save this plan and record specification approval without changing its scope or creation date.
 
@@ -69,7 +69,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: the dedicated branch contains both artifacts; no existing changes were discarded.
 
-- [ ] **Step 2: Preserve inputs and establish generation safeguards.**
+- [x] **Step 2: Preserve inputs and establish generation safeguards.**
 
   Create the artwork folder only after checking for existing contents. Copy the reference PNG and verify SHA-256 `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`.
 
@@ -77,7 +77,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: the original image is unchanged, the local copy matches, and existing outputs cannot be overwritten accidentally.
 
-- [ ] **Step 3: Establish focused geometry checks.**
+- [x] **Step 3: Establish focused geometry checks.**
 
   Add tests for finite coordinates, valid face/index counts, nondegenerate faces, declared scale, expected component names and positive three-dimensional bounds. Include deliberately invalid mesh inputs to prove the checks reject them.
 
@@ -85,7 +85,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: geometry checks exercise meaningful invalid cases and the generated model; zero failures remain.
 
-- [ ] **Step 4: Generate editable geometry and materials.**
+- [x] **Step 4: Generate editable geometry and materials.**
 
   Construct beveled frame beams, thin translucent side panels, the upper pyramid and two separated platforms. Add a restrained modeled grid above the teal platform without coplanar overlapping surfaces.
 
@@ -93,7 +93,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: the editable USDA contains every agreed component and no magnifying glass or image billboard.
 
-- [ ] **Step 5: Convert and package the candidate.**
+- [x] **Step 5: Convert and package the candidate.**
 
   From the fresh candidate directory, use the installed tool interfaces:
 
@@ -106,7 +106,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: successful exits and load checks reporting success. Inspect the package listing: it contains the intended root layer and no unintended files.
 
-- [ ] **Step 6: Inspect the final package independently.**
+- [x] **Step 6: Inspect the final package independently.**
 
   Implement the Swift helper using Model I/O to inspect geometry loaded from the USDZ. Check finite positions, valid indices, nondegenerate bounds and the expected component arrangement.
 
@@ -158,3 +158,14 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 The specification and plan have separate explicit approvals. This plan is saved for Stage 4 execution; no push, merge, tag or publication is authorized.
 
 **Execution endpoint:** Deliver the verified cube-only USDZ, editable sources, previews, instructions and review evidence; report the result and limitations; then stop before further artwork, the magnifying glass or integration.
+
+
+## Execution progress — 2026-10-28
+
+Steps 1–6 are verified. Candidate `candidate-001/model.usdz` and editable sources are saved under the approved external artwork folder. Package SHA-256: `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`. Twelve geometry tests pass; Apple USD load/package checks pass; Model I/O independently checks 25 meshes (14,118 triangles) and 20 cm bounds. Validator 0.2.0 exits 0 with complete requested native coverage, no findings and no operational errors.
+
+Step 7 is partial: the remote Quick Look thumbnail and two SceneKit views were generated from that package and visually inspected. The initial SceneKit viewing lights overexposed the first images; corrected directional viewing lights preserve the imported materials. All attempts remain distinct. Direct thumbnail generation timed out; the documented `qlmanage -x` service option succeeded.
+
+Interactive Quick Look opening/rotation remains **UNRESOLVED**: native desktop observation reports that the Mac is locked and automatic unlock failed. Manual unlock is needed before that check can continue. This is not a completed visual-acceptance or final-review claim.
+
+Reproduction instructions and hash-bound verification are retained in the artwork folder (`INSTRUCTIONS.md`, `evidence/candidate-001-verification.json`, `evidence/file-manifest.json`). Step 8's integrated sequential final review and completion commit remain pending; no task completion or final review PASS is recorded. No product files, private samples, push, merge, tag or publication were changed.
