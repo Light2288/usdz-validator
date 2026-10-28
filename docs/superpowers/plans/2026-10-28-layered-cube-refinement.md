@@ -129,7 +129,7 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   Compile candidate-002's frozen `sources/inspect_model.swift` separately in the fresh evidence directory and invoke its existing two-argument interface on unchanged candidate-002 into a fresh output directory. Its old proportion checks remain appropriate there. Use Step 7's new views for the new package; never relax new acceptance to render the baseline. Save labelled matched front/rear comparisons and frame/pyramid/platform detail crops with both package hashes. Expected: comparable viewing setup and visible increased height/thickness, equal spacing and retained rounding.
 
-- [ ] **Step 10: Inspect the actual new package in Quick Look.**
+- [x] **Step 10: Inspect the actual new package in Quick Look.**
 
   Open the identified new USDZ in Finder Quick Look and inspect front and rotation toward the rear for contents, even spacing, tip/frame clearance, rounded silhouettes, transparency and severe flicker. Generate an actual-package thumbnail with `/usr/bin/qlmanage -x -t -s 1024 -o "$preview_dir" "$candidate_dir/model.usdz"`, using a fresh preview directory. Save observations and renderer labels, tied to the new hash. If automation cannot rotate, request fresh human observation of this exact candidate; earlier acceptance and thumbnails cannot establish rotation. An unavailable/failed check stays unresolved. Any within-scope adjustment gets a fresh candidate and affected checks repeated; dimensions/tolerances remain approved constraints.
 
@@ -168,7 +168,7 @@ Commands are grounded in current external `INSTRUCTIONS.md`, generator/inspector
 
 ## Revision-2 execution evidence — 2026-10-28
 
-Task 1 remains **in progress**; fresh manual rotation and the integrated final gate are pending. No task-completion helper has been invoked. Steps 1–9 and 11 have verification evidence; Step 10 awaits fresh human rotation and Step 12 awaits the sequential reviews/closure.
+Task 1 remains **in progress**; the integrated final gate is pending. No task-completion helper has been invoked. Steps 1–11 have verification evidence. Step 10 includes the user’s fresh manual-rotation confirmation for candidate-003; Step 12 awaits sequential reviews/closure.
 
 Branch `chore/layered-cube-refinement-r2` was prepared safely from the preserved local refinement branch after fetching and confirming `main`/`origin/main` unchanged at `dad53f0`. The tracked pair was preserved with scoped stash `966676bad35be5d9b2b0b5c3d751f8cf5491ac54`, applied successfully and retained. Approved pair commit: `3e3a9ac`. Revision-1 workspace state was archived before initializing revision-2 progress; no old completion marker is treated as new acceptance.
 
@@ -178,7 +178,7 @@ Imported frame-triangle/mesh AABBs, refined by triangle separating-axis projecti
 
 Apple USD conversion/load/package checks pass and the ZIP contains only `model.usdc`. Retained validator 0.2.0 exits 0 with complete requested native coverage, no native findings/operational errors, external checker unrequested. An initial evidence assertion used an incorrect JSON field; it was corrected against the unchanged saved report, and the harness correction is recorded. No new full product/release test run is claimed.
 
-Matched SceneKit front/rear comparisons and detail crops use unchanged cameras/lights/materials; Quick Look thumbnail succeeds. The assistant observed the new actual Quick Look front view. Automated dragging returned `noWindowsAvailable`; fresh human rotation remains pending. All 148 protected files, including both older candidates, sources, reference, old receipts and private originals, match the pre-edit inventory. Evidence is retained locally in `evidence/refinement-r2-2026-10-28-001/` under the external artwork root. Nothing has been pushed, merged, tagged, published or integrated.
+Matched SceneKit front/rear comparisons and detail crops use unchanged cameras/lights/materials; Quick Look thumbnail succeeds. The assistant observed the new actual Quick Look front view. Automated dragging returned `noWindowsAvailable`; the user freshly confirmed “Yes, it rotates and looks usable” for candidate-003, including visibility and absence of severe flicker. This is human-attributed viewer evidence; automation remains unresolved. All 148 protected files, including both older candidates, sources, reference, old receipts and private originals, match the pre-edit inventory. Evidence is retained locally in `evidence/refinement-r2-2026-10-28-001/` under the external artwork root. Nothing has been pushed, merged, tagged, published or integrated.
 
 ## Historical revision-1 evidence
 
