@@ -4,6 +4,7 @@
 
 **Slug:** `layered-cube-refinement`
 **Status:** APPROVED
+**Execution status:** COMPLETE
 **Revision:** 2
 **Created:** 2026-10-28
 **Updated:** 2026-10-28
@@ -137,7 +138,7 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   Update `INSTRUCTIONS.md` with final dimensions, gap definitions, new candidate/source paths, fresh-output reproduction commands, comparison previews and limitations; preserve earlier history. Rerun Step 4 after final source edits. Freeze final matching sources/instructions and create a candidate/evidence manifest. Compare Step 2 protected inventories, including old review receipts and private-original hashes. Run the repository's existing `verify_links(path)` helper in `Scripts/verify-examples.py` for both workflow artifacts and `git diff --check`. Expected: all focused checks pass and repository diff contains workflow records only. Save these as **verification PASS**, keeping task/increment in progress and review pending.
 
-- [ ] **Step 12: Complete sequential review and close the increment.**
+- [x] **Step 12: Complete sequential review and close the increment.**
 
   Commit scoped pre-review records with `docs: record layered cube revision 2 verification`, explicitly retaining pending-review status. Run the single integrated `personal-workflows:code-review` gate required by `personal-workflows:spec-implement`: fresh specification review, then quality review only after specification passes. Supply the approved pair, complete branch diff, external source changes, exact new package, previews, preservation manifest and fresh verification/viewer receipts. Use new review identities and preserve receipts before cleanup; do not reuse the revision-1 BLOCKED report as acceptance. Resolve blocking findings within scope and refresh affected checks/reviews.
 
@@ -168,7 +169,7 @@ Commands are grounded in current external `INSTRUCTIONS.md`, generator/inspector
 
 ## Revision-2 execution evidence — 2026-10-28
 
-Task 1 remains **in progress**; the integrated final gate is pending. No task-completion helper has been invoked. Steps 1–11 have verification evidence. Step 10 includes the user’s fresh manual-rotation confirmation for candidate-003; Step 12 awaits sequential reviews/closure.
+Task 1 is **complete**. Steps 1–12 are verified. Step 10 includes the user’s fresh manual-rotation confirmation for candidate-003. Fresh sequential specification and quality reviews both passed with no findings; only afterward did the task-completion helper run the full artwork suite (21/21 PASS) and record completion. Both reports and the unchanged sealed review package are archived under the revision-2 evidence directory’s `final-review/`.
 
 Branch `chore/layered-cube-refinement-r2` was prepared safely from the preserved local refinement branch after fetching and confirming `main`/`origin/main` unchanged at `dad53f0`. The tracked pair was preserved with scoped stash `966676bad35be5d9b2b0b5c3d751f8cf5491ac54`, applied successfully and retained. Approved pair commit: `3e3a9ac`. Revision-1 workspace state was archived before initializing revision-2 progress; no old completion marker is treated as new acceptance.
 
@@ -179,6 +180,14 @@ Imported frame-triangle/mesh AABBs, refined by triangle separating-axis projecti
 Apple USD conversion/load/package checks pass and the ZIP contains only `model.usdc`. Retained validator 0.2.0 exits 0 with complete requested native coverage, no native findings/operational errors, external checker unrequested. An initial evidence assertion used an incorrect JSON field; it was corrected against the unchanged saved report, and the harness correction is recorded. No new full product/release test run is claimed.
 
 Matched SceneKit front/rear comparisons and detail crops use unchanged cameras/lights/materials; Quick Look thumbnail succeeds. The assistant observed the new actual Quick Look front view. Automated dragging returned `noWindowsAvailable`; the user freshly confirmed “Yes, it rotates and looks usable” for candidate-003, including visibility and absence of severe flicker. This is human-attributed viewer evidence; automation remains unresolved. All 148 protected files, including both older candidates, sources, reference, old receipts and private originals, match the pre-edit inventory. Evidence is retained locally in `evidence/refinement-r2-2026-10-28-001/` under the external artwork root. Nothing has been pushed, merged, tagged, published or integrated.
+
+### Revision-2 final review and closure
+
+The reviewed commit is `fd5484d7fa445fb7ad0207c3608e97fddd18a6d0`. Both fresh reviewers returned PASS for gate `cube-refinement-r2-9f796f4a-6656-44ab-82b8-26d65787800b`, state `reviewed-state-ae01edfc-f20f-474d-a67f-90d88f9fe5c3`, package SHA-256 `562be906809782588546587c218c0dfb807dca28c4a23436ecc4c37035b51870`. Quality reported no findings or deferred minors and verified all 95 reviewed manifest entries. The same quality-review seat was resumed to conclude its report; no replacement reviewer or second review gate was introduced. No source/geometry fix was needed.
+
+Review limitations are retained: exact reference-image recovery is unverified (further likeness work may require another artwork revision); claims cover only the recorded Mac/toolchain (other viewers/hosts may differ); rotation is freshly human-confirmed while automation remains unresolved (unattended rotation checks are unavailable). These are scope/evidence rulings, not new defects or broader guarantees.
+
+Both review receipts, sealed inputs and reviewed progress were preserved before workspace cleanup. Closing artwork suite: 21 tests, zero failures. The candidate USDZ and geometry/tooling sources remain identical to reviewed bytes; only instruction/status prose was advanced after review, with its reviewed text retained in the archive. Protected baselines/private originals remain unchanged. Current acceptance and final hashes are in `candidate-003-completion.json` and `final-file-manifest.json` under `evidence/refinement-r2-2026-10-28-001/`. Earlier pre-viewer reports/manifests remain historical snapshots, superseded for current status by the closure receipt. The approved local-only endpoint keeps the branch and artwork in place; no push, merge, tag, publication or integration is performed.
 
 ## Historical revision-1 evidence
 
