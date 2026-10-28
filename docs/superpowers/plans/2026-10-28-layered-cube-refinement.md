@@ -59,19 +59,19 @@ This is one coherent visual revision. Full execution reflects the judgment neede
 
 External paths are relative to the artwork root. Preserve interfaces `scene_meshes() -> list[Mesh]`, `validate_mesh(mesh)`, `stage_text(meshes)`, `generate_candidate(output) -> Path`, `generate_model.py --output <fresh-directory>` and `inspect_model <model.usdz> <fresh-output-directory>`. Retain `rounded_frame`, `rounded_slab` and `rounded_pyramid`; no new geometry framework is needed. The inspector derives measurements from package vertices, not the generator's receipt.
 
-- [ ] **Step 1: Prepare the approved revision branch and record the pair.**
+- [x] **Step 1: Prepare the approved revision branch and record the pair.**
 
   Load `personal-workflows:spec-implement` and its selected native base once. Identify the saved revision-2 specification, this plan and their separate approving messages. Only after separate plan approval, record approval and inspect status/HEAD/upstream. Preserve the current branch and tracked artifact edits: use a scoped stash of only the pair if needed, recording and verifying its exact identity; never include/discard unrelated changes. Fetch origin, safely fast-forward `main`, then return to the preserved refinement branch. Confirm updated `main` is an ancestor before creating `chore/layered-cube-refinement-r2` from the preserved refinement branch and restoring the exact pair. On divergence or restoration conflict, preserve all states and reassess; do not force or merge automatically.
 
   Expected: renewed branch retains earlier local work and only the approved pair's intended edits. Commit the pair with `docs: record layered cube refinement revision 2 specification and plan`. Do not create a worktree or change branches during planning.
 
-- [ ] **Step 2: Establish preservation evidence and fresh execution state.**
+- [x] **Step 2: Establish preservation evidence and fresh execution state.**
 
   Recheck candidate-002 SHA-256 `51e41708c1e2248b344b512101a3026bfa1e18847d9e5be086aa7e828892b7e8`, candidate-001 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953` and reference `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`. Inventory/hash protected files and snapshot working sources/instructions into a fresh revision-2 evidence directory. Check private-original hashes against their relocation receipt without copying those files into the package. Record tool/OS/renderer and retained validator identities. Choose unused candidate/evidence names with exclusive creation.
 
   Preserve revision-1 scratch/ledger/review state before initializing revision-2 execution state under the same artifact identity; use the loaded workflow's supported initialization method and do not delete sibling evidence or reuse an old completion marker. Record revision 2, pending review and task in progress explicitly. Expected: recoverable old state, fresh revision-specific progress and a pre-edit preservation manifest; any mismatch is resolved before generation.
 
-- [ ] **Step 3: Add measured revision-2 regressions before changing generation.**
+- [x] **Step 3: Add measured revision-2 regressions before changing generation.**
 
   Update the existing pyramid/thickness/gap/receipt tests, retaining all finite-coordinate, index/face, closed/oriented seam, missing/reversed-face, invalid-radius, bounds, materials, panel and fresh-output-refusal controls. Use vertex bounds, not parameter values. Pin these exact assertions (meters):
 
@@ -90,17 +90,17 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   Apply thickness to each platform and footprint bounds to X/Z: pyramid 0.134 m, each platform 0.154 m within 0.0001 m. Retain one pyramid/no plinth and positive middle-to-grid clearance. Receipt assertions must agree with measured new geometry and identify candidate-002 as baseline. The final assertion above proves ignoring the grid would fail the upper-gap tolerance. Never weaken the earlier integrity controls to accommodate new dimensions.
 
-- [ ] **Step 4: Establish the expected failing result.**
+- [x] **Step 4: Establish the expected failing result.**
 
   From the artwork root run `python3 -m unittest discover -s . -p 'test_model.py' -v`. Expected: revised targets fail against candidate-002 generation while applicable existing checks pass; save actual output/counts. An import/tool error is not the intended failure.
 
-- [ ] **Step 5: Adjust dimensions and derive platform/grid placement.**
+- [x] **Step 5: Adjust dimensions and derive platform/grid placement.**
 
   In `scene_meshes()`, keep pyramid base 0.0137 m and half-extent 0.067 m; raise apex to 0.0900 m. Increase both bodies to 0.012 m thick. Derive placement from actual middle/grid extent and the two 0.025 m gaps, retaining existing grid-bar height 0.00035 m and grid-center offsets of 0.0004/0.0008 m above the middle top. This gives middle top −0.012275 m, center −0.018275 m and bottom −0.024275 m; lower top −0.049275 m, center −0.055275 m and bottom −0.061275 m. Grid centers follow the new middle top, rather than old absolute coordinates.
 
   Retain platform 6 mm outline/2.5 mm edge rounding, pyramid 3 mm rounding and existing frame/panel construction/materials. Update `generate_candidate()` measurements and baseline comparison to candidate-002 (71.3 mm pyramid, 10 mm bodies, 35/17.725 mm gaps). Remove misleading nominal-plane clearance claims from new receipts or label them explicitly as nominal diagnostics; never edit old receipts. Actual frame clearance is established in Step 7.
 
-- [ ] **Step 6: Verify the generator and package a fresh candidate.**
+- [x] **Step 6: Verify the generator and package a fresh candidate.**
 
   Repeat Step 4's command; expected zero failures with all meaningful controls retained. Then use `python3 generate_model.py --output candidate-003`, substituting the unused name established in Step 2. From that candidate directory run sequentially:
 
@@ -113,7 +113,7 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   Expected: successful exits/load checks and ZIP inventory containing only the intended `model.usdc`, without external texture/viewing dependencies. Stop after any failure. Freeze matching sources and hash the package before subsequent checks; preserve every failed attempt.
 
-- [ ] **Step 7: Independently inspect dimensions, equal gaps and actual clearance.**
+- [x] **Step 7: Independently inspect dimensions, equal gaps and actual clearance.**
 
   Update the existing Swift inspector's imported-vertex checks to Step 3 values/tolerances, including base/apex, X/Z footprints, both gaps, gap difference and raised grid. Retain required identities/groups, valid indices/areas/positions, bounds and missing/malformed-input rejection; do not fix acceptance to total mesh count. Preserve viewing cameras/lights/materials.
 
@@ -121,11 +121,11 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   From the artwork root compile `xcrun swiftc inspect_model.swift -o inspect_model`, then run `./inspect_model candidate-003/model.usdz candidate-003/inspection` with the chosen candidate. Expected: independent geometry PASS with measured targets/positive actual clearances and front/rear PNGs. Run disposable candidate-002-proportion, missing-platform, malformed-input and frame-contact controls through the same inspection interface into distinct destinations; expected nonzero rejection with no PASS receipt.
 
-- [ ] **Step 8: Run default native validation on the identified package.**
+- [x] **Step 8: Run default native validation on the identified package.**
 
   From the repository run `.build/release/usdz-validator validate "$candidate_dir/model.usdz" --format json`, with `candidate_dir` set to the absolute chosen path. Expected: retained validator version 0.2.0, exit 0, complete requested native coverage and no findings/operational errors; external checker remains unrequested. Preserve report/stdout/stderr, executable identity and package hash. This is fresh artwork validation, not a full validator release run.
 
-- [ ] **Step 9: Produce comparable baseline and revised views.**
+- [x] **Step 9: Produce comparable baseline and revised views.**
 
   Compile candidate-002's frozen `sources/inspect_model.swift` separately in the fresh evidence directory and invoke its existing two-argument interface on unchanged candidate-002 into a fresh output directory. Its old proportion checks remain appropriate there. Use Step 7's new views for the new package; never relax new acceptance to render the baseline. Save labelled matched front/rear comparisons and frame/pyramid/platform detail crops with both package hashes. Expected: comparable viewing setup and visible increased height/thickness, equal spacing and retained rounding.
 
@@ -133,7 +133,7 @@ External paths are relative to the artwork root. Preserve interfaces `scene_mesh
 
   Open the identified new USDZ in Finder Quick Look and inspect front and rotation toward the rear for contents, even spacing, tip/frame clearance, rounded silhouettes, transparency and severe flicker. Generate an actual-package thumbnail with `/usr/bin/qlmanage -x -t -s 1024 -o "$preview_dir" "$candidate_dir/model.usdz"`, using a fresh preview directory. Save observations and renderer labels, tied to the new hash. If automation cannot rotate, request fresh human observation of this exact candidate; earlier acceptance and thumbnails cannot establish rotation. An unavailable/failed check stays unresolved. Any within-scope adjustment gets a fresh candidate and affected checks repeated; dimensions/tolerances remain approved constraints.
 
-- [ ] **Step 11: Document and verify the reviewed candidate inputs.**
+- [x] **Step 11: Document and verify the reviewed candidate inputs.**
 
   Update `INSTRUCTIONS.md` with final dimensions, gap definitions, new candidate/source paths, fresh-output reproduction commands, comparison previews and limitations; preserve earlier history. Rerun Step 4 after final source edits. Freeze final matching sources/instructions and create a candidate/evidence manifest. Compare Step 2 protected inventories, including old review receipts and private-original hashes. Run the repository's existing `verify_links(path)` helper in `Scripts/verify-examples.py` for both workflow artifacts and `git diff --check`. Expected: all focused checks pass and repository diff contains workflow records only. Save these as **verification PASS**, keeping task/increment in progress and review pending.
 
@@ -165,6 +165,20 @@ Commands are grounded in current external `INSTRUCTIONS.md`, generator/inspector
 **Stage 4 approval — revision 2:** The revised specification was separately presented and approved with “approved.” After this revised plan was saved and presented at Stage 3, the user separately replied “approved,” authorizing execution of revision 2 using the preserved native method. This approval includes safe Git preparation, the fresh candidate, verification and sequential final reviews; it does not authorize push, merge, tagging, publication or integration.
 
 **Execution endpoint:** Deliver the verified revised cube-only USDZ, editable sources, comparison previews, instructions and review evidence; report dimensions, results and limitations; stop before further artwork, magnifier or integration. No push, merge, tag or publication is authorized.
+
+## Revision-2 execution evidence — 2026-10-28
+
+Task 1 remains **in progress**; fresh manual rotation and the integrated final gate are pending. No task-completion helper has been invoked. Steps 1–9 and 11 have verification evidence; Step 10 awaits fresh human rotation and Step 12 awaits the sequential reviews/closure.
+
+Branch `chore/layered-cube-refinement-r2` was prepared safely from the preserved local refinement branch after fetching and confirming `main`/`origin/main` unchanged at `dad53f0`. The tracked pair was preserved with scoped stash `966676bad35be5d9b2b0b5c3d751f8cf5491ac54`, applied successfully and retained. Approved pair commit: `3e3a9ac`. Revision-1 workspace state was archived before initializing revision-2 progress; no old completion marker is treated as new acceptance.
+
+New package: `/Users/davide/Personal/Images/usdz-validator/cube-model/candidate-003/model.usdz`, 530,905 bytes, SHA-256 `89ee36e574d27275387367e67199a24ab7b4d356325f2b5f1fdfa60f1f2297a3`. The 21-case artwork suite had five expected target failures before generation changes and now passes. Independent Model I/O inspection confirms 14 meshes/35,694 triangles, 20 cm bounds, 76.3 mm pyramid (base/apex 13.7/90 mm), 12 mm platforms and both gaps approximately 25.000000 mm with zero measured difference. The grid remains 0.225 mm above the teal body.
+
+Imported frame-triangle/mesh AABBs, refined by triangle separating-axis projection gaps where necessary, establish conservative positive surface-clearance bounds: about 21.885 mm pyramid/frame, 18.225 mm platforms/frame and 0.1009 mm panels/frame. These are lower bounds, not exact nearest distances; acceptance epsilon is 0.0001 mm. Old inspection accepted a deliberate frame/platform contact control before the new guard; updated inspection rejects it, candidate-002 proportions, missing platform, malformed USD, wrong gaps and wrong footprint. Positive clearance uses actual geometry rather than a nominal apex-plane restriction.
+
+Apple USD conversion/load/package checks pass and the ZIP contains only `model.usdc`. Retained validator 0.2.0 exits 0 with complete requested native coverage, no native findings/operational errors, external checker unrequested. An initial evidence assertion used an incorrect JSON field; it was corrected against the unchanged saved report, and the harness correction is recorded. No new full product/release test run is claimed.
+
+Matched SceneKit front/rear comparisons and detail crops use unchanged cameras/lights/materials; Quick Look thumbnail succeeds. The assistant observed the new actual Quick Look front view. Automated dragging returned `noWindowsAvailable`; fresh human rotation remains pending. All 148 protected files, including both older candidates, sources, reference, old receipts and private originals, match the pre-edit inventory. Evidence is retained locally in `evidence/refinement-r2-2026-10-28-001/` under the external artwork root. Nothing has been pushed, merged, tagged, published or integrated.
 
 ## Historical revision-1 evidence
 
