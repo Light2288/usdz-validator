@@ -1,152 +1,108 @@
-# Layered Cube Refinement Implementation Plan
+# Layered Cube Refinement Implementation Plan — revision 2
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` through `personal-workflows:spec-implement`. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Slug:** `layered-cube-refinement`
 **Status:** APPROVED
+**Revision:** 2
 **Created:** 2026-10-28
 **Updated:** 2026-10-28
 **Execution tier:** full
 **Implementation model role:** full
-**Execution method:** Native, preserving the method selected for the original cube-model work.
-**Spec:** [Approved specification](../specs/2026-10-28-layered-cube-refinement.md)
+**Execution method:** Native, preserving the selected execution method.
+**Spec:** [Approved revision-2 specification](../specs/2026-10-28-layered-cube-refinement.md)
 
-**Goal:** Deliver a softer, fuller version of the existing cube-only USDZ, with thicker platforms, a taller pyramid, closer spacing and genuine rounded geometry.
+**Goal:** Deliver a taller pyramid, two thicker platforms and equal clear gaps in a fresh, verified cube-only USDZ, preserving the previous models.
 
-**Architecture:** Extend the existing local procedural mesh generator and independent Model I/O inspector. Keep the baseline immutable, generate each refinement into a fresh candidate directory, and verify the packaged model through geometry checks, native validation, matching renders and Quick Look.
+**Architecture:** Adjust existing procedural dimensions and derive platform/grid placement from the approved gaps. Independently inspect imported geometry and actual-package appearance; retain the existing rounded mesh algorithms, materials and rendering setup.
 
 **Tech Stack:** Python standard library, installed Apple USD Tools 0.25.11, Swift 6.4, Model I/O, SceneKit, Metal and Quick Look. No installation.
 
-**Provenance and approval:** The user confirmed the combined refinement, then separately approved its saved specification with “approved.” At planning time this plan was the next approval artifact and implementation had not begun; its later separate approval is recorded below. Inspection HEAD is `213cf0bc6d2577fde9ecffd0a6713b6f65a3f75b` on `chore/layered-cube-usdz-model`. Specification resolution is `NEW_ONLY`; plan resolution was `MISSING`, including exact-slug and canonical/legacy-path checks. No architecture map or ADR directory exists, so there is no map freshness SHA or applicable ADR status to record. Key paths checked: the existing generator, tests, Swift inspector, instructions, baseline sources and verification receipts. No architecture artifact will be generated.
+**Provenance and approval:** Revises this same plan as preserved at `da63a66cd707b41b14b2ddce610ae3f85af281f0`, on `chore/layered-cube-refinement`. The user separately approved the revised scope/design and then the saved revision-2 specification, each with “approved.” The latter authorizes this planning stage only. Exact-slug resolution selects the existing specification and plan as `NEW_ONLY`, with a matching Spec reference and no legacy/identity conflict. Original filenames and Created dates remain unchanged. Revision-1 execution evidence is retained verbatim below and in Git history; its checkboxes do not establish revision-2 progress. `docs/architecture/map.md` and ADR directories are absent; no architecture artifact is generated. Key paths inspected: generator, tests, Swift inspector, instructions, candidate-002 frozen sources and preserved verification/review records.
 
 ## Global constraints
 
-- Artwork stays under `/Users/davide/Personal/Images/usdz-validator/cube-model/`; validator product files remain unchanged.
-- Preserve the 20 cm outer bounds, Y up, meters, glossy blue/teal materials, lightly translucent sides, open top, grid and consistent rear geometry.
-- Refine the single pyramid; add no separate square base or plinth. Omit the magnifying glass.
-- Preserve `candidate-001` and all its frozen sources/previews/evidence, the reference PNGs, earlier approved workflow records and private Apple samples.
-- Keep attempts distinct, including failed candidates. Refuse existing output directories.
-- No installation, product source/tests/schema/dependency/version/interface changes, README integration, push, merge, tag or publication.
-- Use the existing checkout. Create `chore/layered-cube-refinement` only after separate specification and plan approvals; keep both new workflow artifacts uncommitted until then.
-- Native validation supplements independent geometry/package and actual viewer inspection.
+- Artwork root: `/Users/davide/Personal/Images/usdz-validator/cube-model/`. Only workflow artifacts/records change in the validator repository.
+- Pyramid: height **76.3 mm**, base Y **13.7 mm**, apex Y **90 mm**, footprint **134 × 134 mm**. Both platform bodies: **154 × 12 × 154 mm**.
+- Both clear gaps: **25 mm ±0.1 mm**; their difference is **≤0.1 mm**. Other specified dimensions/coordinates have **0.1 mm** tolerance. Count the grid as part of the middle visual element.
+- Preserve the 20 cm outer bounds, Y up/meters, open top, rounded geometry, glossy palette, four translucent panels, modeled grid and consistent rear geometry. One pyramid; no extra plinth or magnifier.
+- Preserve candidates 001/002, frozen sources/previews/receipts, reference PNGs, private Apple originals and old workflow/review evidence. Fresh exclusive candidate/evidence destinations; no silent overwrite.
+- Existing checkout only. Renewed plan approval precedes Git preparation and artwork changes. No installation, product changes, integration, push, merge, tag or publication.
+- No old 85 mm apex ceiling or requirement to stay below the nominal inner top-frame plane. Require positive actual frame clearance and inspect the taller tip.
+- Native validation supplements independent geometry/package/viewer evidence. Keep the task/increment in progress until required reviews and closure finish.
 
 ## Review focus
 
-1. Thicker shelves and the taller pyramid remain separated; moved grid bars stay above the teal surface. Step 3 tests measured clearances; Step 8 checks flicker and appearance.
-2. Rounding changes silhouettes and frame joins without holes or blocky overlapping caps. Steps 3–4 test geometry and seams; Step 8 inspects angled close-ups.
-3. Thin panels have rounded outlines without disappearing or becoming opaque. Steps 3–4 test independent outline/edge radii; Step 8 inspects actual transparency.
-4. Independent inspection accepts changed topology while still rejecting missing contents, invalid geometry and wrong dimensions. Step 6 exercises valid and deliberately invalid inputs.
-5. Previews, receipts and source snapshots identify the final package; baseline files and failed attempts remain distinguishable. Steps 2 and 9 verify preservation and hashes; Step 8 requires fresh viewer evidence.
+1. Omitting the grid makes the upper gap wrong: Step 3 measures its highest vertex and pins a control calculation that fails if the grid is omitted.
+2. A 90 mm apex crosses the nominal 88 mm plane without necessarily hitting the open frame: Step 7 checks actual frame geometry, including a contact control, rather than rejecting a plane distance.
+3. Thickness changes can leave grid bars embedded or platforms misplaced: Steps 3/7 independently check raised grid, exact dimensions/gaps, separation and footprint.
+4. Old candidate acceptance or stale task completion can masquerade as new verification: Steps 2/12 bind fresh state, viewer evidence and reviews to the new candidate hash; old review remains BLOCKED.
+5. Equal physical gaps may look unequal in perspective, or revised rounding may show artifacts: Step 10 compares matched front/rear/detail views and requires fresh actual-package inspection.
 
 ---
 
-## Task 1: Refine and verify the complete local artwork [size: M | risk: none | mechanical: false | clear_pattern: false | objectively_verifiable: false | concerns: none]
+## Task 1: Revise and verify the complete local artwork [size: M | risk: none | mechanical: false | clear_pattern: true | objectively_verifiable: false | concerns: none]
 
 **Acceptance criteria:** AC-01, AC-02, AC-03, AC-04, AC-05, AC-06, AC-07, AC-08.
 
-One cohesive task keeps thickness, spacing, rounding and actual-package appearance in the same verification cycle. Full execution is required because likeness and usable rounding need visual judgment.
+This is one coherent visual revision. Full execution reflects the judgment needed for likeness, rounded appearance and viewer usability; dimensions alone cannot establish acceptance.
 
 **Files and responsibilities:**
 
-- Repository: save/commit only this matching specification/plan pair and their execution records.
-- Modify external `generate_model.py`: geometry, modeling parameters, USD/material authoring and measured geometry receipt.
-- Modify external `test_model.py`: meaningful geometry, arrangement and preservation regressions.
-- Modify external `inspect_model.swift`: independent imported-geometry checks and renderer-labelled package previews.
-- Update external `INSTRUCTIONS.md`: final-candidate identification and reproducible commands, retaining baseline instructions/history.
-- Create fresh `candidate-NNN/` containing editable USDA, USDC, USDZ, matching `sources/`, inspection outputs and Quick Look preview.
-- Create fresh `evidence/refinement-YYYY-MM-DD-NNN/` containing logs, comparison previews, hashes, preservation checks, final receipt and review archive. Do not rewrite earlier evidence or its manifest.
+- Repository: revise/commit this specification/plan pair and scoped execution records only.
+- External `generate_model.py`: dimensions, derived placement and measured receipt; retain existing rounded geometry/material algorithms.
+- External `test_model.py`: revised dimension/spacing regressions and retained integrity controls.
+- External `inspect_model.swift`: independent imported dimensions/gaps, frame-clearance evidence and unchanged SceneKit views.
+- External `INSTRUCTIONS.md`: final-candidate identification, dimensions, reproduction and limitations, preserving earlier history.
+- Fresh `candidate-NNN/`: editable USDA, USDC, USDZ, frozen matching sources, inspection and previews. `candidate-003` is currently unused; recheck at execution.
+- Fresh `evidence/refinement-r2-YYYY-MM-DD-NNN/`: pre-edit inventory/snapshot, logs, comparisons, manifests, viewer observations and sequential review receipts. Never modify the old sealed review package.
 
-All external paths above are relative to the artwork root. `candidate-002` is currently unused; execution must recheck and choose the next unused number.
+External paths are relative to the artwork root. Preserve interfaces `scene_meshes() -> list[Mesh]`, `validate_mesh(mesh)`, `stage_text(meshes)`, `generate_candidate(output) -> Path`, `generate_model.py --output <fresh-directory>` and `inspect_model <model.usdz> <fresh-output-directory>`. Retain `rounded_frame`, `rounded_slab` and `rounded_pyramid`; no new geometry framework is needed. The inspector derives measurements from package vertices, not the generator's receipt.
 
-**Interfaces:** Preserve `scene_meshes() -> list[Mesh]`, `validate_mesh(mesh)`, `stage_text(meshes)` and `generate_candidate(output) -> Path`, including `--output` and existing-directory refusal. Add only geometry helpers needed by this model: `rounded_slab(name, group, material, center, size, corner_radius, edge_radius) -> Mesh`, `rounded_pyramid(base_y, apex_y, half_extent, radius) -> Mesh` and `rounded_frame(outer_edge, thickness, radius) -> list[Mesh]`. Keep inspection CLI `inspect_model <model.usdz> <fresh-output-directory>`, producing `independent-geometry.json` and SceneKit front/rear previews. Inspection must derive geometry from the package rather than trust generator receipts.
+- [ ] **Step 1: Prepare the approved revision branch and record the pair.**
 
-- [x] **Step 1: Prepare the approved branch and record the pair.**
+  Load `personal-workflows:spec-implement` and its selected native base once. Identify the saved revision-2 specification, this plan and their separate approving messages. Only after separate plan approval, record approval and inspect status/HEAD/upstream. Preserve the current branch and tracked artifact edits: use a scoped stash of only the pair if needed, recording and verifying its exact identity; never include/discard unrelated changes. Fetch origin, safely fast-forward `main`, then return to the preserved refinement branch. Confirm updated `main` is an ancestor before creating `chore/layered-cube-refinement-r2` from the preserved refinement branch and restoring the exact pair. On divergence or restoration conflict, preserve all states and reassess; do not force or merge automatically.
 
-  Load `personal-workflows:spec-implement`; identify the saved specification, this plan and their separate approving messages. Record plan approval without altering scope. Check status and preserve both uncommitted files.
+  Expected: renewed branch retains earlier local work and only the approved pair's intended edits. Commit the pair with `docs: record layered cube refinement revision 2 specification and plan`. Do not create a worktree or change branches during planning.
 
-  After approval, fetch origin, switch to `main` and fast-forward it safely. Preserve the completed local branch at `213cf0b`. Confirm updated `main` remains an ancestor of that branch before creating `chore/layered-cube-refinement` from the completed-artwork branch. This retains the original increment's local records. If ancestry, local changes or upstream inputs differ, reassess without discarding work or merging branches automatically.
+- [ ] **Step 2: Establish preservation evidence and fresh execution state.**
 
-  Expected: the new branch contains the completed baseline and both new artifacts, with no lost changes. Commit only the new pair with `docs: record layered cube refinement specification and plan`.
+  Recheck candidate-002 SHA-256 `51e41708c1e2248b344b512101a3026bfa1e18847d9e5be086aa7e828892b7e8`, candidate-001 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953` and reference `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`. Inventory/hash protected files and snapshot working sources/instructions into a fresh revision-2 evidence directory. Check private-original hashes against their relocation receipt without copying those files into the package. Record tool/OS/renderer and retained validator identities. Choose unused candidate/evidence names with exclusive creation.
 
-- [x] **Step 2: Freeze the baseline and establish fresh destinations.**
+  Preserve revision-1 scratch/ledger/review state before initializing revision-2 execution state under the same artifact identity; use the loaded workflow's supported initialization method and do not delete sibling evidence or reuse an old completion marker. Record revision 2, pending review and task in progress explicitly. Expected: recoverable old state, fresh revision-specific progress and a pre-edit preservation manifest; any mismatch is resolved before generation.
 
-  Recheck reference SHA-256 `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b` and baseline package SHA-256 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`. Inventory/hash `candidate-001`, existing evidence, the current artwork sources/instructions and available original inputs before edits. Retain a source snapshot in the new evidence directory; leave baseline directories untouched. Check private originals against their existing relocation receipt without copying them into delivery/review packages.
+- [ ] **Step 3: Add measured revision-2 regressions before changing generation.**
 
-  Record current Python, Swift, USD-tool, OS and renderer identities and retained validator identity. Select unused evidence/candidate destinations and use exclusive creation. Expected: any hash mismatch or destination collision is reported before generation, and preservation has a comparison record independent of later outputs.
-
-- [x] **Step 3: Add failing refinement regressions.**
-
-  Extend `test_model.py` before changing geometry. Use measured vertex bounds, not generator parameter values, to assert:
-
-  - `test_refined_pyramid_height_and_no_plinth`: height approximately 0.0713 m (0.0005 m tolerance), apex no higher than 0.085 m, one named pyramid, no added slab underneath.
-  - `test_both_platforms_are_thicker`: each shelf thickness 0.010 m within 0.00025 m; teal/pale-blue materials and grid retained.
-  - `test_refinement_reduces_gaps_without_intersections`: positive lower-to-middle, middle-to-grid and grid-to-pyramid gaps; the shelf-to-shelf and grid-to-pyramid gaps are smaller than independently recorded baseline values (0.045 m and approximately 0.034 m respectively).
-  - `test_rounded_silhouettes_and_closed_seams`: pyramid has genuine curved-edge/tip samples beyond the old five vertices; slab outlines recede from sharp corners; coincident-position seam welding yields closed, consistently oriented boundaries on each intended closed surface. Include a missing-face/reversed-face control so the check proves it can reject bad geometry. Frame checks must allow its concave overall shape.
-  - `test_thin_panel_rounding_is_independent_of_thickness`: all four panels retain positive thickness, rounded in-plane corners and finite nondegenerate triangles. Invalid dimensions/radii raise contextual errors.
-
-  Retain existing invalid-coordinate/index/face, bounds, materials, raised-grid and refusal-to-overwrite coverage. Apply the old convex-center winding test only to convex parts; it is invalid for a connected concave frame.
-
-  Core dimension assertions belong in the existing `ModelTests` class, for example:
+  Update the existing pyramid/thickness/gap/receipt tests, retaining all finite-coordinate, index/face, closed/oriented seam, missing/reversed-face, invalid-radius, bounds, materials, panel and fresh-output-refusal controls. Use vertex bounds, not parameter values. Pin these exact assertions (meters):
 
   ```python
-  def test_both_platforms_are_thicker(self):
-      meshes = self.model().scene_meshes()
-      for group, material in (("MiddlePlatform", "Teal"),
-                              ("LowerPlatform", "PaleBlue")):
-          parts = [m for m in meshes if m.group == group]
-          self.assertEqual(len(parts), 1)
-          self.assertEqual(parts[0].material, material)
-          heights = [v[1] for v in parts[0].vertices]
-          self.assertAlmostEqual(max(heights) - min(heights),
-                                 0.010, delta=0.00025)
-
-  def test_refined_pyramid_height_and_no_plinth(self):
-      parts = [m for m in self.model().scene_meshes()
-               if m.group == "Pyramid"]
-      self.assertEqual(len(parts), 1)
-      self.assertEqual(parts[0].name, "BluePyramid")
-      heights = [v[1] for v in parts[0].vertices]
-      self.assertAlmostEqual(max(heights) - min(heights),
-                             0.0713, delta=0.0005)
-      self.assertLessEqual(max(heights), 0.085 + 1e-9)
+  self.assertAlmostEqual(pyramid_max_y - pyramid_min_y, 0.0763, delta=0.0001)
+  self.assertAlmostEqual(pyramid_min_y, 0.0137, delta=0.0001)
+  self.assertAlmostEqual(pyramid_max_y, 0.0900, delta=0.0001)
+  self.assertAlmostEqual(platform_max_y - platform_min_y, 0.012, delta=0.0001)
+  lower_gap = middle_min_y - lower_max_y
+  upper_gap = pyramid_min_y - max(middle_max_y, grid_max_y)
+  self.assertAlmostEqual(lower_gap, 0.025, delta=0.0001)
+  self.assertAlmostEqual(upper_gap, 0.025, delta=0.0001)
+  self.assertLessEqual(abs(lower_gap - upper_gap), 0.0001)
+  self.assertGreater(abs((pyramid_min_y - middle_max_y) - 0.025), 0.0001)
   ```
 
-  From the artwork root run the existing command from `INSTRUCTIONS.md`:
+  Apply thickness to each platform and footprint bounds to X/Z: pyramid 0.134 m, each platform 0.154 m within 0.0001 m. Retain one pyramid/no plinth and positive middle-to-grid clearance. Receipt assertions must agree with measured new geometry and identify candidate-002 as baseline. The final assertion above proves ignoring the grid would fail the upper-gap tolerance. Never weaken the earlier integrity controls to accommodate new dimensions.
 
-  ```sh
-  python3 -m unittest discover -s . -p 'test_model.py' -v
-  ```
+- [ ] **Step 4: Establish the expected failing result.**
 
-  Expected: new refinement cases fail against baseline proportions/geometry; existing applicable checks pass. Save the actual failing output. Do not treat unrelated import/tool failures as the intended red result.
+  From the artwork root run `python3 -m unittest discover -s . -p 'test_model.py' -v`. Expected: revised targets fail against candidate-002 generation while applicable existing checks pass; save actual output/counts. An import/tool error is not the intended failure.
 
-- [x] **Step 4: Implement the refined geometry and pass the tests.**
+- [ ] **Step 5: Adjust dimensions and derive platform/grid placement.**
 
-  Extend the existing procedural helpers without external dependencies. Starting modeling values, chosen within the specification's visual tuning allowance:
+  In `scene_meshes()`, keep pyramid base 0.0137 m and half-extent 0.067 m; raise apex to 0.0900 m. Increase both bodies to 0.012 m thick. Derive placement from actual middle/grid extent and the two 0.025 m gaps, retaining existing grid-bar height 0.00035 m and grid-center offsets of 0.0004/0.0008 m above the middle top. This gives middle top −0.012275 m, center −0.018275 m and bottom −0.024275 m; lower top −0.049275 m, center −0.055275 m and bottom −0.061275 m. Grid centers follow the new middle top, rather than old absolute coordinates.
 
-  | Element | Initial refined values |
-  |---|---|
-  | Pyramid | Base Y 0.0137 m, apex Y 0.085 m, half-width/depth 0.067 m; approximately 3 mm ridge/tip rounding |
-  | Middle platform | Center Y −0.010 m; dimensions 0.154 × 0.010 × 0.154 m |
-  | Lower platform | Center Y −0.055 m; same dimensions |
-  | Platform rounding | Approximately 6 mm in-plane corners and 2.5 mm edge rounding |
-  | Frame | Retain approximately 12 mm members and 20 cm outer bounds; increase edge rounding toward 4.5 mm with matching rounded junctions |
-  | Panels | Retain approximately 1 mm thickness/0.10 opacity; approximately 6 mm outline corners with separate small edge rounding |
+  Retain platform 6 mm outline/2.5 mm edge rounding, pyramid 3 mm rounding and existing frame/panel construction/materials. Update `generate_candidate()` measurements and baseline comparison to candidate-002 (71.3 mm pyramid, 10 mm bodies, 35/17.725 mm gaps). Remove misleading nominal-plane clearance claims from new receipts or label them explicitly as nominal diagnostics; never edit old receipts. Actual frame clearance is established in Step 7.
 
-  Implement rounded slabs with independent in-plane and thickness radii. Build the rounded pyramid as a closed convex surface with flat face regions, tessellated ridge arcs and softened vertex patches; keep neighboring patches on shared boundaries and normalize resulting bounds to the recorded height/width targets. Create frame members and matching junction surfaces with coherent rounded joins; remove hidden coincident caps where parts meet. Preserve top/bottom openings. Use shared boundary positions, adequate curve sampling and consistent normals/winding rather than shading sharp silhouettes.
+- [ ] **Step 6: Verify the generator and package a fresh candidate.**
 
-  Reposition grid bars relative to the new teal top using the existing small offsets between directions. Keep imported materials and default root/group identities. Extend `geometry.json` with actual dimensions, radii, measured gaps and baseline comparison. Do not hard-code a new total mesh count.
-
-  Run Step 3's suite again. Expected: zero failures, including malformed-input and seam controls. Record actual counts. Parameter adjustments may follow Step 8 within the approved modest treatment; update tests/receipts to the chosen values without weakening separation or integrity checks.
-
-- [x] **Step 5: Generate and package a fresh candidate.**
-
-  From the artwork root, use the generator interface documented in `INSTRUCTIONS.md`, substituting the verified unused number:
-
-  ```sh
-  python3 generate_model.py --output candidate-002
-  ```
-
-  Stop on any failure before packaging. From that new candidate directory, use the existing instructions/original approved plan commands:
+  Repeat Step 4's command; expected zero failures with all meaningful controls retained. Then use `python3 generate_model.py --output candidate-003`, substituting the unused name established in Step 2. From that candidate directory run sequentially:
 
   ```sh
   /usr/bin/usdcat model.usda -o model.usdc
@@ -155,74 +111,64 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
   /usr/bin/usdcat --loadOnly model.usdz
   ```
 
-  Expected: all successful exits, load success, and a self-contained package with only the intended `model.usdc` root layer. Inspect the ZIP inventory using Python's standard library and retain it; no external texture, camera/light dependency or unexpected file is admitted. Snapshot matching generator/test/inspection sources with the candidate. Preserve stdout/stderr and hash the package before downstream verification.
+  Expected: successful exits/load checks and ZIP inventory containing only the intended `model.usdc`, without external texture/viewing dependencies. Stop after any failure. Freeze matching sources and hash the package before subsequent checks; preserve every failed attempt.
 
-- [x] **Step 6: Update and exercise independent inspection.**
+- [ ] **Step 7: Independently inspect dimensions, equal gaps and actual clearance.**
 
-  Remove the Swift helper's hard-coded total of 25 meshes and per-group beam-count assumptions. Retain required groups, four panels, one pyramid, both shelves, grid identity, finite transformed positions, valid triangular indices/areas, 20 cm bounds and separation. Derive dimensions and gaps independently from Model I/O vertices; check the Step 3 height/thickness tolerances and reduced gaps without reading `geometry.json` as expected truth. Retain clear failures for missing components and unexpected content. Preserve the baseline camera and lights for comparable rendering.
+  Update the existing Swift inspector's imported-vertex checks to Step 3 values/tolerances, including base/apex, X/Z footprints, both gaps, gap difference and raised grid. Retain required identities/groups, valid indices/areas/positions, bounds and missing/malformed-input rejection; do not fix acceptance to total mesh count. Preserve viewing cameras/lights/materials.
 
-  Compile/run using the existing `INSTRUCTIONS.md` interfaces from the artwork root:
+  Establish a conservative positive lower bound between actual frame triangles and intended separate contents/panels, extending the earlier triangle-box clearance method to the new imported geometry. Overlapping boxes are inconclusive: refine the bound or check triangle distances before accepting. Test this check with a disposable frame-contact/intersection control as well as the valid package. Record method/tolerance and distinguish intended joints; a negative nominal 88 mm-plane distance alone is not a collision. If separation cannot be established, leave AC-03 unresolved.
 
-  ```sh
-  xcrun swiftc inspect_model.swift -o inspect_model
-  ./inspect_model candidate-002/model.usdz candidate-002/inspection
-  ```
+  From the artwork root compile `xcrun swiftc inspect_model.swift -o inspect_model`, then run `./inspect_model candidate-003/model.usdz candidate-003/inspection` with the chosen candidate. Expected: independent geometry PASS with measured targets/positive actual clearances and front/rear PNGs. Run disposable candidate-002-proportion, missing-platform, malformed-input and frame-contact controls through the same inspection interface into distinct destinations; expected nonzero rejection with no PASS receipt.
 
-  Expected: independent geometry PASS and front/rear PNGs from the same package, without material replacement. Use disposable malformed/missing-component USD inputs through this same interface to verify rejection. Keep those inputs/output separate from the candidate; a failed inspection cannot receive a PASS receipt. For baseline comparisons, use its frozen `candidate-001/sources/inspect_model.swift`, compiled separately into the new evidence directory, with that helper's existing two-argument interface and a fresh output destination. Its camera/lights match the refined renderer, and its earlier geometry checks remain appropriate for the unchanged baseline. Do not relax refined acceptance to render the baseline.
+- [ ] **Step 8: Run default native validation on the identified package.**
 
-- [x] **Step 7: Run default native validation.**
+  From the repository run `.build/release/usdz-validator validate "$candidate_dir/model.usdz" --format json`, with `candidate_dir` set to the absolute chosen path. Expected: retained validator version 0.2.0, exit 0, complete requested native coverage and no findings/operational errors; external checker remains unrequested. Preserve report/stdout/stderr, executable identity and package hash. This is fresh artwork validation, not a full validator release run.
 
-  From the repository, use the interface in `docs/cli.md` and the original plan:
+- [ ] **Step 9: Produce comparable baseline and revised views.**
 
-  ```sh
-  .build/release/usdz-validator validate "$candidate_dir/model.usdz" --format json
-  ```
+  Compile candidate-002's frozen `sources/inspect_model.swift` separately in the fresh evidence directory and invoke its existing two-argument interface on unchanged candidate-002 into a fresh output directory. Its old proportion checks remain appropriate there. Use Step 7's new views for the new package; never relax new acceptance to render the baseline. Save labelled matched front/rear comparisons and frame/pyramid/platform detail crops with both package hashes. Expected: comparable viewing setup and visible increased height/thickness, equal spacing and retained rounding.
 
-  Here `candidate_dir` is the absolute path to the generated candidate. Expected: validator 0.2.0, exit 0, complete requested native coverage, no findings or operational errors; external checker remains unrequested. Retain stdout/stderr, report, executable identity and package hash. This is an artwork check, not another validator release run.
+- [ ] **Step 10: Inspect the actual new package in Quick Look.**
 
-- [x] **Step 8: Inspect comparisons and the actual package.**
+  Open the identified new USDZ in Finder Quick Look and inspect front and rotation toward the rear for contents, even spacing, tip/frame clearance, rounded silhouettes, transparency and severe flicker. Generate an actual-package thumbnail with `/usr/bin/qlmanage -x -t -s 1024 -o "$preview_dir" "$candidate_dir/model.usdz"`, using a fresh preview directory. Save observations and renderer labels, tied to the new hash. If automation cannot rotate, request fresh human observation of this exact candidate; earlier acceptance and thumbnails cannot establish rotation. An unavailable/failed check stays unresolved. Any within-scope adjustment gets a fresh candidate and affected checks repeated; dimensions/tolerances remain approved constraints.
 
-  Use matched SceneKit views to compare baseline/refinement proportions and round silhouettes, including frame junctions, panel corners and pyramid tip. Save front/rear comparisons and angled detail crops with renderer labels and package hashes. Inspect the actual final USDZ in Finder Quick Look, opening with Space and rotating toward the rear; verify contents, separation, rounding and absence of severe flicker.
+- [ ] **Step 11: Document and verify the reviewed candidate inputs.**
 
-  Generate the thumbnail through the documented remote service that succeeded previously:
+  Update `INSTRUCTIONS.md` with final dimensions, gap definitions, new candidate/source paths, fresh-output reproduction commands, comparison previews and limitations; preserve earlier history. Rerun Step 4 after final source edits. Freeze final matching sources/instructions and create a candidate/evidence manifest. Compare Step 2 protected inventories, including old review receipts and private-original hashes. Run the repository's existing `verify_links(path)` helper in `Scripts/verify-examples.py` for both workflow artifacts and `git diff --check`. Expected: all focused checks pass and repository diff contains workflow records only. Save these as **verification PASS**, keeping task/increment in progress and review pending.
 
-  ```sh
-  /usr/bin/qlmanage -x -t -s 1024 -o "$preview_dir" "$candidate_dir/model.usdz"
-  ```
+- [ ] **Step 12: Complete sequential review and close the increment.**
 
-  `preview_dir` must be fresh. Expected: a readable actual-package thumbnail plus successful fresh interactive inspection. Attribute human rotation evidence if automation fails again; never reuse baseline acceptance or represent a thumbnail as interactive rotation. A blocked viewer check remains unresolved. Within-scope tuning gets a new candidate and repeated affected geometry/package/native/visual checks; never replace earlier attempts silently.
+  Commit scoped pre-review records with `docs: record layered cube revision 2 verification`, explicitly retaining pending-review status. Run the single integrated `personal-workflows:code-review` gate required by `personal-workflows:spec-implement`: fresh specification review, then quality review only after specification passes. Supply the approved pair, complete branch diff, external source changes, exact new package, previews, preservation manifest and fresh verification/viewer receipts. Use new review identities and preserve receipts before cleanup; do not reuse the revision-1 BLOCKED report as acceptance. Resolve blocking findings within scope and refresh affected checks/reviews.
 
-- [ ] **Step 9: Document, review and complete the increment.**
-
-  Update `INSTRUCTIONS.md` with final dimensions/radii/gaps, candidate/source locations, fresh-destination reproduction commands, before/after preview paths and renderer/viewer limitations. Recheck the new-source suite after any final edits. Save a final candidate receipt and SHA-256 inventory covering sources, package, previews and evidence; compare all protected baseline files and private-original hashes with Step 2. Keep previous evidence manifests unchanged.
-
-  Run focused workflow-document link checks with the repository's `verify_links(path)` helper in `Scripts/verify-examples.py`, then `git diff --check`. Expected: valid links, no whitespace errors and no validator product diff. Commit only the pair's execution records with `docs: record verified layered cube refinement`.
-
-  Complete `personal-workflows:spec-implement`'s single integrated, sequential specification-then-quality final review, using `personal-workflows:code-review`. Supply the approved pair, full branch diff against the recorded baseline, external source changes, exact package/previews and hash-bound checks. Preserve both review receipts before cleanup. Resolve blocking findings within scope and refresh affected evidence/review; unrelated future artwork stays deferred. Commit the final workflow completion record if necessary.
-
-  Expected: no unresolved blocking findings, clean local implementation branch, identified final USDZ/editable sources and an honest evidence/limitations report. Artwork stays local; nothing is pushed, merged or published.
+  Keep review closure distinct from pre-review verification. Invoke any task-completion helper only after the task's required review actually passes; ensure checkbox/progress/ledger records agree. Commit final scoped completion records with `docs: complete layered cube refinement revision 2`. Expected: no unresolved blocking findings, a clean local branch and final hash-bound deliverable/evidence; no artwork or private assets committed to the repository.
 
 ## Traceability and command evidence
 
-| Criteria | Steps and evidence |
+| Criterion | Steps and evidence |
 |---|---|
-| AC-01 | 3–4 measured pyramid regression; 6 independent bounds; 8 comparison |
-| AC-02 | 3–4 shelf/grid regressions; 6 imported dimensions; 8 visibility |
-| AC-03 | 3–4 gap checks; 6 independent clearances; 8 actual viewer |
-| AC-04 | 3–4 silhouette/seam tests; 8 rounded detail views |
-| AC-05 | 3–6 scale/component/material checks; 8 Quick Look |
-| AC-06 | 3–7 geometry, USD loading, package inventory and native report |
-| AC-07 | 6, 8–9 matched previews, fresh viewer evidence and sequential reviews |
-| AC-08 | 1–2, 5, 9 baseline preservation, snapshots, instructions and hashes |
+| AC-01 | 3–7 measured/imported pyramid targets; 9–10 comparisons/viewer |
+| AC-02 | 3–7 platform footprints/thickness and raised grid; 9–10 appearance |
+| AC-03 | 3–7 exact equal gaps and actual frame clearance; 9–10 composition |
+| AC-04 | 3/6 retained seam/rounding controls; 9–10 silhouette/detail checks |
+| AC-05 | 2–7 preserved scale/material/component checks; 9–10 visibility |
+| AC-06 | 3–8 test controls, imported geometry, USD package and native report |
+| AC-07 | 7–12 fresh matching previews, viewer evidence and sequential reviews |
+| AC-08 | 1–2/6/11–12 preserved history, sources, reproduction and manifests |
 
-Test/generator/compiler/inspection commands come from the external `INSTRUCTIONS.md` and current source interfaces. USD conversion/load/package and native commands are also retained in the original approved repository plan; native behavior is documented in `docs/cli.md`. Remote thumbnail flags were rechecked with installed `qlmanage -h`. Documentation-link checking uses the existing repository helper. These commands are planned checks; none is represented as freshly passed during planning.
+Commands are grounded in current external `INSTRUCTIONS.md`, generator/inspector interfaces, the original [cube-model plan](2026-10-27-layered-cube-usdz-model.md), repository [CLI documentation](../../cli.md) and `Scripts/verify-examples.py`. Thumbnail flags and the triangle-box clearance approach have retained revision-1 evidence. Git/execution initialization follows the loaded workflow and user Git rules. Expected results are planned acceptance checks, not fresh passing claims. No full product/release test run is warranted for this external artwork-only revision.
+
+**Self-review:** AC-01–AC-08 are covered; exact dimensions/gap definitions match the approved specification. Interfaces stay unchanged, preservation and new review status are explicit, and the old apex-plane restriction is replaced by actual clearance evidence. No unresolved material design decision remains.
 
 ## Approval handoff and execution endpoint
 
-**Stage 4 approval:** The specification was presented and separately approved with “approved.” After this implementation plan was presented, the user separately replied “approved.” Both saved artifacts authorize execution of this refinement only, with the preserved native method and required final review. No push, merge, tag or publication is authorized.
+**Stage 4 approval — revision 2:** The revised specification was separately presented and approved with “approved.” After this revised plan was saved and presented at Stage 3, the user separately replied “approved,” authorizing execution of revision 2 using the preserved native method. This approval includes safe Git preparation, the fresh candidate, verification and sequential final reviews; it does not authorize push, merge, tagging, publication or integration.
 
-**Execution endpoint:** Deliver the refined cube-only USDZ, editable sources, comparison previews and instructions; complete geometry/package/native/viewer verification and sequential final review; report evidence and limitations; then stop before further artwork or integration.
+**Execution endpoint:** Deliver the verified revised cube-only USDZ, editable sources, comparison previews, instructions and review evidence; report dimensions, results and limitations; stop before further artwork, magnifier or integration. No push, merge, tag or publication is authorized.
 
+## Historical revision-1 evidence
+
+The following retained execution record concerns candidate-002 and revision 1 only. Its numbered steps refer to the earlier plan at `da63a66`, not the unchecked revision-2 steps above. It is preserved verbatim and does not establish revision-2 completion.
 
 ## Execution evidence — 2026-10-28
 
