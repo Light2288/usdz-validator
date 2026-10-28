@@ -134,7 +134,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: two readable previews of the actual model and successful Quick Look inspection. Unavailable or failed visual inspection remains unresolved.
 
-- [ ] **Step 8: Document, review and complete the increment.**
+- [x] **Step 8: Document, review and complete the increment.**
 
   Save reproduction/viewing instructions, final file hashes, commands, results, renderer observations and limitations. Identify the final candidate explicitly.
 
@@ -179,3 +179,18 @@ After manual unlock, the exact candidate was selected in Finder and opened with 
 ### Manual visual acceptance — 2026-10-28
 
 The user answered the pending Quick Look rotation/visibility/flicker question: **“Yes, it rotates and looks usable.”** This is explicitly user-observed evidence on the same hash-identified candidate, supplementing the assistant's observed actual Quick Look front view and independent SceneKit front/rear renders. It resolves Step 7's visual acceptance gap without claiming that automated rotation succeeded. The automation/configuration failure remains recorded; the model and its materials are unchanged. Step 8's sequential final review is now ready to run.
+
+
+## Completed increment — 2026-10-28
+
+All eight steps are complete. The final model is `candidate-001/model.usdz` under the approved artwork folder, with editable `model.usda`, matching generator/inspection/test source snapshots, three renderer-labelled previews, the reference copy and local reproduction instructions. The package remains 119,488 bytes with SHA-256 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`.
+
+The closing full artwork suite passed **12/12** with zero failures. Retained Apple USD load/package checks, independent Model I/O inspection (25 meshes, 14,118 triangles, 20 cm bounds) and validator 0.2.0 acceptance remain bound to that unchanged package. Requested native coverage is complete, with zero findings or operational errors. These are artwork checks; no new full validator release run is claimed.
+
+The integrated sequential specification and quality reviews both returned **PASS**, with **no findings**. They reviewed state `aa05d25732fccf336ea33391151b4810752fab10` and the external artwork/evidence. Gate ID: `3f590940-3033-47c0-936f-ac06b3dd4914`; reviewed-state ID: `44e6de0d-23a9-42b1-966e-e5221ad67e84`; frozen package SHA-256: `a2f0ab9a698eebb75631ac4c9ceb07edbbfef414f2c95b514962b4009e16b074`. The later completion record changes administrative status only; model geometry, materials and source snapshots are unchanged after review.
+
+Review reports, sealed review package, ledger, closing test log and reviewed manifest are durably archived in the external artwork folder at `evidence/final-review/`. Current delivery evidence is `evidence/candidate-001-verification.json`; the final inventory is `evidence/file-manifest.json`.
+
+The sole workflow adjustment used the documented remote `qlmanage -x` thumbnail service after the direct command timed out. That service can render differently from the interactive viewer, which was checked separately: the assistant observed the actual Quick Look front view, and the user confirmed rotation/usability. Automated rotation and the configuration/accessibility issue are not represented as fixed. No deferred review findings remain.
+
+The original PNG and its preserved copy match the approved hash. A read-only preservation check also confirms all five private Apple originals match their pre-existing relocation receipt; no private asset was redistributed. Validator product files remain unchanged. The local implementation branch is retained; no push, merge, tag, publication, magnifying-glass work or integration was performed.
