@@ -169,3 +169,8 @@ Step 7 is partial: the remote Quick Look thumbnail and two SceneKit views were g
 Interactive Quick Look opening/rotation remains **UNRESOLVED**: native desktop observation reports that the Mac is locked and automatic unlock failed. Manual unlock is needed before that check can continue. This is not a completed visual-acceptance or final-review claim.
 
 Reproduction instructions and hash-bound verification are retained in the artwork folder (`INSTRUCTIONS.md`, `evidence/candidate-001-verification.json`, `evidence/file-manifest.json`). Step 8's integrated sequential final review and completion commit remain pending; no task completion or final review PASS is recorded. No product files, private samples, push, merge, tag or publication were changed.
+
+
+### Resumed viewer check — 2026-10-28
+
+After manual unlock, the exact candidate was selected in Finder and opened with Space. The actual Quick Look window rendered the frame and internal contents clearly; a screenshot is retained locally in the artwork evidence directory. Rotation is still **UNRESOLVED**: automation did not produce a rotated view, and the viewer exposes `Failed to load configuration` accessibility text. The unchanged retained Apple teapot control exposes the same text; its automated drag returned `AXError.illegalArgument`. This suggests shared viewer/automation behavior without establishing a root cause. A manual rotation check was requested from the user. All 12 geometry tests passed again; no geometry or materials changed. Final review remains pending that check.
