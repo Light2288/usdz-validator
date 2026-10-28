@@ -17,7 +17,7 @@
 
 **Tech Stack:** Python standard library, installed Apple USD Tools 0.25.11, Swift 6.4, Model I/O, SceneKit, Metal and Quick Look. No installation.
 
-**Provenance and approval:** The user confirmed the combined refinement, then separately approved its saved specification with “approved.” This plan is the next approval artifact; implementation has not begun. Inspection HEAD is `213cf0bc6d2577fde9ecffd0a6713b6f65a3f75b` on `chore/layered-cube-usdz-model`. Specification resolution is `NEW_ONLY`; plan resolution was `MISSING`, including exact-slug and canonical/legacy-path checks. No architecture map or ADR directory exists, so there is no map freshness SHA or applicable ADR status to record. Key paths checked: the existing generator, tests, Swift inspector, instructions, baseline sources and verification receipts. No architecture artifact will be generated.
+**Provenance and approval:** The user confirmed the combined refinement, then separately approved its saved specification with “approved.” At planning time this plan was the next approval artifact and implementation had not begun; its later separate approval is recorded below. Inspection HEAD is `213cf0bc6d2577fde9ecffd0a6713b6f65a3f75b` on `chore/layered-cube-usdz-model`. Specification resolution is `NEW_ONLY`; plan resolution was `MISSING`, including exact-slug and canonical/legacy-path checks. No architecture map or ADR directory exists, so there is no map freshness SHA or applicable ADR status to record. Key paths checked: the existing generator, tests, Swift inspector, instructions, baseline sources and verification receipts. No architecture artifact will be generated.
 
 ## Global constraints
 
@@ -60,7 +60,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
 **Interfaces:** Preserve `scene_meshes() -> list[Mesh]`, `validate_mesh(mesh)`, `stage_text(meshes)` and `generate_candidate(output) -> Path`, including `--output` and existing-directory refusal. Add only geometry helpers needed by this model: `rounded_slab(name, group, material, center, size, corner_radius, edge_radius) -> Mesh`, `rounded_pyramid(base_y, apex_y, half_extent, radius) -> Mesh` and `rounded_frame(outer_edge, thickness, radius) -> list[Mesh]`. Keep inspection CLI `inspect_model <model.usdz> <fresh-output-directory>`, producing `independent-geometry.json` and SceneKit front/rear previews. Inspection must derive geometry from the package rather than trust generator receipts.
 
-- [ ] **Step 1: Prepare the approved branch and record the pair.**
+- [x] **Step 1: Prepare the approved branch and record the pair.**
 
   Load `personal-workflows:spec-implement`; identify the saved specification, this plan and their separate approving messages. Record plan approval without altering scope. Check status and preserve both uncommitted files.
 
@@ -68,13 +68,13 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Expected: the new branch contains the completed baseline and both new artifacts, with no lost changes. Commit only the new pair with `docs: record layered cube refinement specification and plan`.
 
-- [ ] **Step 2: Freeze the baseline and establish fresh destinations.**
+- [x] **Step 2: Freeze the baseline and establish fresh destinations.**
 
   Recheck reference SHA-256 `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b` and baseline package SHA-256 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`. Inventory/hash `candidate-001`, existing evidence, the current artwork sources/instructions and available original inputs before edits. Retain a source snapshot in the new evidence directory; leave baseline directories untouched. Check private originals against their existing relocation receipt without copying them into delivery/review packages.
 
   Record current Python, Swift, USD-tool, OS and renderer identities and retained validator identity. Select unused evidence/candidate destinations and use exclusive creation. Expected: any hash mismatch or destination collision is reported before generation, and preservation has a comparison record independent of later outputs.
 
-- [ ] **Step 3: Add failing refinement regressions.**
+- [x] **Step 3: Add failing refinement regressions.**
 
   Extend `test_model.py` before changing geometry. Use measured vertex bounds, not generator parameter values, to assert:
 
@@ -119,7 +119,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Expected: new refinement cases fail against baseline proportions/geometry; existing applicable checks pass. Save the actual failing output. Do not treat unrelated import/tool failures as the intended red result.
 
-- [ ] **Step 4: Implement the refined geometry and pass the tests.**
+- [x] **Step 4: Implement the refined geometry and pass the tests.**
 
   Extend the existing procedural helpers without external dependencies. Starting modeling values, chosen within the specification's visual tuning allowance:
 
@@ -138,7 +138,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Run Step 3's suite again. Expected: zero failures, including malformed-input and seam controls. Record actual counts. Parameter adjustments may follow Step 8 within the approved modest treatment; update tests/receipts to the chosen values without weakening separation or integrity checks.
 
-- [ ] **Step 5: Generate and package a fresh candidate.**
+- [x] **Step 5: Generate and package a fresh candidate.**
 
   From the artwork root, use the generator interface documented in `INSTRUCTIONS.md`, substituting the verified unused number:
 
@@ -157,7 +157,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Expected: all successful exits, load success, and a self-contained package with only the intended `model.usdc` root layer. Inspect the ZIP inventory using Python's standard library and retain it; no external texture, camera/light dependency or unexpected file is admitted. Snapshot matching generator/test/inspection sources with the candidate. Preserve stdout/stderr and hash the package before downstream verification.
 
-- [ ] **Step 6: Update and exercise independent inspection.**
+- [x] **Step 6: Update and exercise independent inspection.**
 
   Remove the Swift helper's hard-coded total of 25 meshes and per-group beam-count assumptions. Retain required groups, four panels, one pyramid, both shelves, grid identity, finite transformed positions, valid triangular indices/areas, 20 cm bounds and separation. Derive dimensions and gaps independently from Model I/O vertices; check the Step 3 height/thickness tolerances and reduced gaps without reading `geometry.json` as expected truth. Retain clear failures for missing components and unexpected content. Preserve the baseline camera and lights for comparable rendering.
 
@@ -170,7 +170,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Expected: independent geometry PASS and front/rear PNGs from the same package, without material replacement. Use disposable malformed/missing-component USD inputs through this same interface to verify rejection. Keep those inputs/output separate from the candidate; a failed inspection cannot receive a PASS receipt. For baseline comparisons, use its frozen `candidate-001/sources/inspect_model.swift`, compiled separately into the new evidence directory, with that helper's existing two-argument interface and a fresh output destination. Its camera/lights match the refined renderer, and its earlier geometry checks remain appropriate for the unchanged baseline. Do not relax refined acceptance to render the baseline.
 
-- [ ] **Step 7: Run default native validation.**
+- [x] **Step 7: Run default native validation.**
 
   From the repository, use the interface in `docs/cli.md` and the original plan:
 
@@ -180,7 +180,7 @@ All external paths above are relative to the artwork root. `candidate-002` is cu
 
   Here `candidate_dir` is the absolute path to the generated candidate. Expected: validator 0.2.0, exit 0, complete requested native coverage, no findings or operational errors; external checker remains unrequested. Retain stdout/stderr, report, executable identity and package hash. This is an artwork check, not another validator release run.
 
-- [ ] **Step 8: Inspect comparisons and the actual package.**
+- [x] **Step 8: Inspect comparisons and the actual package.**
 
   Use matched SceneKit views to compare baseline/refinement proportions and round silhouettes, including frame junctions, panel corners and pyramid tip. Save front/rear comparisons and angled detail crops with renderer labels and package hashes. Inspect the actual final USDZ in Finder Quick Look, opening with Space and rotating toward the rear; verify contents, separation, rounding and absence of severe flicker.
 
@@ -222,3 +222,18 @@ Test/generator/compiler/inspection commands come from the external `INSTRUCTIONS
 **Stage 4 approval:** The specification was presented and separately approved with “approved.” After this implementation plan was presented, the user separately replied “approved.” Both saved artifacts authorize execution of this refinement only, with the preserved native method and required final review. No push, merge, tag or publication is authorized.
 
 **Execution endpoint:** Deliver the refined cube-only USDZ, editable sources, comparison previews and instructions; complete geometry/package/native/viewer verification and sequential final review; report evidence and limitations; then stop before further artwork or integration.
+
+
+## Execution evidence — 2026-10-28
+
+Steps 1–8 are verified. The local refinement branch preserves the completed baseline branch; `main`/`origin/main` remain at `dad53f0`. The refined package is `candidate-002/model.usdz` under the external artwork root, 530,905 bytes, SHA-256 `51e41708c1e2248b344b512101a3026bfa1e18847d9e5be086aa7e828892b7e8`. Matching generator, tests, inspector and instructions are frozen with that candidate.
+
+The initial refinement suite recorded six expected failures against the baseline; all 20 current artwork cases now pass, including invalid geometry and broken-seam controls. Apple USD conversion/package/load checks pass. Model I/O independently confirms 14 meshes, 35,694 triangles, 20 cm bounds, a 71.3 mm pyramid, two 10 mm shelves and reduced positive gaps. Independent baseline-proportion, missing-platform and malformed-input controls are rejected. Validator 0.2.0 exits 0 with complete requested native coverage, no findings or operational errors; no external checker or new full product release run is claimed.
+
+Matched front/rear comparisons and detail crops show the real packaged geometry using unchanged viewing cameras/lights/materials. The Quick Look remote thumbnail succeeded. The assistant observed/captured the actual Quick Look front view; the user freshly answered “Yes, it rotates and looks usable” for this refined candidate. Automated rotation was not established, and the configuration/accessibility/capture issues remain recorded rather than reported as fixed.
+
+Protected baseline/reference/evidence checks and all five private-original hashes pass. Earlier receipts/manifests and the original approved pair remain unchanged. New evidence is in `evidence/refinement-2026-10-28-001/`; no private assets were copied into the model or distributed.
+
+**Execution ruling:** The frame uses a subdivided exposed union boundary rather than separate beam caps, producing one continuous closed surface with coherent joins. Its 4.5 mm support radius describes construction rather than a constant circular fillet; visual inspection checks the resulting softness. Pyramid/slab rounding follows the planned geometry treatment. Nominal frame-plane clearances in the generator receipt are distinguished from conservative frame triangle-box clearance bounds in the dedicated evidence.
+
+Step 9 documentation is prepared; closing checks and the integrated sequential final review are pending. No completion/review PASS is claimed yet. No push, merge, tag, publication or product integration was performed.

@@ -61,6 +61,6 @@ Do not update `main`, create the next implementation branch or commit these work
 
 ## Approval state and handoff
 
-**Specification approval:** After this specification was presented separately, the user replied “approved.” This authorizes **Stage 3 implementation planning only**, using the same basename in `docs/superpowers/plans/`. The specification remains uncommitted until the separately approved plan authorizes implementation-branch creation. No artwork changes are authorized yet.
+**Specification approval:** After this specification was presented separately, the user replied “approved.” This authorizes **Stage 3 implementation planning only**, using the same basename in `docs/superpowers/plans/`. The specification remains uncommitted until the separately approved plan authorizes implementation-branch creation. The matching plan was subsequently presented and separately approved with “approved,” authorizing Stage 4 execution within this specification.
 
 **Execution endpoint:** Deliver the refined cube-only USDZ, editable sources, comparison previews and instructions; complete geometry/package/native/viewer verification and sequential final review; report evidence and limitations; then stop before further artwork or integration.
