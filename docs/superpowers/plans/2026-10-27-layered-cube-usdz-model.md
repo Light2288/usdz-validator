@@ -118,7 +118,7 @@ Use modeled grid lines rather than image textures. Start with glossy solid frame
 
   Expected: validator version 0.2.0, exit `0`, complete requested native coverage and no operational errors. Retain stdout/stderr and the independent geometry results.
 
-- [ ] **Step 7: Inspect appearance and save previews.**
+- [x] **Step 7: Inspect appearance and save previews.**
 
   Open the actual USDZ in Quick Look and inspect the reference-like view plus rotation toward the rear. Check bevel visibility, component separation, transparency and unintended intersections.
 
@@ -174,3 +174,8 @@ Reproduction instructions and hash-bound verification are retained in the artwor
 ### Resumed viewer check — 2026-10-28
 
 After manual unlock, the exact candidate was selected in Finder and opened with Space. The actual Quick Look window rendered the frame and internal contents clearly; a screenshot is retained locally in the artwork evidence directory. Rotation is still **UNRESOLVED**: automation did not produce a rotated view, and the viewer exposes `Failed to load configuration` accessibility text. The unchanged retained Apple teapot control exposes the same text; its automated drag returned `AXError.illegalArgument`. This suggests shared viewer/automation behavior without establishing a root cause. A manual rotation check was requested from the user. All 12 geometry tests passed again; no geometry or materials changed. Final review remains pending that check.
+
+
+### Manual visual acceptance — 2026-10-28
+
+The user answered the pending Quick Look rotation/visibility/flicker question: **“Yes, it rotates and looks usable.”** This is explicitly user-observed evidence on the same hash-identified candidate, supplementing the assistant's observed actual Quick Look front view and independent SceneKit front/rear renders. It resolves Step 7's visual acceptance gap without claiming that automated rotation succeeded. The automation/configuration failure remains recorded; the model and its materials are unchanged. Step 8's sequential final review is now ready to run.
