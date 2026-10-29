@@ -63,11 +63,11 @@ These conditions are covered by the task’s verification:
   Record the starting branch and commit. Preserve the approved artifacts with a scoped stash if necessary, fetch `origin`, switch to `main`, update only by fast-forward, and create `chore/branding-and-layered-cube-example`. Restore the exact preserved artifacts. Retain the existing artwork branch and unrelated local changes.
   **Expected:** A new branch based on safely updated `main`, with both approved artifacts intact. A non-fast-forward update or conflicting work remains unresolved rather than overwritten.
 
-- [ ] **3. Commit the approved workflow pair.**
+- [x] **3. Commit the approved workflow pair.**
   Commit only those two artifacts with `docs: record branding and layered cube example plan`.
   **Expected:** Approved scope and plan are recorded on the implementation branch.
 
-- [ ] **4. Verify source identities before copying.**
+- [x] **4. Verify source identities before copying.**
   Recheck these observed SHA-256 values:
 
   | Asset | SHA-256 |
@@ -78,11 +78,11 @@ These conditions are covered by the task’s verification:
 
   **Expected:** All match; the USDZ remains 530,905 bytes. Record an inventory of the external originals for the closing preservation check.
 
-- [ ] **5. Copy the three approved assets.**
+- [x] **5. Copy the three approved assets.**
   Create their specified destinations and copy without transformation. Copy no intermediate files or historical evidence collection.
   **Expected:** Source and destination hashes match exactly.
 
-- [ ] **6. Build the release executable.**
+- [x] **6. Build the release executable.**
 
   ```sh
   swift build -c release --product usdz-validator
@@ -90,7 +90,7 @@ These conditions are covered by the task’s verification:
 
   **Expected:** Exit `0`; the executable is available. Record its reported version.
 
-- [ ] **7. Capture the actual report.**
+- [x] **7. Capture the actual report.**
 
   ```sh
   .build/release/usdz-validator validate Examples/layered-cube/model.usdz --format json --output Examples/layered-cube/validation.json
@@ -98,20 +98,20 @@ These conditions are covered by the task’s verification:
 
   **Expected:** Exit `0`, empty stdout/stderr, and one JSON report. Require complete requested native coverage, no native findings or operational errors, and an unrequested external checker.
 
-- [ ] **8. Write the example README.**
+- [x] **8. Write the example README.**
   Explain the illustration-to-model connection, procedural reconstruction, omitted magnifier, editable source, single-entry package, and MIT terms. Record all three hashes, the observed validator version/default policy, and historical packaging provenance: Python generation followed by Apple USD Tools 0.25.11 conversion and packaging. Attribute prior geometry/viewer checks as historical observations.
   Include the specification’s exact stdout reproduction command and relative links to the logo, model, source, report, and license. State that the example contains no textures or external dependencies.
   **Expected:** Readers can inspect, download, and validate the example without private filesystem links or a promised generation pipeline.
 
-- [ ] **9. Update the main README.**
+- [x] **9. Update the main README.**
   Place the logo above the existing title using an HTML image with `width="220"` and descriptive alternative text. Add “Logo-derived 3D example” after “Build and run,” linking to the example, model, source, and report. Extend the licensing sentence to include the artwork/example. Retain the existing information and geometry-free fixture distinction.
   **Expected:** Branding and the example are discoverable without implying new validator capabilities.
 
-- [ ] **10. Verify report reproduction and package integrity.**
+- [x] **10. Verify report reproduction and package integrity.**
   Run the documented stdout command, compare its bytes with the saved report, and parse it using the existing strict JSON-document helper in `Scripts/verify-examples.py`. Check the required fields, version, input size, default policy, and absence of sensitive details. Independently inspect the ZIP inventory.
   **Expected:** Exact report equality, empty stderr, exit `0`, and exactly one stored entry named `model.usdc`.
 
-- [ ] **11. Run existing compatibility checks.**
+- [x] **11. Run existing compatibility checks.**
   Copy the saved report into a dedicated ignored schema directory as `report-layered-cube.json`, keeping other evidence outside that directory.
 
   ```sh
@@ -122,11 +122,11 @@ These conditions are covered by the task’s verification:
 
   **Expected:** The current 21-document schema corpus plus the new report validates locally; all five existing documented commands pass; no whitespace errors. Do not modify schema manifests or existing verifiers.
 
-- [ ] **12. Check documentation presentation and preservation.**
+- [x] **12. Check documentation presentation and preservation.**
   Use the existing `verify_links()` helper for both READMEs and workflow artifacts; separately verify the HTML image target. Use bundled Pillow to create scratch previews of the copied PNG at 220 pixels on white and dark backgrounds, then inspect them with the image viewer. Review the surrounding README text and all scope/coverage claims. Recheck external source identities and the changed-file allowlist.
   **Expected:** Readable logo, working links, accurate claims, unchanged originals, and only the approved files changed.
 
-- [ ] **13. Commit the implementation.**
+- [x] **13. Commit the implementation.**
   Commit the six branding/example files with `docs: add logo and layered cube validation example`. Record focused verification in the execution ledger.
   **Expected:** Implementation task complete; overall increment remains pending final review.
 
@@ -147,3 +147,11 @@ Observed planning checks: the model passed default native validation; all five d
 Self-review found AC-01–AC-07 covered by the task and final gate. No unresolved design decisions remain.
 
 **Current stage:** 4 — separately approved specification and plan saved; implementation authorized. The latest user message explicitly approves this presented plan. No push, merge, publication, or website work is authorized.
+
+## Execution evidence — 2026-10-29
+
+Task 1 implementation is complete; the increment remains in progress pending the integrated final review. Steps 1–13 are verified. The existing checkout was safely branched from up-to-date main at `dad53f0e5c2853424db3e91c7de234083d409209`; the prior artwork branch at `0d11f4883635ae1f3819c1c3eea18490a4528271` is preserved. Approved artifact commit: `8a1c9d3`. Implementation commit: `e0ade79e033758842f0d366c78ab81cdce99df6a`. The approved-artifact stash is retained as `5fa257c03868d00c6bdb96016066fdcb3464d553`.
+
+All three copied assets match the pinned source hashes. Fourteen protected external files retain their initial identities. Release build passed; validator 0.2.0 captured the saved report with exit 0 and empty stdout/stderr. A separate stdout run matched its bytes exactly, with complete requested native coverage, no native findings or operational errors, and the external checker unrequested. The package contains only stored `model.usdc`. Offline schema verification accepted 22 documents; all five existing documented commands passed. Both READMEs and both workflow artifacts passed link checks; the HTML image target exists. Local 220px logo compositions were inspected on white and dark backgrounds and remain readable above the original title/intro; this does not claim a hosted GitHub render. Removing the approved README additions and license expansion restores the baseline README exactly. The eight-file change allowlist passed. No runtime code, test code, schema, dependency, fixture, release record, or website file changed.
+
+Focused verification evidence is retained locally under `.verification/branding-layered-cube/`. Final review remains pending; no increment completion or review PASS is claimed here.

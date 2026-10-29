@@ -11,7 +11,7 @@
 
 **Provenance:** The user confirmed the asset structure, README branding, and documented validation example in point 3 of their scope-confirmation message. Native clarification selected the repository’s MIT license for the PNG, USDZ, and USDA assets. Artifact lookup found no existing specification or plan for this slug. The complete DRAFT was presented in chat in Plan mode on 2026-10-29. The user then left Plan mode and sent “PLEASE IMPLEMENT THIS PLAN” with that complete specification; under the supplied AGENTS.md approval interpretation, this explicitly approves the presented specification and authorizes Stage 3 planning only. It does not approve an implementation plan that has not yet been presented.
 
-**Storage:** Saved locally. The matching implementation plan has been separately presented and approved; both artifacts remain uncommitted until implementation-branch preparation.
+**Storage:** Both separately approved artifacts are saved and committed on the implementation branch. The matching plan records verification and final-review status.
 
 ## Purpose and delivery boundary
 
