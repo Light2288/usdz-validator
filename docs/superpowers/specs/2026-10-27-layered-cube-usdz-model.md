@@ -1,10 +1,10 @@
-# Layered cube USDZ model — DRAFT specification
+# Layered cube USDZ model — specification
 
 **Slug:** `layered-cube-usdz-model`
 **Type:** feature
 **Status:** APPROVED
 **Created:** 2026-10-27
-**Updated:** 2026-10-27
+**Updated:** 2026-10-30
 
 **Paired plan basename:** `2026-10-27-layered-cube-usdz-model.md`
 
@@ -14,7 +14,7 @@
 
 The project illustration exists as a PNG. Its rendered depth, reflections and transparency do not provide editable geometry or a rotatable object. The user wants a genuine USDZ model based on the cube and its contents, rather than the image mapped onto a flat surface.
 
-The visual reference is [Magnifying Glass Over Blue Layered Cube.png](</Users/davide/Downloads/Magnifying Glass Over Blue Layered Cube.png>). Its inspected SHA-256 is `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`. Preserve this original; its exterior halo and magnifying glass are not model components.
+The visual reference is “Magnifying Glass Over Blue Layered Cube.png,” now available as a [byte-identical repository copy](../../../assets/branding/usdz-validator.png). Its inspected SHA-256 is `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`. Preserve this original; its exterior halo and magnifying glass are not model components.
 
 ## Desired outcome and selected increment
 

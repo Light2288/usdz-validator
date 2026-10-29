@@ -5,7 +5,7 @@
 **Status:** APPROVED
 **Revision:** 2
 **Created:** 2026-10-28
-**Updated:** 2026-10-28
+**Updated:** 2026-10-30
 
 **Paired plan basename:** `2026-10-28-layered-cube-refinement.md`
 
@@ -15,13 +15,13 @@
 
 The rounded cube is usable, but the user wants a taller pyramid, slightly thicker platforms and even vertical spacing. The current gaps are unequal, so increasing thickness alone will not produce the requested distribution.
 
-The immediate comparison baseline is [candidate-002/model.usdz](/Users/davide/Personal/Images/usdz-validator/cube-model/candidate-002/model.usdz), SHA-256 `51e41708c1e2248b344b512101a3026bfa1e18847d9e5be086aa7e828892b7e8`. Its pyramid is 71.3 mm tall, with base Y 13.7 mm and tip Y 85 mm. Both platforms are 10 mm thick. The lower-to-middle gap is 35 mm; the grid-to-pyramid gap is 17.725 mm. It already has genuine rounded geometry, glossy materials and lightly translucent side panels.
+The immediate comparison baseline is `candidate-002/model.usdz` (local historical artifact, not included in this repository), SHA-256 `51e41708c1e2248b344b512101a3026bfa1e18847d9e5be086aa7e828892b7e8`. Its pyramid is 71.3 mm tall, with base Y 13.7 mm and tip Y 85 mm. Both platforms are 10 mm thick. The lower-to-middle gap is 35 mm; the grid-to-pyramid gap is 17.725 mm. It already has genuine rounded geometry, glossy materials and lightly translucent side panels.
 
-Candidate-002 passed its 20-case artwork suite, USD load/package checks, independent Model I/O inspection and default native validation. Its actual Quick Look front view was observed by the assistant; the user freshly confirmed manual rotation/usability. Its final review remains incomplete: specification review blocked on contradictory task-completion records, which were subsequently reconciled; quality review did not run. These retained results describe candidate-002 and do not establish acceptance of a future revision. Preserve the [blocked review report](/Users/davide/Personal/Images/usdz-validator/cube-model/evidence/refinement-2026-10-28-001/final-review-blocked/specification-review.md) and its sealed package.
+Candidate-002 passed its 20-case artwork suite, USD load/package checks, independent Model I/O inspection and default native validation. Its actual Quick Look front view was observed by the assistant; the user freshly confirmed manual rotation/usability. Its final review remains incomplete: specification review blocked on contradictory task-completion records, which were subsequently reconciled; quality review did not run. These retained results describe candidate-002 and do not establish acceptance of a future revision. Preserve the blocked review report at `evidence/refinement-2026-10-28-001/final-review-blocked/specification-review.md` and its sealed package (local historical evidence under the artwork directory, not included in this repository).
 
-The earlier [candidate-001/model.usdz](/Users/davide/Personal/Images/usdz-validator/cube-model/candidate-001/model.usdz), SHA-256 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`, remains preserved with its completed original review. Both candidates retain frozen sources, previews and evidence.
+The earlier `candidate-001/model.usdz` (local historical artifact, not included in this repository), SHA-256 `45a7d8bcde02ccabfba476e3d68f265e269e6997dad3728a61af9276302b7953`, remains preserved with its completed original review. Both candidates retain frozen sources, previews and evidence.
 
-The preserved [reference PNG](/Users/davide/Personal/Images/usdz-validator/cube-model/reference.png), SHA-256 `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`, remains the visual guide. Both candidate hashes and the reference-copy hash were rechecked during this revision's preparation.
+The preserved reference PNG, now available as a [byte-identical repository copy](../../../assets/branding/usdz-validator.png), SHA-256 `74723d5ddd7017e0943882a3c9b35ef3aca4b137244007aaabbe4bc2804a256b`, remains the visual guide. Both candidate hashes and the reference-copy hash were rechecked during this revision's preparation.
 
 ## Desired outcome and selected increment
 
