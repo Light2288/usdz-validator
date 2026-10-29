@@ -1,9 +1,10 @@
 # Branding and layered-cube example — specification
 
-**Stage:** 4 — implementation authorized
+**Stage:** 4 complete — approved increment delivered
 **Slug:** `branding-and-layered-cube-example`
 **Type:** chore
 **Status:** APPROVED
+**Completion:** COMPLETE — see the matching plan for verification and review evidence
 **Created:** 2026-10-29
 **Updated:** 2026-10-29
 
@@ -95,3 +96,7 @@ The earlier specification approval authorized Stage 3 planning only; the later, 
 Keep artifacts uncommitted until the approved Git workflow creates the implementation branch. Preserve existing work; do not push or merge.
 
 **Execution endpoint:** Integrate the agreed assets, README branding, and documented example; complete focused verification and required review; commit on the authorized implementation branch; report results and limitations; stop before website work or another increment.
+
+## Execution record — 2026-10-29
+
+The approved branding/example increment is complete. All three copied assets retain their pinned source identities; the saved native report is actual release-CLI output and reproduces exactly. Focused schema/example, documentation, presentation, preservation, and scope checks passed, followed by the required sequential specification and quality reviews with no findings. The matching plan records reviewed identities, evidence, limitations, and closure. Scope and acceptance criteria remain unchanged. No push, merge, publication, or website work was performed.
