@@ -1,4 +1,6 @@
-<img src="assets/branding/usdz-validator.png" width="220" alt="Blue layered cube with a teal magnifying glass">
+<p align="center">
+  <img src="assets/branding/usdz-validator.png" width="220" alt="Blue layered cube with a teal magnifying glass">
+</p>
 
 # USDZ Validation Kit
 
