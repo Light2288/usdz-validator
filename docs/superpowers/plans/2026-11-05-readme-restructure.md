@@ -1,6 +1,6 @@
 # README Restructuring Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Enter through `personal-workflows:spec-implement`; native execution is recommended for this single documentation task, pending user choice.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Enter through `personal-workflows:spec-implement`; native execution was selected at the Stage 3 handoff for this single documentation task.
 
 **Goal:** Restructure the entire root README with a branded opening and clear technical navigation while preserving its substantive facts and contracts.
 
@@ -57,22 +57,22 @@ Full tier is selected because editorial preservation and presentation require ju
 
 **Interfaces:** Consume the approved specification, original README content, existing logo and local documentation targets, and `.build/release/usdz-validator`. Produce one GitHub-compatible README retaining its existing heading-anchor and example contracts. Introduce no runtime interface.
 
-- [ ] **Step 1: Confirm separate approvals and prepare the branch.** Record the messages approving the specification and this plan, plus the selected execution method. Recheck checkout status. Preserve local work and both workflow artifacts, fetch `origin`, update `main` only by fast-forward when possible, and create `docs/readme-restructure`. Never discard work or force an update; resolve any conflicting upstream change before proceeding. Record the resulting branch base and preserve its README as the comparison baseline. If upstream changes materially invalidate the approved scope/plan, return through the applicable approval gate.
+- [x] **Step 1: Confirm separate approvals and prepare the branch.** Record the messages approving the specification and this plan, plus the selected execution method. Recheck checkout status. Preserve local work and both workflow artifacts, fetch `origin`, update `main` only by fast-forward when possible, and create `docs/readme-restructure`. Never discard work or force an update; resolve any conflicting upstream change before proceeding. Record the resulting branch base and preserve its README as the comparison baseline. If upstream changes materially invalidate the approved scope/plan, return through the applicable approval gate.
   **Expected:** The approved pair exists before implementation; the implementation branch uses safely updated `main` and preserves unrelated work.
 
-- [ ] **Step 2: Commit the approved workflow artifacts.** Mark this plan approved only from its separate approval message; retain the original creation dates, shared slug, and specification reference. Commit only the pair with `docs: record README restructuring specification and plan`.
+- [x] **Step 2: Commit the approved workflow artifacts.** Mark this plan approved only from its separate approval message; retain the original creation dates, shared slug, and specification reference. Commit only the pair with `docs: record README restructuring specification and plan`.
   **Expected:** Both approved artifacts are recorded on the implementation branch before the README changes.
 
-- [ ] **Step 3: Build the branded opening.** Keep the existing image/alternative text and use a centered HTML H1. Add a concise subtitle, two linked badges labeled `Swift tools 6.0` and `MIT`, and centered quick links to the CLI guide, inspection boundary, library section, and example section. Point the Swift tools badge to `Package.swift` and MIT badge to `LICENSE`. Follow the supplied reference READMEs' compatible HTML style.
+- [x] **Step 3: Build the branded opening.** Keep the existing image/alternative text and use a centered HTML H1. Add a concise subtitle, two linked badges labeled `Swift tools 6.0` and `MIT`, and centered quick links to the CLI guide, inspection boundary, library section, and example section. Point the Swift tools badge to `Package.swift` and MIT badge to `LICENSE`. Follow the supplied reference READMEs' compatible HTML style.
   **Expected:** AC-01 is met; the opening communicates identity without claiming release publication or a verified minimum platform.
 
-- [ ] **Step 4: Reorganize the entire body.** Use the specification's reading order: About, Features, Build and run, Use the library, Logo-derived 3D example, Documentation, Verification and support scope, Release history, Security, License. Use subsections for verification evidence, inspection limits, and exclusions; retain the existing anchors by preserving their headings. Make the documentation index a compact table or list of existing guides. Keep the core acceptance limitation near the top.
+- [x] **Step 4: Reorganize the entire body.** Use the specification's reading order: About, Features, Build and run, Use the library, Logo-derived 3D example, Documentation, Verification and support scope, Release history, Security, License. Use subsections for verification evidence, inspection limits, and exclusions; retain the existing anchors by preserving their headings. Make the documentation index a compact table or list of existing guides. Keep the core acceptance limitation near the top.
   **Expected:** Readers can move from overview to first use and then detailed evidence. All original substantive information, examples, pinned dependencies/notices, support qualifications, and artwork distinctions remain represented.
 
-- [ ] **Step 5: Check content preservation and the five review-focus conditions.** Compare the baseline and revised README paragraph by paragraph and compare all fenced code blocks for unchanged commands/API usage. Check feature and badge claims against the cited canonical files; verify the current-host/intended-host and current/historical evidence distinctions. Confirm license/security links and copyright wording. Inspect the HTML header as text with image content omitted. Check inbound README fragments from the CLI, security, inspection-boundary, changelog, and example documents; keep historical line citations untouched.
+- [x] **Step 5: Check content preservation and the five review-focus conditions.** Compare the baseline and revised README paragraph by paragraph and compare all fenced code blocks for unchanged commands/API usage. Check feature and badge claims against the cited canonical files; verify the current-host/intended-host and current/historical evidence distinctions. Confirm license/security links and copyright wording. Inspect the HTML header as text with image content omitted. Check inbound README fragments from the CLI, security, inspection-boundary, changelog, and example documents; keep historical line citations untouched.
   **Expected:** AC-02 through AC-07 are met with no lost qualification, misleading badge, broken heading destination, or contract change. Record the comparison evidence in scratch space for final review.
 
-- [ ] **Step 6: Run existing build and example checks.** From the repository root:
+- [x] **Step 6: Run existing build and example checks.** From the repository root:
 
   ```sh
   swift build -c release --product usdz-validator
@@ -82,10 +82,10 @@ Full tier is selected because editorial preservation and presentation require ju
 
   **Expected:** All commands exit `0`; the release executable is built; the verifier prints `PASS: 5 documented native commands; exact examples, defaults, profile IDs, and local links`; the whitespace check produces no errors. Record exact commands, exit statuses, and decisive output. The README may retain broader development test commands without rerunning the entire release matrix for this editorial change.
 
-- [ ] **Step 7: Check links, rendering, and scope.** Reuse `verify_links()` from `Scripts/verify-examples.py` for the workflow pair and README, then separately inspect HTML attributes: resolve local `src`/`href` paths and fragments; check Shields.io image URLs and their badge labels/alternative text. Inspect a rendered Markdown preview using available local tooling with temporary outputs kept in scratch space, including heading hierarchy, lists/tables, code blocks, header balance, and icon readability on light/dark backgrounds. Report any unavailable rendering or remote-image checks explicitly; source inspection alone must not be reported as observed rendering. Check the complete changed-file list against the three-file allowlist.
+- [x] **Step 7: Check links, rendering, and scope.** Reuse `verify_links()` from `Scripts/verify-examples.py` for the workflow pair and README, then separately inspect HTML attributes: resolve local `src`/`href` paths and fragments; check Shields.io image URLs and their badge labels/alternative text. Inspect a rendered Markdown preview using available local tooling with temporary outputs kept in scratch space, including heading hierarchy, lists/tables, code blocks, header balance, and icon readability on light/dark backgrounds. Report any unavailable rendering or remote-image checks explicitly; source inspection alone must not be reported as observed rendering. Check the complete changed-file list against the three-file allowlist.
   **Expected:** Working local destinations and preserved anchors, appropriate GitHub-compatible presentation, unchanged artwork, and changes limited to `README.md` and the approved pair. No new permanent tests, dependency setup, or generated repository artifacts.
 
-- [ ] **Step 8: Commit the verified README.** Commit only `README.md` with `docs: restructure project README`; preserve the validation evidence for final review.
+- [x] **Step 8: Commit the verified README.** Commit only `README.md` with `docs: restructure project README`; preserve the validation evidence for final review.
   **Expected:** The documentation change is committed locally and ready for the required final review; completion is not yet claimed.
 
 ## Criterion Traceability
@@ -108,6 +108,23 @@ Record observed verification and review outcomes in this plan's execution record
 
 **Self-review:** AC-01–AC-08 are assigned to the single coherent task and final gate. All five review-focus conditions have explicit checks; the task has no new function/type/API names to reconcile. Scope, file paths, commands, and expected output are grounded in the approved specification and inspected repository. No implementation or project verification was performed during planning.
 
-**Current stage:** 4 — separate specification and plan approvals received; native implementation is in progress.
+**Current stage:** 4 complete — implementation, focused verification, and sequential final review passed. The branch remains local.
 
 **Execution endpoint:** Deliver the approved README restructuring with focused verification and sequential final review completed, commit locally on the implementation branch, report evidence and limitations, and stop before any later increment, push, merge, or publication.
+
+
+## Execution Record — 2026-11-05
+
+- Branch: `docs/readme-restructure`, based on `6a9e488aa75e82bffe31167c3d5e114b08547183`. Fetch succeeded; `main` was already up to date. No unrelated work was present or discarded.
+- Approved artifacts were committed before README changes: `e40ae73` (`docs: record README restructuring specification and plan`). The README implementation is `564f6d9` (`docs: restructure project README`). Final closure updates only workflow lifecycle/evidence metadata.
+- `swift build -c release --product usdz-validator`: exit `0`; `Build complete! (13,55 secs)`.
+- `python3 Scripts/verify-examples.py --executable .build/release/usdz-validator`: exit `0`; `PASS: 5 documented native commands; exact examples, defaults, profile IDs, and local links`. Repeated successfully at task closure.
+- `git diff --check`: exit `0`, no whitespace errors. Focused checks confirmed three unchanged fenced code blocks, all original Markdown destinations, four preserved section anchors, HTML targets/alternative text, unchanged nuanced policy passages and logo hash, and the exact three-file scope.
+- Observed local rendering used bundled marked and installed Google Chrome through Playwright, after diagnosing a missing bundled-browser revision. The header, complete body, light/dark backgrounds, 390px mobile layout, loaded icon/badges, and text fallback were checked. No new browser download, project dependency, or permanent test was introduced.
+- Rendering is a local GitHub-like approximation; hosted GitHub rendering is unobserved. Full runtime/release/support-matrix verification was outside this documentation increment and was not repeated.
+- Sole integrated final gate: specification review PASS on `gpt-6-luna`, then quality review PASS on `gpt-6.1-sol`; both at high reasoning. Both recomputed and matched the finalized package hash and identities. Findings: none. Declined to judge: none. Rulings/deferred minors: none.
+- `GATE_RUN_ID`: `d5c04a8d-4a9c-4561-b53b-a9b04c1c17ae`.
+- `REVIEWED_STATE_ID`: `75c8a810-3099-4898-8afc-ffcf12f670f6`.
+- `PACKAGE_SHA256`: `af9681d7a4784eb420b5c5b56851ee2e2e269f46d8bcf39b1d7fd8751c52f553`.
+- Reviewed implementation HEAD: `564f6d985fcc2e8e14db44cdb3aed397bf55ff92`; final metadata closure does not alter the reviewed README. Full receipts and preview evidence are preserved in external temporary scratch before removal of this plan's execution workspace.
+- Delivery endpoint reached: README restructuring, verification, review, and local commits complete. No push, merge, publication, or later increment was performed.
